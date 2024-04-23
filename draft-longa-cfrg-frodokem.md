@@ -19,18 +19,18 @@
 # Change the file extension to match the format (.xml for XML, etc...)
 #
 ###
-title: "TODO - Your title"
-abbrev: "TODO - Abbreviation"
+title: "FrodoKEM: key encapsulation from learning with errors"
+abbrev: "FrodoKEM"
 category: info
 
-docname: draft-todo-yourname-protocol-latest
-submissiontype: IETF  # also: "independent", "editorial", "IAB", or "IRTF"
-number:
-date:
+docname: draft-longa-cfrg-frodokem-latest
+submissiontype: IRTF
+number: 00
+date: 2024-04-23
 consensus: true
 v: 3
-area: AREA
-workgroup: WG Working Group
+area: IRTF
+workgroup: CFRG
 keyword:
  - next generation
  - unicorn
