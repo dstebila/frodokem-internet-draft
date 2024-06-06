@@ -36,7 +36,7 @@ informative:
 
 --- abstract
 
-This memo specifies FrodoKEM, an IND-CCA2 secure Key Encapsulation Mechanism (KEM). 
+This memo specifies FrodoKEM, an IND-CCA2 secure Key Encapsulation Mechanism (KEM).
 
 About This Document
 
@@ -90,8 +90,8 @@ Table of Contents
     mechanism whose security derives from cautious parameterizations of the
     well-studied learning with errors problem, which in turn has close
     connections to conjectured-hard problems on generic, "algebraically
-    unstructured" lattices. 
-    
+    unstructured" lattices.
+
     As a key encapsulation mechanism, FrodoKEM is a three-tuple of
     algorithms (_KeyGen_, _Encapsulate_, _Decapsulate_):
 
