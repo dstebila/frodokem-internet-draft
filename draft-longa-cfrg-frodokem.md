@@ -89,8 +89,8 @@ Table of Contents
     FrodoKEM is a conservative yet practical post-quantum key encapsulation
     mechanism whose security derives from cautious parameterizations of the
     well-studied learning with errors problem, which in turn has close
-    connections to conjectured-hard problems on generic, “algebraically
-    unstructured” lattices. 
+    connections to conjectured-hard problems on generic, "algebraically
+    unstructured" lattices. 
     
     As a key encapsulation mechanism, FrodoKEM is a three-tuple of
     algorithms (_KeyGen_, _Encapsulate_, _Decapsulate_):
