@@ -86,12 +86,6 @@ outputs the keypair (pk, sk) = (seedA || b, s || seedA || b || S^T || pkh).
 
 
 
-7.  Compute matrix B = A S + E
-
-8.  Compute b = Pack(B)
-
-9.  Compute pkh = SHAKE256(seedA || b, lensec)
-
 
 
 # Parameter Sets
