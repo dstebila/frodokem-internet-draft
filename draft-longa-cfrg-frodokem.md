@@ -78,6 +78,14 @@ algorithm.
 The key generation algorithm accepts no input, requires randomness, and
 outputs the keypair (pk, sk) = (seedA || b, s || seedA || b || S^T || pkh).
 
+1.  Choose uniformly random seeds s, seedSE and z of bitlengths lensec, lenSE and lenA (resp.)
+
+2.  Generate pseudorandom seed seedA = SHAKE256(z, lenA)
+
+3.  Generate the matrix A = Gen(seedA)
+
+4.  Generate pseudorandom bit string (r^(0), r^(1), ... , r^(2 * n * nHat - 1)) = SHAKE256(0x5F || seedSE, 32 * n * nHat)
+
 
 
 # Parameter Sets
