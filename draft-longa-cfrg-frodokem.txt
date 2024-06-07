@@ -64,9 +64,13 @@ Table of Contents
 
    1.  Introduction
    2.  Conventions and Definitions
-   3.  Security Considerations
-   4.  IANA Considerations
-   5.  Normative References
+   3.  Overview
+   4.  FrodoKEM
+     4.1.  Key Generation
+   5.  Parameter Sets
+   6.  Security Considerations
+   7.  IANA Considerations
+   8.  Normative References
    Acknowledgments
    Author's Address
 
@@ -103,7 +107,19 @@ Table of Contents
    BCP 14 [RFC2119] [RFC8174] when, and only when, they appear in all
    capitals, as shown here.
 
-3.  Security Considerations
+3.  Overview
+
+4.  FrodoKEM
+
+4.1.  Key Generation
+
+   The key generation algorithm accepts no input, requires randomness,
+   and outputs the keypair (pk, sk) = (seedA || b, s || seedA || b ||
+   S^T || pkh).
+
+5.  Parameter Sets
+
+6.  Security Considerations
 
    FrodoKEM-640, FrodoKEM-976 and FrodoKEM-1344 are designed to be post-
    quantum IND-CCA2 secure KEMs at the security levels of AES-128,
@@ -121,11 +137,11 @@ Table of Contents
    while our confidence in the security of lattice schemes increases
    over time.
 
-4.  IANA Considerations
+7.  IANA Considerations
 
    This document has no IANA actions.
 
-5.  Normative References
+8.  Normative References
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
