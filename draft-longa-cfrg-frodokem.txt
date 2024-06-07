@@ -117,6 +117,13 @@ Table of Contents
    and outputs the keypair (pk, sk) = (seedA || b, s || seedA || b ||
    S^T || pkh).
 
+   1.  Choose uniformly random seeds s, seedSE and z of bitlengths
+       lensec, lenSE and lenA (resp.)
+
+   2.  Generate pseudorandom seed seedA = SHAKE256(z, lenA)
+
+   3.  Generate the matrix A = Gen(seedA)
+
 5.  Parameter Sets
 
 6.  Security Considerations
