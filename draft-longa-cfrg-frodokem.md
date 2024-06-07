@@ -84,9 +84,24 @@ outputs the keypair (pk, sk) = (seedA || b, s || seedA || b || S^T || pkh).
 
 3.  Generate the matrix A = Gen(seedA)
 
-4.  Generate pseudorandom bit string (r^(0), r^(1), ... , r^(2 * n * nHat - 1)) = SHAKE256(0x5F || seedSE, 32 * n * nHat)
+4.  Generate pseudorandom bit string (r^(0), r^(1), ... , r^(2 * n * nHat - 1)) = 
+SHAKE256(0x5F || seedSE, 32 * n * nHat)
 
+5.  Sample error matrix S^T = SampleMatrix((r^(0), r^(1), ... , r^(n * nHat − 1)), nHat, n)
 
+6.  Sample error matrix E = SampleMatrix((r^(n * nHat), r^(n * nHat + 1), ... , r^(2 * n * nHat − 1)), n, nHat)
+
+7.  Compute matrix B = A*S + E
+
+8.  Compute b = Pack(B)
+
+9.  Compute pkh = SHAKE256(seedA || b, lensec)
+
+10. Return public key pk = seedA || b and secret key sk = s || seedA || b || S^T || pkh.
+ST = S^T is encoded by writing row-by-row from ST_(0,0) to ST_(nHat−1,n−1), where
+each matrix coefficient ST_(i,j) is a signed integer encoded as a 16-bit string
+in the little-endian byte order such that (s_0, s_1, ... , s_15) <- ST_(i,j) =
+−s_15 * 2^15 + (s_0 + s_1 * 2 + s_2 * 2^2 + ... + s_14 * 2^14)
 
 # Parameter Sets
 
