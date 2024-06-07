@@ -84,7 +84,8 @@ outputs the keypair (pk, sk) = (seedA || b, s || seedA || b || S^T || pkh).
 
 3.  Generate the matrix A = Gen(seedA)
 
-
+4.  Generate pseudorandom bit string (r^(0), r^(1), ... , r^(2 * n * nHat - 1)) = 
+SHAKE256(0x5F || seedSE, 32 * n * nHat)
 
 
 
