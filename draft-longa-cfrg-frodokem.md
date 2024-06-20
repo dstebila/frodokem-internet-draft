@@ -76,27 +76,27 @@ algorithm.
 ## Key Generation
 
 The key generation algorithm accepts no input, requires randomness, and
-outputs the keypair (pk, sk) = (seedA || b, s || seedA || b || S^T || pkh).
+outputs the keypair (pk, sk) = (seedA \|\| b, s \|\| seedA \|\| b \|\| S^T \|\| pkh).
 
-1.  Choose uniformly random seeds s, seedSE and z of bitlengths lensec, lenSE and lenA (resp.)
+1. Choose uniformly random seeds s, seedSE and z of bitlengths lensec, lenSE and lenA (resp.)
 
-2.  Generate pseudorandom seed seedA = SHAKE256(z, lenA)
+2. Generate pseudorandom seed seedA = SHAKE256(z, lenA)
 
-3.  Generate the matrix A = Gen(seedA)
+3. Generate the matrix A = Gen(seedA)
 
-4.  Generate pseudorandom bit string (r^(0), r^(1), ..., r^(2\*n\*nHat - 1)) = SHAKE256(0x5F || seedSE, 32\*n\*nHat)
+4. Generate pseudorandom bit string (r^(0), r^(1), ..., r^(2\*n\*nHat - 1)) = SHAKE256(0x5F \|\| seedSE, 32\*n\*nHat)
 
-5.  Sample error matrix S^T = SampleMatrix((r^(0), r^(1), ..., r^(n\*nHat − 1)), nHat, n)
+5. Sample error matrix S^T = SampleMatrix((r^(0), r^(1), ..., r^(n\*nHat − 1)), nHat, n)
 
-6.  Sample error matrix E = SampleMatrix((r^(n\*nHat), r^(n\*nHat + 1), ..., r^(2\*n\*nHat − 1)), n, nHat)
+6. Sample error matrix E = SampleMatrix((r^(n\*nHat), r^(n\*nHat + 1), ..., r^(2\*n\*nHat − 1)), n, nHat)
 
-7.  Compute matrix B = A\*S + E
+7. Compute matrix B = A\*S + E
 
-8.  Compute b = Pack(B)
+8. Compute b = Pack(B)
 
-9.  Compute pkh = SHAKE256(seedA || b, lensec)
+9. Compute pkh = SHAKE256(seedA \|\| b, lensec)
 
-10. Return public key pk = (seedA || b) and secret key sk = (s || seedA || b || S^T || pkh).
+10. Return public key pk = (seedA \|\| b) and secret key sk = (s \|\| seedA \|\| b \|\| S^T \|\| pkh).
 ST = S^T is encoded row-by-row from ST_(0,0) to ST_(nHat−1,n−1), where
 each matrix coefficient ST_(i,j) is a signed integer encoded as a 16-bit string
 in the little-endian byte order such that (s_0, s_1, ..., s_15) = ST_(i,j) =
@@ -104,16 +104,16 @@ in the little-endian byte order such that (s_0, s_1, ..., s_15) = ST_(i,j) =
 
 ## Encapsulation
 
-The encapsulation algorithm takes as input a public key pk = (seedA || b), and
-outputs a ciphertext c = (c1 || c2 || salt) and a shared secret ss.
+The encapsulation algorithm takes as input a public key pk = (seedA \|\| b), and
+outputs a ciphertext c = (c1 \|\| c2 \|\| salt) and a shared secret ss.
 
 1.  Choose uniformly random values u and salt of bitlengths lensec and lensalt (resp.)
    
 2.  Compute pkh = SHAKE256(pk, lensec)
    
-3.  Generate pseudorandom values seedSE || k = SHAKE256(pkh || u || salt, lenSE+lensec)
+3.  Generate pseudorandom values seedSE \|\| k = SHAKE256(pkh \|\| u \|\| salt, lenSE+lensec)
    
-4.  Generate pseudorandom bit string (r^(0), r^(1), ..., r^(2\*nHat\*n + nHat^2 - 1)) = SHAKE256(0x96 || seedSE, 16(2\*nHat\*n + nHat^2))
+4.  Generate pseudorandom bit string (r^(0), r^(1), ..., r^(2\*nHat\*n + nHat^2 - 1)) = SHAKE256(0x96 \|\| seedSE, 16(2\*nHat\*n + nHat^2))
    
 5.  Sample error matrix S' = SampleMatrix((r^(0), r^(1), ..., r^(nHat\*n - 1)), nHat, n)
    
@@ -135,15 +135,15 @@ outputs a ciphertext c = (c1 || c2 || salt) and a shared secret ss.
   
 14. Compute c2 = Pack(C) 
   
-15. Compute ss = SHAKE256(c1 || c2 || salt ||k, lensec)
+15. Compute ss = SHAKE256(c1 \|\| c2 \|\| salt \|\|k, lensec)
   
-16. Return ciphertext c = (c1 || c2 || salt) and shared secret ss
+16. Return ciphertext c = (c1 \|\| c2 \|\| salt) and shared secret ss
 
 
 ## Decapsulation
 
-The decapsulation algorithm takes as input a ciphertext c = (c1 || c2 || salt) and
-a secret key sk = (s || seedA || b || S^T || pkh), and outputs a shared secret ss.
+The decapsulation algorithm takes as input a ciphertext c = (c1 \|\| c2 \|\| salt) and
+a secret key sk = (s \|\| seedA \|\| b \|\| S^T \|\| pkh), and outputs a shared secret ss.
 
 1.  Compute matrix B' = Unpack(c1, nHat, n)
 
@@ -153,9 +153,9 @@ a secret key sk = (s || seedA || b || S^T || pkh), and outputs a shared secret s
 
 4.  Compute u' = Decode(M)
 
-5.  Generate pseudorandom values seedSE' || k' = SHAKE256(pkh || u' ||salt, lenSE+lensec)
+5.  Generate pseudorandom values seedSE' \|\| k' = SHAKE256(pkh \|\| u' \|\|salt, lenSE+lensec)
 
-6.  Generate pseudorandom bit string (r^(0), r^(1), ..., r^(2\*nHat\*n + nHat^2 - 1)) = SHAKE256(0x96 || seedSE', 16
+6.  Generate pseudorandom bit string (r^(0), r^(1), ..., r^(2\*nHat\*n + nHat^2 - 1)) = SHAKE256(0x96 \|\| seedSE', 16
 (2\*nHat\*n + nHat^2))
 
 7.  Sample error matrix S' = SampleMatrix((r^(0), r^(1), ..., r^(nHat\*n - 1)), nHat, n)
@@ -177,7 +177,7 @@ nHat, nHat)
 
 15.  If B' = B" and C = C' then kHat = k' else kHat = s
 
-16.  Compute ss = SHAKE256(c1 || c2 || salt || kHat, lensec)
+16.  Compute ss = SHAKE256(c1 \|\| c2 \|\| salt \|\| kHat, lensec)
 
 17.  Return shared secret ss
 
