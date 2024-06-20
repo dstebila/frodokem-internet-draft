@@ -108,35 +108,35 @@ The encapsulation algorithm takes as input a public key pk = (seedA \|\| b), and
 outputs a ciphertext c = (c1 \|\| c2 \|\| salt) and a shared secret ss.
 
 1.  Choose uniformly random values u and salt of bitlengths lensec and lensalt (resp.)
-   
+
 2.  Compute pkh = SHAKE256(pk, lensec)
-   
+
 3.  Generate pseudorandom values seedSE \|\| k = SHAKE256(pkh \|\| u \|\| salt, lenSE+lensec)
-   
+
 4.  Generate pseudorandom bit string (r^(0), r^(1), ..., r^(2\*nHat\*n + nHat^2 - 1)) = SHAKE256(0x96 \|\| seedSE, 16(2\*nHat\*n + nHat^2))
-   
+
 5.  Sample error matrix S' = SampleMatrix((r^(0), r^(1), ..., r^(nHat\*n - 1)), nHat, n)
-   
+
 6.  Sample error matrix E' = SampleMatrix((r^(nHat\*n), r^(nHat\*n + 1), ..., r^(2\*nHat\*n - 1)), nHat, n)
-   
+
 7.  Generate the matrix A = Gen(seedA)
-   
+
 8.  Compute matrix B' = S'\*A + E'
-   
-9.  Compute c1 = Pack(B') 
-  
+
+9.  Compute c1 = Pack(B')
+
 10. Sample error matrix E" = SampleMatrix((r^(2\*nHat\*n), r^(2\*nHat\*n + 1), ..., r^(2\*nHat\*n + nHat^2 - 1)), nHat, nHat)
-  
+
 11. Compute matrix B = Unpack(b, n, nHat)
-  
+
 12. Compute matrix V = S'\*B + E"
-  
+
 13. Compute matrix C = V + Encode(u)
-  
-14. Compute c2 = Pack(C) 
-  
+
+14. Compute c2 = Pack(C)
+
 15. Compute ss = SHAKE256(c1 \|\| c2 \|\| salt \|\|k, lensec)
-  
+
 16. Return ciphertext c = (c1 \|\| c2 \|\| salt) and shared secret ss
 
 
@@ -166,7 +166,7 @@ a secret key sk = (s \|\| seedA \|\| b \|\| S^T \|\| pkh), and outputs a shared 
 
 10.  Compute matrix B" = S'\*A + E'
 
-11.  Sample error matrix E" = SampleMatrix((r^(2\*nHat\*n), r^(2\*nHat\*n + 1), ..., r^(2\*nHat\*n+ nHat^2 - 1)), 
+11.  Sample error matrix E" = SampleMatrix((r^(2\*nHat\*n), r^(2\*nHat\*n + 1), ..., r^(2\*nHat\*n+ nHat^2 - 1)),
 nHat, nHat)
 
 12.  Compute matrix B = Unpack(b, n, nHat)
