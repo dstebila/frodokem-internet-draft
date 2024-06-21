@@ -124,7 +124,7 @@ The function Decode(C) is defined as follows.
 
    1. For j = 0 to nHat - 1 do
 
-      1. c = \lfloor C_(i,j) \* 2^B/q \rceil mod 2^B
+      1. c = $\lfloor$ C_(i,j) \* 2^B/q $\rceil$ mod 2^B
 
       2. Set c = c_0 * 2^0 + c_1 * 2^1 + ... + c_(B-1) * 2^(B-1)
 
