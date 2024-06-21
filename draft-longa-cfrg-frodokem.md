@@ -77,35 +77,68 @@ algorithm.
 
 We define how bit strings are encoded as mod-q integer matrices.
 
-Recall that 2^B <= q. The encoding function ec(\cdot) encodes an integer 0 <= val < 2^B
-as an element in Z_q by multiplying it by q/2^B = 2^(D-B):
+Recall that 2^B <= q. The encoding function ec() encodes an integer
+0 <= val < 2^B as an element in Z_q by multiplying it by q/2^B = 2^(D-B):
 
 ec(val) = val \* q/2^B.
 
-Using this function, the function Encode(b) encodes a given bit string b = (b_0, ..., b_(l-1))
-of length l = B \* nHat^2 as an nHat \* nHat matrix C with coefficients C_(i,j) in Z_q by
-applying ec(\cdot) to B-bit sub-strings sequentially and filling the matrix row by row
-entry-wise. The function Encode(b) is defined as follows.
+Using this function, the function Encode(b) encodes a given bit string
+b = (b_0, ..., b_(l-1)) of length l = B \* nHat^2 as an nHat \* nHat
+matrix C with coefficients C_(i,j) in Z_q by applying ec(\cdot) to B-bit
+sub-strings sequentially and filling the matrix row by row entry-wise.
+The function Encode(b) is defined as follows.
+
+1.  For i = 0 to nHat - 1 do
+
+2.    For j = 0 to nHat - 1 do
+
+3.      val = 0
+
+4.      For k = 0 to B - 1 do
+
+5.        val = val + b_((i\*nHat + j)B + k) \* 2^k
+
+6.      End for
+
+7.      Set C_(i,j) = val \* q/2^B
+
+8.    End for
+
+9.  End for
+
+10. Return C
+
+The corresponding decoding function Decode(C) decodes an nHat \* nHat
+matrix C into a bit string of length l = B \* nHat^2. It extracts B bits
+from each entry by applying the function dc():
+
+dc(c) = \lfloor c \* 2^B/q \rceil mod 2^B.
+
+That is, the Z_q-entry is interpreted as an integer, then divided by q/2^B
+and rounded. This amounts to rounding to the B most significant bits of
+each entry. With these definitions, it is the case that dc(ec(val)) = val
+for all 0 ≤ val < 2^B.
+The function Decode(C) is defined as follows.
 
 1. For i = 0 to nHat - 1 do
 
    1. For j = 0 to nHat - 1 do
 
-      1. val = 0
+      1. c = \lfloor C_(i,j) \* 2^B/q \rceil mod 2^B
 
-      2. For k = 0 to B - 1 do
+      2. Set c = c_0 * 2^0 + c_1 * 2^1 + ... + c_(B-1) * 2^(B-1)
 
-         1. val = val + b_((i\*nHat + j)B + k) \* 2^k
+      3. For k = 0 to B - 1 do
 
-      3. End for
+         1. b_((i*nHat + j)B + k) = c_k
 
-      4. Set C_(i,j) = val \* q/2^B
+      4. End for
 
    2. End for
 
 2. End for
 
-3. Return C
+3. Return (b_0, ..., b_(l-1)).
 
 
 # FrodoKEM
