@@ -71,6 +71,43 @@ algorithm.
 
 # Overview
 
+# Supporting functions
+
+## Matrix encoding of bit strings
+
+We define how bit strings are encoded as mod-q integer matrices.
+
+Recall that 2^B <= q. The encoding function ec(\cdot) encodes an integer 0 <= val < 2^B
+as an element in Z_q by multiplying it by q/2^B = 2^(D-B):
+
+ec(val) = val \* q/2^B.
+
+Using this function, the function Encode(b) encodes a given bit string b = (b_0, ..., b_(l-1))
+of length l = B \* nHat^2 as an nHat \* nHat matrix C with coefficients C_(i,j) in Z_q by
+applying ec(\cdot) to B-bit sub-strings sequentially and filling the matrix row by row
+entry-wise. The function Encode(b) is defined as follows.
+
+1. For i = 0 to nHat - 1 do
+   
+   1. For j = 0 to nHat - 1 do
+
+      1. val = 0
+   
+      2. For k = 0 to B - 1 do
+
+         1. val = val + b_((i\*nHat + j)B + k) \* 2^k
+
+      3. End for
+ 
+      4. Set C_(i,j) = val \* q/2^B
+
+   2. End for
+
+2. End for
+
+3. Return C 
+
+
 # FrodoKEM
 
 ## Key Generation
