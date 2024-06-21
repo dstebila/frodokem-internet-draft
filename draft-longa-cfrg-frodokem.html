@@ -1139,6 +1139,15 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.1">
                 <p id="section-toc.1-1.4.2.1.1"><a href="#section-4.1" class="auto internal xref">4.1</a>.  <a href="#name-matrix-encoding-of-bit-stri" class="internal xref">Matrix encoding of bit strings</a></p>
 </li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.2">
+                <p id="section-toc.1-1.4.2.2.1"><a href="#section-4.2" class="auto internal xref">4.2</a>.  <a href="#name-packing-matrices-modulo-q" class="internal xref">Packing matrices modulo q</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.3">
+                <p id="section-toc.1-1.4.2.3.1"><a href="#section-4.3" class="auto internal xref">4.3</a>.  <a href="#name-sampling-from-the-error-dis" class="internal xref">Sampling from the error distribution</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.4">
+                <p id="section-toc.1-1.4.2.4.1"><a href="#section-4.4" class="auto internal xref">4.4</a>.  <a href="#name-matrix-sampling-from-the-er" class="internal xref">Matrix sampling from the error distribution</a></p>
+</li>
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5">
@@ -1287,7 +1296,7 @@ The function Encode(b) is defined as follows.<a href="#section-4.1-4" class="pil
 <p id="section-4.1-6">The corresponding decoding function Decode(C) decodes an nHat * nHat
 matrix C into a bit string of length l = B * nHat^2. It extracts B bits
 from each entry by applying the function dc():<a href="#section-4.1-6" class="pilcrow">¶</a></p>
-<p id="section-4.1-7">dc(c) = \lfloor c * 2^B/q \rceil mod 2^B.<a href="#section-4.1-7" class="pilcrow">¶</a></p>
+<p id="section-4.1-7">dc(c) = $\lfloor$ c * 2^B/q $\rceil$ mod 2^B.<a href="#section-4.1-7" class="pilcrow">¶</a></p>
 <p id="section-4.1-8">That is, the Z_q-entry is interpreted as an integer, then divided by q/2^B
 and rounded. This amounts to rounding to the B most significant bits of
 each entry. With these definitions, it is the case that dc(ec(val)) = val
@@ -1331,6 +1340,161 @@ The function Decode(C) is defined as follows.<a href="#section-4.1-8" class="pil
             <p id="section-4.1-9.3.1">Return (b_0, ..., b_(l-1)).<a href="#section-4.1-9.3.1" class="pilcrow">¶</a></p>
 </li>
         </ol>
+</section>
+</div>
+<div id="packing-matrices-modulo-q">
+<section id="section-4.2">
+        <h3 id="name-packing-matrices-modulo-q">
+<a href="#section-4.2" class="section-number selfRef">4.2. </a><a href="#name-packing-matrices-modulo-q" class="section-name selfRef">Packing matrices modulo q</a>
+        </h3>
+<p id="section-4.2-1">We define packing and unpacking functions to transform matrices with entries
+in Z_q to bit strings and vice versa.<a href="#section-4.2-1" class="pilcrow">¶</a></p>
+<p id="section-4.2-2">The function Pack packs an n1 * n2 matrix C with entries C_(i,j) in Z_q to an
+octet string by concatenating the D-bit matrix coefficients.
+The function Pack(C) is defined as follows.<a href="#section-4.2-2" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-4.2-3">
+<li id="section-4.2-3.1">
+            <p id="section-4.2-3.1.1">For i = 0 to n1 - 1 do<a href="#section-4.2-3.1.1" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-4.2-3.1.2">
+<li id="section-4.2-3.1.2.1">
+                <p id="section-4.2-3.1.2.1.1">For j = 0 to n2 - 1 do<a href="#section-4.2-3.1.2.1.1" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-4.2-3.1.2.1.2">
+<li id="section-4.2-3.1.2.1.2.1">
+                    <p id="section-4.2-3.1.2.1.2.1.1">Set C_(i,j) = c_0 * 2^0 + c_1 * 2^1 + ... + c_(D-1) * 2^(D-1)<a href="#section-4.2-3.1.2.1.2.1.1" class="pilcrow">¶</a></p>
+</li>
+                  <li id="section-4.2-3.1.2.1.2.2">
+                    <p id="section-4.2-3.1.2.1.2.2.1">For k = 0 to D - 1 do<a href="#section-4.2-3.1.2.1.2.2.1" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-4.2-3.1.2.1.2.2.2">
+<li id="section-4.2-3.1.2.1.2.2.2.1">
+                        <p id="section-4.2-3.1.2.1.2.2.2.1.1">b_((i*n2 + j)D + k) = c_(D-1-k)<a href="#section-4.2-3.1.2.1.2.2.2.1.1" class="pilcrow">¶</a></p>
+</li>
+                    </ol>
+</li>
+                  <li id="section-4.2-3.1.2.1.2.3">
+                    <p id="section-4.2-3.1.2.1.2.3.1">End for<a href="#section-4.2-3.1.2.1.2.3.1" class="pilcrow">¶</a></p>
+</li>
+                </ol>
+</li>
+              <li id="section-4.2-3.1.2.2">
+                <p id="section-4.2-3.1.2.2.1">End for<a href="#section-4.2-3.1.2.2.1" class="pilcrow">¶</a></p>
+</li>
+              <li id="section-4.2-3.1.2.3">
+                <p id="section-4.2-3.1.2.3.1">End for<a href="#section-4.2-3.1.2.3.1" class="pilcrow">¶</a></p>
+</li>
+            </ol>
+</li>
+          <li id="section-4.2-3.2">
+            <p id="section-4.2-3.2.1">Output the octet string corresponding to the bit string b = (b_0, b_1, ..., b_(D*n1*n2 - 1)), as per XXXX.<a href="#section-4.2-3.2.1" class="pilcrow">¶</a></p>
+</li>
+        </ol>
+<p id="section-4.2-4">The function Unpack does the reverse of this process to transform an octet string
+to an n1 * n2 matrix C with entries C_(i,j) in Z_q, converting the input to a bit
+string, and then extracting D-bit strings and storing each as matrix coefficients
+C_(i,j) for 0 &lt;= i &lt; n1 and 0 &lt;= j &lt; n2 (row-by-row from C_(0,0) to C_(n1-1,n2-1)).
+The function Unpack is defined as follows:<a href="#section-4.2-4" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-4.2-5">
+<li id="section-4.2-5.1">
+            <p id="section-4.2-5.1.1">Convert the input octet string to a bit string b = (b_0, b_1, ..., b_(D*n1*n2 - 1)), as per XXXX.<a href="#section-4.2-5.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li id="section-4.2-5.2">
+            <p id="section-4.2-5.2.1">For i = 0 to n1 - 1 do<a href="#section-4.2-5.2.1" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-4.2-5.2.2">
+<li id="section-4.2-5.2.2.1">
+                <p id="section-4.2-5.2.2.1.1">For j = 0 to n_2 - 1 do<a href="#section-4.2-5.2.2.1.1" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-4.2-5.2.2.1.2">
+<li id="section-4.2-5.2.2.1.2.1">
+                    <p id="section-4.2-5.2.2.1.2.1.1">C_(i,j) = 0<a href="#section-4.2-5.2.2.1.2.1.1" class="pilcrow">¶</a></p>
+</li>
+                  <li id="section-4.2-5.2.2.1.2.2">
+                    <p id="section-4.2-5.2.2.1.2.2.1">For k = 0 to D - 1 do<a href="#section-4.2-5.2.2.1.2.2.1" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-4.2-5.2.2.1.2.2.2">
+<li id="section-4.2-5.2.2.1.2.2.2.1">
+                        <p id="section-4.2-5.2.2.1.2.2.2.1.1">C_(i,j) = C(i,j) + b_((i*n2 + j)D + k) * 2^(D-1-k)<a href="#section-4.2-5.2.2.1.2.2.2.1.1" class="pilcrow">¶</a></p>
+</li>
+                    </ol>
+</li>
+                  <li id="section-4.2-5.2.2.1.2.3">
+                    <p id="section-4.2-5.2.2.1.2.3.1">End for<a href="#section-4.2-5.2.2.1.2.3.1" class="pilcrow">¶</a></p>
+</li>
+                </ol>
+</li>
+              <li id="section-4.2-5.2.2.2">
+                <p id="section-4.2-5.2.2.2.1">End for<a href="#section-4.2-5.2.2.2.1" class="pilcrow">¶</a></p>
+</li>
+            </ol>
+</li>
+          <li id="section-4.2-5.3">
+            <p id="section-4.2-5.3.1">End for<a href="#section-4.2-5.3.1" class="pilcrow">¶</a></p>
+</li>
+          <li id="section-4.2-5.4">
+            <p id="section-4.2-5.4.1">Output C<a href="#section-4.2-5.4.1" class="pilcrow">¶</a></p>
+</li>
+        </ol>
+</section>
+</div>
+<div id="sampling-from-the-error-distribution">
+<section id="section-4.3">
+        <h3 id="name-sampling-from-the-error-dis">
+<a href="#section-4.3" class="section-number selfRef">4.3. </a><a href="#name-sampling-from-the-error-dis" class="section-name selfRef">Sampling from the error distribution</a>
+        </h3>
+<p id="section-4.3-1">The error distribution X used in FrodoKEM is a discrete, symmetric distribution on
+Z, centered at zero and with small support, which approximates a rounded continuous
+Gaussian distribution.<a href="#section-4.3-1" class="pilcrow">¶</a></p>
+<p id="section-4.3-2">The support of X is S_X = {−d, −d+1, ..., −1, 0, 1, ..., d−1, d} for a positive
+integer d. The probabilities X(z) = X(−z) for z in S_X are given by a discrete
+probability density function, which is described by a table<a href="#section-4.3-2" class="pilcrow">¶</a></p>
+<p id="section-4.3-3">T_X = (T_X(0), T_X(1), ..., T_X(d))<a href="#section-4.3-3" class="pilcrow">¶</a></p>
+<p id="section-4.3-4">of d+1 positive integers related to the cumulative distribution function.<a href="#section-4.3-4" class="pilcrow">¶</a></p>
+<p id="section-4.3-5">Given a random bit string r = (r_0, r_1, ..., r_15), the function Sample returns
+a sample e from FrodoKEM’s error distribution X via inversion sampling using a
+table T_X, as follows (note that T_X(d) is never accessed.):<a href="#section-4.3-5" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-4.3-6">
+<li id="section-4.3-6.1">
+            <p id="section-4.3-6.1.1">Set t = r_1 * 2^0 + r_2 * 2^1 + ... + r_15 * 2^14 \equiv (r_1, r_2, ..., r_15, 0), interpreted as a nonnegative integer in the little-endian byte order<a href="#section-4.3-6.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li id="section-4.3-6.2">
+            <p id="section-4.3-6.2.1">e = 0<a href="#section-4.3-6.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li id="section-4.3-6.3">
+            <p id="section-4.3-6.3.1">For i = 0 to d - 1 do<a href="#section-4.3-6.3.1" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-4.3-6.3.2">
+<li id="section-4.3-6.3.2.1">
+                <p id="section-4.3-6.3.2.1.1">If t &gt; T_X(i) then<a href="#section-4.3-6.3.2.1.1" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-4.3-6.3.2.1.2">
+<li id="section-4.3-6.3.2.1.2.1">
+                    <p id="section-4.3-6.3.2.1.2.1.1">e = e + 1<a href="#section-4.3-6.3.2.1.2.1.1" class="pilcrow">¶</a></p>
+</li>
+                </ol>
+</li>
+              <li id="section-4.3-6.3.2.2">
+                <p id="section-4.3-6.3.2.2.1">End if<a href="#section-4.3-6.3.2.2.1" class="pilcrow">¶</a></p>
+</li>
+            </ol>
+</li>
+          <li id="section-4.3-6.4">
+            <p id="section-4.3-6.4.1">End for<a href="#section-4.3-6.4.1" class="pilcrow">¶</a></p>
+</li>
+          <li id="section-4.3-6.5">
+            <p id="section-4.3-6.5.1">e = (-1)^(r_0) * e<a href="#section-4.3-6.5.1" class="pilcrow">¶</a></p>
+</li>
+          <li id="section-4.3-6.6">
+            <p id="section-4.3-6.6.1">Output e<a href="#section-4.3-6.6.1" class="pilcrow">¶</a></p>
+</li>
+        </ol>
+<p id="section-4.3-7">The output of the algorithm is a small integer in the range
+{-d, -d+1, ..., -1, 0, 1, ..., d-1, d}. The tables T_X corresponding to each of
+FrodoKEM’s parameter sets are given in Table XXXX.<a href="#section-4.3-7" class="pilcrow">¶</a></p>
+<p id="section-4.3-8">We emphasize that it is important to perform this sampling in constant time to
+avoid exposing timing side-channels, which is why the for-loop of the algorithm
+does a complete loop through the entire table T_X. Similarly, the comparison in
+the if-loop needs to be implemented in a constant-time manner.<a href="#section-4.3-8" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="matrix-sampling-from-the-error-distribution">
+<section id="section-4.4">
+        <h3 id="name-matrix-sampling-from-the-er">
+<a href="#section-4.4" class="section-number selfRef">4.4. </a><a href="#name-matrix-sampling-from-the-er" class="section-name selfRef">Matrix sampling from the error distribution</a>
+      </h3>
 </section>
 </div>
 </section>

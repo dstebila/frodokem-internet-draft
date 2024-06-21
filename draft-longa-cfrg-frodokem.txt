@@ -67,6 +67,9 @@ Table of Contents
    3.  Overview
    4.  Supporting functions
      4.1.  Matrix encoding of bit strings
+     4.2.  Packing matrices modulo q
+     4.3.  Sampling from the error distribution
+     4.4.  Matrix sampling from the error distribution
    5.  FrodoKEM
      5.1.  Key Generation
      5.2.  Encapsulation
@@ -155,7 +158,7 @@ Table of Contents
    matrix C into a bit string of length l = B * nHat^2.  It extracts B
    bits from each entry by applying the function dc():
 
-   dc(c) = \lfloor c * 2^B/q \rceil mod 2^B.
+   dc(c) = $\lfloor$ c * 2^B/q $\rceil$ mod 2^B.
 
    That is, the Z_q-entry is interpreted as an integer, then divided by
    q/2^B and rounded.  This amounts to rounding to the B most
@@ -182,6 +185,116 @@ Table of Contents
    2.  End for
 
    3.  Return (b_0, ..., b_(l-1)).
+
+4.2.  Packing matrices modulo q
+
+   We define packing and unpacking functions to transform matrices with
+   entries in Z_q to bit strings and vice versa.
+
+   The function Pack packs an n1 * n2 matrix C with entries C_(i,j) in
+   Z_q to an octet string by concatenating the D-bit matrix
+   coefficients.  The function Pack(C) is defined as follows.
+
+   1.  For i = 0 to n1 - 1 do
+
+       1.  For j = 0 to n2 - 1 do
+
+           1.  Set C_(i,j) = c_0 * 2^0 + c_1 * 2^1 + ... + c_(D-1) *
+               2^(D-1)
+
+           2.  For k = 0 to D - 1 do
+
+               1.  b_((i*n2 + j)D + k) = c_(D-1-k)
+
+           3.  End for
+
+       2.  End for
+
+       3.  End for
+
+   2.  Output the octet string corresponding to the bit string b = (b_0,
+       b_1, ..., b_(D*n1*n2 - 1)), as per XXXX.
+
+   The function Unpack does the reverse of this process to transform an
+   octet string to an n1 * n2 matrix C with entries C_(i,j) in Z_q,
+   converting the input to a bit string, and then extracting D-bit
+   strings and storing each as matrix coefficients C_(i,j) for 0 <= i <
+   n1 and 0 <= j < n2 (row-by-row from C_(0,0) to C_(n1-1,n2-1)).  The
+   function Unpack is defined as follows:
+
+   1.  Convert the input octet string to a bit string b = (b_0, b_1,
+       ..., b_(D*n1*n2 - 1)), as per XXXX.
+
+   2.  For i = 0 to n1 - 1 do
+
+       1.  For j = 0 to n_2 - 1 do
+
+           1.  C_(i,j) = 0
+
+           2.  For k = 0 to D - 1 do
+
+               1.  C_(i,j) = C(i,j) + b_((i*n2 + j)D + k) * 2^(D-1-k)
+
+           3.  End for
+
+       2.  End for
+
+   3.  End for
+
+   4.  Output C
+
+4.3.  Sampling from the error distribution
+
+   The error distribution X used in FrodoKEM is a discrete, symmetric
+   distribution on Z, centered at zero and with small support, which
+   approximates a rounded continuous Gaussian distribution.
+
+   The support of X is S_X = {−d, −d+1, ..., −1, 0, 1, ..., d−1, d} for
+   a positive integer d.  The probabilities X(z) = X(−z) for z in S_X
+   are given by a discrete probability density function, which is
+   described by a table
+
+   T_X = (T_X(0), T_X(1), ..., T_X(d))
+
+   of d+1 positive integers related to the cumulative distribution
+   function.
+
+   Given a random bit string r = (r_0, r_1, ..., r_15), the function
+   Sample returns a sample e from FrodoKEM’s error distribution X via
+   inversion sampling using a table T_X, as follows (note that T_X(d) is
+   never accessed.):
+
+   1.  Set t = r_1 * 2^0 + r_2 * 2^1 + ... + r_15 * 2^14 \equiv (r_1,
+       r_2, ..., r_15, 0), interpreted as a nonnegative integer in the
+       little-endian byte order
+
+   2.  e = 0
+
+   3.  For i = 0 to d - 1 do
+
+       1.  If t > T_X(i) then
+
+           1.  e = e + 1
+
+       2.  End if
+
+   4.  End for
+
+   5.  e = (-1)^(r_0) * e
+
+   6.  Output e
+
+   The output of the algorithm is a small integer in the range {-d,
+   -d+1, ..., -1, 0, 1, ..., d-1, d}. The tables T_X corresponding to
+   each of FrodoKEM’s parameter sets are given in Table XXXX.
+
+   We emphasize that it is important to perform this sampling in
+   constant time to avoid exposing timing side-channels, which is why
+   the for-loop of the algorithm does a complete loop through the entire
+   table T_X.  Similarly, the comparison in the if-loop needs to be
+   implemented in a constant-time manner.
+
+4.4.  Matrix sampling from the error distribution
 
 5.  FrodoKEM
 
