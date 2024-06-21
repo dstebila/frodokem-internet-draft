@@ -167,13 +167,13 @@ The function Pack(C) is defined as follows.
 
 2. Output the octet string corresponding to the bit string b = (b_0, b_1, ..., b_(D\*n1\*n2 - 1)), as per XXXX.
 
-The function Unpack does the reverse of this process to transform an octet string
+The function Unpack does the reverse of this process to transform an octet string o
 to an n1 \* n2 matrix C with entries C_(i,j) in Z_q, converting the input to a bit
 string, and then extracting D-bit strings and storing each as matrix coefficients
 C_(i,j) for 0 <= i < n1 and 0 <= j < n2 (row-by-row from C_(0,0) to C_(n1-1,n2-1)).
-The function Unpack is defined as follows:
+The function Unpack(o, n1, n2) is defined as follows:
 
-1. Convert the input octet string to a bit string b = (b_0, b_1, ..., b_(D\*n1\*n2 - 1)), as per XXXX.
+1. Convert the input octet string o to a bit string b = (b_0, b_1, ..., b_(D\*n1\*n2 - 1)), as per XXXX.
 
 2. For i = 0 to n1 - 1 do
 
@@ -207,9 +207,9 @@ T_X = (T_X(0), T_X(1), ..., T_X(d))
 
 of d+1 positive integers related to the cumulative distribution function.
 
-Given a random bit string r = (r_0, r_1, ..., r_15), the function Sample returns
+Given a random bit string r = (r_0, r_1, ..., r_15), the function Sample(r) returns
 a sample e from FrodoKEM’s error distribution X via inversion sampling using a
-table T_X, as follows (note that T_X(d) is never accessed.):
+table T_X, as follows (note that T_X(d) is never accessed):
 
 1. Set t = r_1 \* 2^0 + r_2 * 2^1 + ... + r_15 \* 2^14 \equiv (r_1, r_2, ..., r_15, 0), interpreted as a nonnegative integer in the little-endian byte order
 
@@ -240,6 +240,80 @@ the if-loop needs to be implemented in a constant-time manner.
 
 ## Matrix sampling from the error distribution
 
+We define the function SampleMatrix which samples an n1 \* n2 matrix using the
+function Sample. 
+
+Given (n1 \* n2) 16-bit random strings r^(i) and the dimension values n1 and n2,
+SampleMatrix((r^(0), ..., r^(n1\*n2 - 1)), n1, n2) generates an n1 \* n2 matrix
+E row-by-row from E_(0,0) to E_(n1-1,n2-1) by successively calling the function
+Sample n1 \* n2 times, as follows:
+	
+1. For i = 0 to n1 - 1 do
+
+   1. For j = 0 to n2 - 1 do
+
+      1. E_(i,j) = Sample(r^(i\*n2 + j))
+
+   2. End for
+
+2. End for
+
+3. Output E
+
+## Pseudorandom matrix generation
+
+The function Gen takes as input a seed, seedA, of length lenA=128 bits and an
+implicit dimension n that is fixed per parameter set, and outputs an n \* n
+pseudorandom matrix A, where all the coefficients are in Z_q.
+There are two options for instantiating Gen: one based on AES128 and another
+based on SHAKE128. 
+In both cases, the matrix A is generated row-by-row from A_(0,0) to A_(n-1,n-1).
+
+### Matrix A generation with AES128
+
+The algorithm for the case using AES128 is shown below. Each call to AES128
+generates 8 coefficients.
+
+1. For i = 0 to n - 1 do
+
+   1. For j = 0 to n - 1 step 8 do
+
+      1. b = i\|\|j\|\|0\|\|0\|\|0\|\|0\|\|0\|\|0, where each concatenated element is encoded as a 16-bit string represented in the little-endian byte order such that, e.g., (i_0, i_1, ..., i_15) \equiv i_0 \* 2^0 + i_1 \* 2^1 + ... + i_15 *\ 2^15, and \|b\| = 128
+
+	    2. C_(i,j) \|\| C_(i,j+1) \|\| ... \|\| C_(i,j+7) = AES128(seed_A, b), where each matrix coefficient C_(i,j) is a 16-bit string interpreted as a nonnegative integer in the little-endian byte order, such that C_(i,j) = (c_0, c_1, ...,c_15) \equiv c_0 \* 2^0 + c_1 *\ 2^1 + ... + c_15 *\ 2^15
+
+      3. For k = 0 to 7 do 
+
+   	    1. A_(i,j+k) = C_(i,j+k) mod q
+
+	    4. End for
+
+  2. End for
+
+2. End for
+
+3. Output A
+   
+### Matrix A generation with SHAKE128
+
+The algorithm for the case using SHAKE128 is shown below. Each call to SHAKE128
+generates n coefficients (i.e., a full matrix row).
+
+1. For i = 0 to n - 1 do
+
+   1. b = i\|\|seed_A, where i is encoded as a 16-bit string represented in the little-endian byte order such that (i_0, i_1 , ..., i_15) \equiv i_0 \* 2^0 + i_1 \* 2^1 + ... + i_15 *\ 2^15, and hence the bitlength of b is \|b\| = lenA+16
+
+   2. C_(i,0) \|\| C_(i,1) \|\| ... \|\| C_(i,n-1) = SHAKE128(b, 16\*n), where each matrix coefficient C_(i,j) is a 16-bit string interpreted as a nonnegative integer in the little-endian byte order, such that C_(i,j) = (c_0, c_1, ..., c_15)\equiv c_0 \* 2^0 + c_1 *\ 2^1 + ... + c_15 *\ 2^15
+
+   3. For j = 0 to n - 1 do
+
+      1. A_(i,j) = C_(i,j) mod q
+
+   4. End for
+
+2. End for
+
+3. Output A
 
 
 # FrodoKEM
