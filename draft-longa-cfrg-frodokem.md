@@ -241,7 +241,7 @@ the if-loop needs to be implemented in a constant-time manner.
 ## Matrix sampling from the error distribution
 
 We define the function SampleMatrix which samples an n1 \* n2 matrix using the
-function Sample. 
+function Sample.
 
 Given (n1 \* n2) 16-bit random strings r^(i) and the dimension values n1 and n2,
 SampleMatrix((r^(0), ..., r^(n1\*n2 - 1)), n1, n2) generates an n1 \* n2 matrix
@@ -293,7 +293,7 @@ generates 8 coefficients.
 2. End for
 
 3. Output A
-   
+
 ### Matrix A generation with SHAKE128
 
 The algorithm for the case using SHAKE128 is shown below. Each call to SHAKE128
