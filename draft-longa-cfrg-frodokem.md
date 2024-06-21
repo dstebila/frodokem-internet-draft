@@ -88,24 +88,24 @@ applying ec(\cdot) to B-bit sub-strings sequentially and filling the matrix row 
 entry-wise. The function Encode(b) is defined as follows.
 
 1. For i = 0 to nHat - 1 do
-   
+
    1. For j = 0 to nHat - 1 do
 
       1. val = 0
-   
+
       2. For k = 0 to B - 1 do
 
          1. val = val + b_((i\*nHat + j)B + k) \* 2^k
 
       3. End for
- 
+
       4. Set C_(i,j) = val \* q/2^B
 
    2. End for
 
 2. End for
 
-3. Return C 
+3. Return C
 
 
 # FrodoKEM
