@@ -65,14 +65,16 @@ Table of Contents
    1.  Introduction
    2.  Conventions and Definitions
    3.  Overview
-   4.  FrodoKEM
-     4.1.  Key Generation
-     4.2.  Encapsulation
-     4.3.  Decapsulation
-   5.  Parameter Sets
-   6.  Security Considerations
-   7.  IANA Considerations
-   8.  Normative References
+   4.  Supporting functions
+     4.1.  Matrix encoding of bit strings
+   5.  FrodoKEM
+     5.1.  Key Generation
+     5.2.  Encapsulation
+     5.3.  Decapsulation
+   6.  Parameter Sets
+   7.  Security Considerations
+   8.  IANA Considerations
+   9.  Normative References
    Acknowledgments
    Author's Address
 
@@ -111,9 +113,47 @@ Table of Contents
 
 3.  Overview
 
-4.  FrodoKEM
+4.  Supporting functions
 
-4.1.  Key Generation
+4.1.  Matrix encoding of bit strings
+
+   We define how bit strings are encoded as mod-q integer matrices.
+
+   Recall that 2^B <= q.  The encoding function ec(\cdot) encodes an
+   integer 0 <= val < 2^B as an element in Z_q by multiplying it by
+   q/2^B = 2^(D-B):
+
+   ec(val) = val * q/2^B.
+
+   Using this function, the function Encode(b) encodes a given bit
+   string b = (b_0, ..., b_(l-1)) of length l = B * nHat^2 as an nHat *
+   nHat matrix C with coefficients C_(i,j) in Z_q by applying ec(\cdot)
+   to B-bit sub-strings sequentially and filling the matrix row by row
+   entry-wise.  The function Encode(b) is defined as follows.
+
+   1.  For i = 0 to nHat - 1 do
+
+       1.  For j = 0 to nHat - 1 do
+
+           1.  val = 0
+
+           2.  For k = 0 to B - 1 do
+
+               1.  val = val + b_((i*nHat + j)B + k) * 2^k
+
+           3.  End for
+
+           4.  Set C_(i,j) = val * q/2^B
+
+       2.  End for
+
+   2.  End for
+
+   3.  Return C
+
+5.  FrodoKEM
+
+5.1.  Key Generation
 
    The key generation algorithm accepts no input, requires randomness,
    and outputs the keypair (pk, sk) = (seedA || b, s || seedA || b ||
@@ -149,7 +189,7 @@ Table of Contents
         ST_(i,j) = −s_15 * 2^15 + (s_0 + s_1 * 2 + s_2 * 2^2 + ... +
         s_14 * 2^14)
 
-4.2.  Encapsulation
+5.2.  Encapsulation
 
    The encapsulation algorithm takes as input a public key pk =
    (seedA || b), and outputs a ciphertext c = (c1 || c2 || salt) and a
@@ -193,7 +233,7 @@ Table of Contents
 
    16.  Return ciphertext c = (c1 || c2 || salt) and shared secret ss
 
-4.3.  Decapsulation
+5.3.  Decapsulation
 
    The decapsulation algorithm takes as input a ciphertext c = (c1 ||
    c2 || salt) and a secret key sk = (s || seedA || b || S^T || pkh),
@@ -239,9 +279,9 @@ Table of Contents
 
    17.  Return shared secret ss
 
-5.  Parameter Sets
+6.  Parameter Sets
 
-6.  Security Considerations
+7.  Security Considerations
 
    FrodoKEM-640, FrodoKEM-976 and FrodoKEM-1344 are designed to be post-
    quantum IND-CCA2 secure KEMs at the security levels of AES-128,
@@ -259,11 +299,11 @@ Table of Contents
    while our confidence in the security of lattice schemes increases
    over time.
 
-7.  IANA Considerations
+8.  IANA Considerations
 
    This document has no IANA actions.
 
-8.  Normative References
+9.  Normative References
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
