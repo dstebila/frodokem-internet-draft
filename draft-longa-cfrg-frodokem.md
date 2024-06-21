@@ -266,7 +266,7 @@ The function Gen takes as input a seed, seedA, of length lenA=128 bits and an
 implicit dimension n that is fixed per parameter set, and outputs an n \* n
 pseudorandom matrix A, where all the coefficients are in Z_q.
 There are two options for instantiating Gen: one based on AES128 and another
-based on SHAKE128. 
+based on SHAKE128.
 In both cases, the matrix A is generated row-by-row from A_(0,0) to A_(n-1,n-1).
 
 ### Matrix A generation with AES128
@@ -282,7 +282,7 @@ generates 8 coefficients.
 
 	    2. C_(i,j) \|\| C_(i,j+1) \|\| ... \|\| C_(i,j+7) = AES128(seed_A, b), where each matrix coefficient C_(i,j) is a 16-bit string interpreted as a nonnegative integer in the little-endian byte order, such that C_(i,j) = (c_0, c_1, ...,c_15) \equiv c_0 \* 2^0 + c_1 *\ 2^1 + ... + c_15 *\ 2^15
 
-      3. For k = 0 to 7 do 
+      3. For k = 0 to 7 do
 
    	    1. A_(i,j+k) = C_(i,j+k) mod q
 
