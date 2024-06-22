@@ -71,7 +71,88 @@ algorithm.
 
 # Overview
 
+# Notation
+
+We describe the symbols and abbreviations used throughout this document.
+
+Z represents the set of integers and Z_q represents the set of integers
+modulo q.
+
+$\lfloor$ x $\rceil$ is	the rounding of x to the nearest integer. If
+x = y + 1/2 for some y in Z, then $\lfloor$ x $\rceil$ = y + 1.
+
+A 16-bit bit string is represented by r^(i). And a sequence of t 16-bit
+bit strings r^(i) is represented by (r^(0), r^(1), ..., r^(t-1)).
+
+AES128(k, a) denotes the 128-bit AES128 output under key k for a 128-bit
+input a.
+
+SHAKE128(x, y)	and SHAKE256(x, y) denote the y first bits of SHAKE128
+and SHAKE256 (resp.) output for input x.
+
+Matrices are represented in capitals with no italics (e.g., A and C).
+For an n1 \* n2 matrix C, its (i,j)th coefficient (i.e., the entry in the
+ith row and jth column) is denoted by C_(i,j), where 0 <= i < n1 and
+0 <= j < n2. The transpose of matrix C is denoted by C^T.
+
+# Parameters
+
+The FrodoKEM parameters are implicit inputs to the FrodoKEM algorithms
+defined in the next sections. A FrodoKEM parameter set specifies the
+following:
+
+A positive integer D <= 16 that defines the modulus parameter q = 2^D.
+
+Positive integers n, nHat specifying matrix dimensions. It holds that n,
+nHat \equiv 0 mod 8.
+
+A positive integer B <= D specifying the number of bits encoded in each
+matrix entry.
+
+A positive integer lenA specifying the bitlength of seeds for the
+generation of the matrix A.
+
+A positive integer lensec specifying the number of bits that match the
+bit-security level. Valid values are 128, 192 and 256. This is used to
+determine the bitlength of seeds (not associated to the matrix A), of hash
+value outputs and of values associated to the generation of the shared
+secrets.
+
+A positive integer lenSE specifying the bitlength of the seed value seedSE.
+
+A positive integer lensalt specifying the bitlength of the value salt.
+
+A discrete, symmetric error distribution X on Z with support given by
+S_X = \{−d, −d+1, ..., −1, 0, 1, ..., d−1, d\} for a small integer d.
+
+A table T_X = (T_X(0), T_X(1), ..., T_X(d)) with (d+1) positive integers
+based on the cumulative distribution function for X.
+
+The values for these parameters corresponding to each parameter set are
+given in Section XXXX. 
+
 # Supporting functions
+
+## Octet encoding of bit strings
+
+This document follows the little-endian formatting for octet encoding of
+bit strings.
+
+A bit string b = (b_0, b_1, ..., b_(|b|-1)) is converted to an octet
+string by taking bits from left to right, packing those from the least
+significant bit of each octet to the most significant bit, and moving to
+the next octet when each octet fills up. For example, the 16-bit bit
+string (b_0, b_1, ..., b_15) is converted into two octets f and g (in
+this order) as
+
+f = b_7 \* 2^7 + b_6 \* 2^6 + b_5 \* 2^5 + b_4 \* 2^4 + b_3 \* 2^3 + b_2 \* 2^2 + b_1 \* 2 + b_0
+g = b_15 \* 2^7 + b_14 \* 2^6 + b_13 \* 2^5 + b_12 \* 2^4 + b_11 \* 2^3 + b_10 \* 2^2 + b_9 \* 2 + b_8
+
+The conversion from octet string to bit string is the reverse of this
+process.
+
+For FrodoKEM, it is always the case that \|b\| is a multiple of 8 when
+performing octet encoding of bit strings.
 
 ## Matrix encoding of bit strings
 
@@ -325,11 +406,11 @@ outputs the keypair (pk, sk) = (seedA \|\| b, s \|\| seedA \|\| b \|\| S^T \|\| 
 
 1. Choose uniformly random seeds s, seedSE and z of bitlengths lensec, lenSE and lenA (resp.)
 
-2. Generate pseudorandom seed seedA = SHAKE256(z, lenA)
+2. Generate pseudorandom seed seedA = SHAKE(z, lenA)
 
 3. Generate the matrix A = Gen(seedA)
 
-4. Generate pseudorandom bit string (r^(0), r^(1), ..., r^(2\*n\*nHat - 1)) = SHAKE256(0x5F \|\| seedSE, 32\*n\*nHat)
+4. Generate pseudorandom bit string (r^(0), r^(1), ..., r^(2\*n\*nHat - 1)) = SHAKE(0x5F \|\| seedSE, 32\*n\*nHat)
 
 5. Sample error matrix S^T = SampleMatrix((r^(0), r^(1), ..., r^(n\*nHat − 1)), nHat, n)
 
@@ -339,7 +420,7 @@ outputs the keypair (pk, sk) = (seedA \|\| b, s \|\| seedA \|\| b \|\| S^T \|\| 
 
 8. Compute b = Pack(B)
 
-9. Compute pkh = SHAKE256(seedA \|\| b, lensec)
+9. Compute pkh = SHAKE(seedA \|\| b, lensec)
 
 10. Return public key pk = (seedA \|\| b) and secret key sk = (s \|\| seedA \|\| b \|\| S^T \|\| pkh).
 ST = S^T is encoded row-by-row from ST_(0,0) to ST_(nHat−1,n−1), where
@@ -354,11 +435,11 @@ outputs a ciphertext c = (c1 \|\| c2 \|\| salt) and a shared secret ss.
 
 1.  Choose uniformly random values u and salt of bitlengths lensec and lensalt (resp.)
 
-2.  Compute pkh = SHAKE256(pk, lensec)
+2.  Compute pkh = SHAKE(pk, lensec)
 
-3.  Generate pseudorandom values seedSE \|\| k = SHAKE256(pkh \|\| u \|\| salt, lenSE+lensec)
+3.  Generate pseudorandom values seedSE \|\| k = SHAKE(pkh \|\| u \|\| salt, lenSE+lensec)
 
-4.  Generate pseudorandom bit string (r^(0), r^(1), ..., r^(2\*nHat\*n + nHat^2 - 1)) = SHAKE256(0x96 \|\| seedSE, 16(2\*nHat\*n + nHat^2))
+4.  Generate pseudorandom bit string (r^(0), r^(1), ..., r^(2\*nHat\*n + nHat^2 - 1)) = SHAKE(0x96 \|\| seedSE, 16(2\*nHat\*n + nHat^2))
 
 5.  Sample error matrix S' = SampleMatrix((r^(0), r^(1), ..., r^(nHat\*n - 1)), nHat, n)
 
@@ -380,10 +461,9 @@ outputs a ciphertext c = (c1 \|\| c2 \|\| salt) and a shared secret ss.
 
 14. Compute c2 = Pack(C)
 
-15. Compute ss = SHAKE256(c1 \|\| c2 \|\| salt \|\|k, lensec)
+15. Compute ss = SHAKE(c1 \|\| c2 \|\| salt \|\|k, lensec)
 
 16. Return ciphertext c = (c1 \|\| c2 \|\| salt) and shared secret ss
-
 
 ## Decapsulation
 
@@ -398,9 +478,9 @@ a secret key sk = (s \|\| seedA \|\| b \|\| S^T \|\| pkh), and outputs a shared 
 
 4.  Compute u' = Decode(M)
 
-5.  Generate pseudorandom values seedSE' \|\| k' = SHAKE256(pkh \|\| u' \|\|salt, lenSE+lensec)
+5.  Generate pseudorandom values seedSE' \|\| k' = SHAKE(pkh \|\| u' \|\|salt, lenSE+lensec)
 
-6.  Generate pseudorandom bit string (r^(0), r^(1), ..., r^(2\*nHat\*n + nHat^2 - 1)) = SHAKE256(0x96 \|\| seedSE', 16
+6.  Generate pseudorandom bit string (r^(0), r^(1), ..., r^(2\*nHat\*n + nHat^2 - 1)) = SHAKE(0x96 \|\| seedSE', 16
 (2\*nHat\*n + nHat^2))
 
 7.  Sample error matrix S' = SampleMatrix((r^(0), r^(1), ..., r^(nHat\*n - 1)), nHat, n)
@@ -422,12 +502,136 @@ nHat, nHat)
 
 15.  If B' = B" and C = C' then kHat = k' else kHat = s
 
-16.  Compute ss = SHAKE256(c1 \|\| c2 \|\| salt \|\| kHat, lensec)
+16.  Compute ss = SHAKE(c1 \|\| c2 \|\| salt \|\| kHat, lensec)
 
 17.  Return shared secret ss
 
+# FrodoKEM variants
+
+FrodoKEM is parameterized by the pseudorandom generator (PRG) that is used for
+the generation of the matrix A. As explained in Section XXXX there are two options
+for PRG: AES128 and SHAKE128. 
+
+In addition, FrodoKEM consists of two main variants: a "standard" variant that does
+not impose any restriction on the reuse of key pairs, and an "ephemeral" variant
+that is intended for applications in which the number of ciphertexts produced
+relative to any single public key is small. Concretely, the use of standard
+FrodoKEM is recommended for applications in which the number of ciphertexts
+produced for a single public key is expected to be equal or greater than 2^8.
+Ephemeral FrodoKEM shall be used for applications in which that same figure is
+expected to be smaller than 2^8.
 
 # Parameter Sets
+
+This document specifies the following twelve parameter sets:
+
+1. FrodoKEM-640-⟨PRG⟩ and eFrodoKEM-640-⟨PRG⟩, which match or exceed the brute-force security of AES128.
+
+2. FrodoKEM-976-⟨PRG⟩ and eFrodoKEM-976-⟨PRG⟩, which match or exceed the brute-force security of AES192.
+
+3. FrodoKEM-1344-⟨PRG⟩ and eFrodoKEM-1344-⟨PRG⟩, which match or exceed the brute-force security of AES256.
+
+The label "eFrodoKEM" corresponds to the ephemeral variants.
+The options for ⟨PRG⟩ are AES or SHAKE, when either AES128 or SHAKE128 (respectively)
+is used for the generation of the matrix A. Thus, the first FrodoKEM variant consists
+of the parameter sets FrodoKEM-640-AES, FrodoKEM-976-AES and FrodoKEM-1344-AES (and
+their corresponding ephemeral variants). The second FrodoKEM variant consists of the
+parameter sets FrodoKEM-640-SHAKE, FrodoKEM-976-SHAKE and FrodoKEM-1344-SHAKE (and
+their corresponding ephemeral variants).
+
+## Parameters
+
+   +=========+=================+==================+==================+================================================+
+   |   Name  | (e)FrodoKEM-640 |  (e)FrodoKEM-976 | (e)FrodoKEM-1344 | Description                                    |
+   +=========+=================+==================+==================+================================================+
+   |       D |        15       |        16        |        16        | Bitlength of q                                 |
+   +---------+-----------------+------------------+------------------+------------------------------------------------+
+   |       q |      32768      |      65536       |      65536       | Power-of-two integer modulus                   |
+   +---------+-----------------+------------------+------------------+------------------------------------------------+
+   |       n |       640       |       976        |       1344       | Integer matrix dimension                       |
+   +---------+-----------------+------------------+------------------+------------------------------------------------+
+   |    nHat |        8        |        8         |         8        | Integer matrix dimension                       |
+   +---------+-----------------+------------------+------------------+------------------------------------------------+
+   |       B |        2        |        3         |         4        | Number of bits encoded per matrix entry        |
+   +---------+-----------------+------------------+------------------+------------------------------------------------+
+   |       d |       12        |        10        |         6        | Integer defining the support of X              |
+   +---------+-----------------+------------------+------------------+------------------------------------------------+
+   |    lenA |      128        |       128        |        128       | Bitlength of seeds for generation of matrix A  |
+   +---------+-----------------+------------------+------------------+------------------------------------------------+
+   |  lensec |      128        |       192        |        256       | Number of bits matching the bit-security level |
+   +---------+-----------------+------------------+------------------+------------------------------------------------+
+   |   SHAKE |    SHAKE128     |     SHAKE256     |     SHAKE256     | SHAKE variant used for hashing                 |
+   +---------+-----------------+------------------+------------------+------------------------------------------------+
+
+                                          Table 1: Parameters for FrodoKEM.
+
+   +=========+=================+==================+==================+================================================+
+   |   Name  |   FrodoKEM-640  |   FrodoKEM-976   |   FrodoKEM-1344  | Description                                    |
+   +=========+=================+==================+==================+================================================+
+   |   lenSE |       256       |       384        |       512        | Bitlength of seedSE in FrodoKEM                |
+   +---------+-----------------+------------------+------------------+------------------------------------------------+
+   | lensalt |       256       |       384        |       512        | Bitlength of salt in FrodoKEM                  |
+   +=========+=======+================================================================================================+
+   |   Name  |  eFrodoKEM-640  |   eFrodoKEM-976  |  eFrodoKEM-1344  | Description                                    |
+   +=========+=================+==================+==================+================================================+
+   |   lenSE |       128       |       192        |       256        | Bitlength of seedSE in eFrodoKEM               |
+   +---------+-----------------+------------------+------------------+------------------------------------------------+
+   | lensalt |        0        |        0         |        0         | No salt in eFrodoKEM                           |
+   +---------+-----------------+------------------+------------------+------------------------------------------------+
+
+                           Table 2: Additional parameters for FrodoKEM depending on variant.
+
+   +===============+================+================+=================+
+   | Table entries |  FrodoKEM-640  |  FrodoKEM-976  |  FrodoKEM-1344  |
+   +===============+================+================+=================+
+   |        T_X(0) |       4,643    |      5,638     |       9,142     |
+   +---------------+----------------+----------------+-----------------+
+   |        T_X(1) |      13,363    |     15,915     |      23,462     |
+   +---------------+----------------+----------------+-----------------+
+   |        T_X(2) |      20,579    |     23,689     |      30,338     |
+   +---------------+----------------+----------------+-----------------+
+   |        T_X(3) |      25,843    |     28,571     |      32,361     |
+   +---------------+----------------+----------------+-----------------+
+   |        T_X(4) |      29,227    |     31,116     |      32,725     |
+   +---------------+----------------+----------------+-----------------+
+   |        T_X(5) |      31,145    |     32,217     |      32,765     |
+   +---------------+----------------+----------------+-----------------+
+   |        T_X(6) |      32,103    |     32,613     |      32,767     |
+   +---------------+----------------+----------------+-----------------+
+   |        T_X(7) |      32,525    |     32,731     |                 |
+   +---------------+----------------+----------------+-----------------+
+   |        T_X(8) |      32,689    |     32,760     |                 |
+   +---------------+----------------+----------------+-----------------+
+   |        T_X(9) |      32,745    |     32,766     |                 |
+   +---------------+----------------+----------------+-----------------+
+   |       T_X(10) |      32,762    |     32,767     |                 |
+   +---------------+----------------+----------------+-----------------+
+   |       T_X(11) |      32,766    |                |                 |
+   +---------------+----------------+----------------+-----------------+
+   |       T_X(12) |      32,767    |                |                 |
+   +---------------+----------------+----------------+-----------------+
+
+               Table 3: The distribution table entries T_X(i),
+                        for 0 <= i <= d, for sampling.
+
+   +================+=================+=================+=================+==================+
+   |                |  secret key sk  |  public key pk  |  ciphertext ct  | shared secret ss |
+   +================+=================+=================+=================+==================+
+   |   FrodoKEM-640 |      19,888     |       9,616     |       9,752     |        16        |
+   +----------------+-----------------+-----------------+-----------------+------------------+
+   |  eFrodoKEM-640 |      19,888     |       9,616     |       9,720     |        16        |
+   +----------------+-----------------+-----------------+-----------------+------------------+
+   |   FrodoKEM-976 |      31,296     |      15,632     |      15,792     |        24        |
+   +----------------+-----------------+-----------------+-----------------+------------------+
+   |  eFrodoKEM-976 |      31,296     |      15,632     |      15,744     |        24        |
+   +----------------+-----------------+-----------------+-----------------+------------------+
+   |  FrodoKEM-1344 |      43,088     |      21,520     |      21,696     |        32        |
+   +----------------+-----------------+-----------------+-----------------+------------------+
+   | eFrodoKEM-1344 |      43,088     |      21,520     |      21,632     |        32        |
+   +----------------+-----------------+-----------------+-----------------+------------------+
+
+                        Table 4: Sizes (in bits) of inputs and outputs.
+
 
 # Security Considerations
 
