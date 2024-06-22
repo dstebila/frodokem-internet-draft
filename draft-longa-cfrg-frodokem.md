@@ -129,7 +129,7 @@ A table T_X = (T_X(0), T_X(1), ..., T_X(d)) with (d+1) positive integers
 based on the cumulative distribution function for X.
 
 The values for these parameters corresponding to each parameter set are
-given in Section XXXX. 
+given in Section XXXX.
 
 # Supporting functions
 
@@ -510,7 +510,7 @@ nHat, nHat)
 
 FrodoKEM is parameterized by the pseudorandom generator (PRG) that is used for
 the generation of the matrix A. As explained in Section XXXX there are two options
-for PRG: AES128 and SHAKE128. 
+for PRG: AES128 and SHAKE128.
 
 In addition, FrodoKEM consists of two main variants: a "standard" variant that does
 not impose any restriction on the reuse of key pairs, and an "ephemeral" variant
