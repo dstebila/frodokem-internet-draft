@@ -292,7 +292,7 @@ Given a random bit string r = (r_0, r_1, ..., r_15), the function Sample(r) retu
 a sample e from FrodoKEM’s error distribution X via inversion sampling using a
 table T_X, as follows (note that T_X(d) is never accessed):
 
-1. Set t = r_1 \* 2^0 + r_2 * 2^1 + ... + r_15 \* 2^14 \equiv (r_1, r_2, ..., r_15, 0), interpreted as a nonnegative integer in the little-endian byte order
+1. Set t = r_1 \* 2^0 + r_2 * 2^1 + ... + r_15 \* 2^14
 
 2. e = 0
 
@@ -361,7 +361,7 @@ generates 8 coefficients.
 
       1. b = i\|\|j\|\|0\|\|0\|\|0\|\|0\|\|0\|\|0, where each concatenated element is encoded as a 16-bit string represented in the little-endian byte order such that, e.g., (i_0, i_1, ..., i_15) \equiv i_0 \* 2^0 + i_1 \* 2^1 + ... + i_15 *\ 2^15, and \|b\| = 128
 
-      2. C_(i,j) \|\| C_(i,j+1) \|\| ... \|\| C_(i,j+7) = AES128(seed_A, b), where each matrix coefficient C_(i,j) is a 16-bit string interpreted as a nonnegative integer in the little-endian byte order, such that C_(i,j) = (c_0, c_1, ...,c_15) \equiv c_0 \* 2^0 + c_1 *\ 2^1 + ... + c_15 *\ 2^15
+      2. C_(i,j) \|\| C_(i,j+1) \|\| ... \|\| C_(i,j+7) = AES128(seed_A, b), where each matrix coefficient C_(i,j) is a 16-bit string interpreted as a nonnegative integer in the little-endian byte order, such that C_(i,j) = c_0 \* 2^0 + c_1 *\ 2^1 + ... + c_15 *\ 2^15 corresponding to the bit string (c_0, c_1, ...,c_15) 
 
       3. For k = 0 to 7 do
 
@@ -384,7 +384,7 @@ generates n coefficients (i.e., a full matrix row).
 
    1. b = i\|\|seed_A, where i is encoded as a 16-bit string represented in the little-endian byte order such that (i_0, i_1 , ..., i_15) \equiv i_0 \* 2^0 + i_1 \* 2^1 + ... + i_15 *\ 2^15, and hence the bitlength of b is \|b\| = lenA+16
 
-   2. C_(i,0) \|\| C_(i,1) \|\| ... \|\| C_(i,n-1) = SHAKE128(b, 16\*n), where each matrix coefficient C_(i,j) is a 16-bit string interpreted as a nonnegative integer in the little-endian byte order, such that C_(i,j) = (c_0, c_1, ..., c_15)\equiv c_0 \* 2^0 + c_1 *\ 2^1 + ... + c_15 *\ 2^15
+   2. C_(i,0) \|\| C_(i,1) \|\| ... \|\| C_(i,n-1) = SHAKE128(b, 16\*n), where each matrix coefficient C_(i,j) is a 16-bit string interpreted as a nonnegative integer in the little-endian byte order, such that C_(i,j) = c_0 \* 2^0 + c_1 *\ 2^1 + ... + c_15 *\ 2^15 corresponding to the bit string (c_0, c_1, ..., c_15)
 
    3. For j = 0 to n - 1 do
 
@@ -425,8 +425,8 @@ outputs the keypair (pk, sk) = (seedA \|\| b, s \|\| seedA \|\| b \|\| S^T \|\| 
 10. Return public key pk = (seedA \|\| b) and secret key sk = (s \|\| seedA \|\| b \|\| S^T \|\| pkh).
 ST = S^T is encoded row-by-row from ST_(0,0) to ST_(nHat−1,n−1), where
 each matrix coefficient ST_(i,j) is a signed integer encoded as a 16-bit string
-in the little-endian byte order such that (s_0, s_1, ..., s_15) = ST_(i,j) =
-−s_15 * 2^15 + (s_0 + s_1 * 2 + s_2 * 2^2 + ... + s_14 * 2^14)
+in the little-endian byte order such that ST_(i,j) = −s_15 * 2^15 + (s_0 + s_1 * 2 + s_2 * 2^2 + ... + s_14 * 2^14)
+corresponding to the bit string (s_0, s_1, ..., s_15)
 
 ## Encapsulation
 
@@ -559,12 +559,22 @@ their corresponding ephemeral variants).
 |--------:|:---------------:|:---------------:|:----------------:|:-----------------------------------------------|
 |   lenSE |       256       |       384       |       512        | Bitlength of seedSE in FrodoKEM                |
 | lensalt |       256       |       384       |       512        | Bitlength of salt in FrodoKEM                  |
+
 |   Name  |  eFrodoKEM-640  |  eFrodoKEM-976  |  eFrodoKEM-1344  | Description                                    |
 |--------:|:---------------:|:---------------:|:----------------:|:-----------------------------------------------|
 |   lenSE |       128       |       192       |       256        | Bitlength of seedSE in eFrodoKEM               |
 | lensalt |        0        |        0        |        0         | No salt in eFrodoKEM                           |
 
                         Table 2: Additional parameters for FrodoKEM depending on variant.
+
+|     Name     |  sigma |    0  |  +-1  |  +-2 |  +-3 |  +-4 |  +-5 | +-6 | +-7 | +-8 | +-9 |+-10|+-11|+-12| order |   divergence  |
+|-------------:|:------:|------:|------:|-----:|-----:|-----:|-----:|----:|----:|----:|----:|---:|---:|---:|:-----:|:-------------:|
+|  X_Frodo-640 |   2.8  |  9288 |  8720 | 7216 | 5264 | 3384 | 1918 | 958 | 422 | 164 |  56 | 17 |  4 |  1 |  200  | 0.324 x 10^-4 |
+|  X_Frodo-976 |   2.3  | 11278 | 10277 | 7774 | 4882 | 2545 | 1101 | 396 | 118 |  29 |   6 |  1 |    |    |  500  | 0.140 x 10^-4 |
+| X_Frodo-1344 |   1.4  | 18286 | 14320 | 6876 | 2023 |  364 |   40 |   2 |     |     |     |    |    |    | 1000  | 0.264 x 10^-4 |
+
+                     Table 3: Error distributions. Probabilities are shown for each integer value from 0 up to +-12.
+                                    The last two columns correspond to Renyi's order and divergence. 
 
 | Table entries |  FrodoKEM-640  |  FrodoKEM-976  |  FrodoKEM-1344  |
 |--------------:|:--------------:|:--------------:|:---------------:|
@@ -582,7 +592,7 @@ their corresponding ephemeral variants).
 |       T_X(11) |     32,766     |                |                 |
 |       T_X(12) |     32,767     |                |                 |
 
-            Table 3: The distribution table entries T_X(i),
+            Table 4: The distribution table entries T_X(i),
                   for 0 <= i <= d, for sampling.
 
 |                |  secret key sk  |  public key pk  |  ciphertext ct  | shared secret ss |
@@ -594,7 +604,7 @@ their corresponding ephemeral variants).
 |  FrodoKEM-1344 |      43,088     |      21,520     |      21,696     |        32        |
 | eFrodoKEM-1344 |      43,088     |      21,520     |      21,632     |        32        |
 
-                        Table 4: Sizes (in bits) of inputs and outputs.
+                        Table 5: Sizes (in bits) of inputs and outputs.
 
 
 # Security Considerations
