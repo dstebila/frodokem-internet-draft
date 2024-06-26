@@ -361,7 +361,7 @@ generates 8 coefficients.
 
       1. b = i\|\|j\|\|0\|\|0\|\|0\|\|0\|\|0\|\|0, where each concatenated element is encoded as a 16-bit string represented in the little-endian byte order such that, e.g., (i_0, i_1, ..., i_15) \equiv i_0 \* 2^0 + i_1 \* 2^1 + ... + i_15 *\ 2^15, and \|b\| = 128
 
-      2. C_(i,j) \|\| C_(i,j+1) \|\| ... \|\| C_(i,j+7) = AES128(seed_A, b), where each matrix coefficient C_(i,j) is a 16-bit string interpreted as a nonnegative integer in the little-endian byte order, such that C_(i,j) = c_0 \* 2^0 + c_1 *\ 2^1 + ... + c_15 *\ 2^15 corresponding to the bit string (c_0, c_1, ...,c_15) 
+      2. C_(i,j) \|\| C_(i,j+1) \|\| ... \|\| C_(i,j+7) = AES128(seed_A, b), where each matrix coefficient C_(i,j) is a 16-bit string interpreted as a nonnegative integer in the little-endian byte order, such that C_(i,j) = c_0 \* 2^0 + c_1 *\ 2^1 + ... + c_15 *\ 2^15 corresponding to the bit string (c_0, c_1, ...,c_15)
 
       3. For k = 0 to 7 do
 
@@ -574,7 +574,7 @@ their corresponding ephemeral variants).
 | X_Frodo-1344 |   1.4  | 18286 | 14320 | 6876 | 2023 |  364 |   40 |   2 |     |     |     |    |    |    | 1000  | 0.264 x 10^-4 |
 
                      Table 3: Error distributions. Probabilities are shown for each integer value from 0 up to +-12.
-                                    The last two columns correspond to Renyi's order and divergence. 
+                                    The last two columns correspond to Renyi's order and divergence.
 
 | Table entries |  FrodoKEM-640  |  FrodoKEM-976  |  FrodoKEM-1344  |
 |--------------:|:--------------:|:--------------:|:---------------:|
