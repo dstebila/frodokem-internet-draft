@@ -1551,7 +1551,7 @@ a sample e from FrodoKEM’s error distribution X via inversion sampling using a
 table T_X, as follows (note that T_X(d) is never accessed):<a href="#section-6.4-5" class="pilcrow">¶</a></p>
 <ol start="1" type="1" class="normal type-1" id="section-6.4-6">
 <li id="section-6.4-6.1">
-            <p id="section-6.4-6.1.1">Set t = r_1 * 2^0 + r_2 * 2^1 + ... + r_15 * 2^14 \equiv (r_1, r_2, ..., r_15, 0), interpreted as a nonnegative integer in the little-endian byte order<a href="#section-6.4-6.1.1" class="pilcrow">¶</a></p>
+            <p id="section-6.4-6.1.1">Set t = r_1 * 2^0 + r_2 * 2^1 + ... + r_15 * 2^14<a href="#section-6.4-6.1.1" class="pilcrow">¶</a></p>
 </li>
           <li id="section-6.4-6.2">
             <p id="section-6.4-6.2.1">e = 0<a href="#section-6.4-6.2.1" class="pilcrow">¶</a></p>
@@ -1657,7 +1657,7 @@ generates 8 coefficients.<a href="#section-6.6.1-1" class="pilcrow">¶</a></p>
                       <p id="section-6.6.1-2.1.2.1.2.1.1">b = i||j||0||0||0||0||0||0, where each concatenated element is encoded as a 16-bit string represented in the little-endian byte order such that, e.g., (i_0, i_1, ..., i_15) \equiv i_0 * 2^0 + i_1 * 2^1 + ... + i_15 *\ 2^15, and |b| = 128<a href="#section-6.6.1-2.1.2.1.2.1.1" class="pilcrow">¶</a></p>
 </li>
                     <li id="section-6.6.1-2.1.2.1.2.2">
-                      <p id="section-6.6.1-2.1.2.1.2.2.1">C_(i,j) || C_(i,j+1) || ... || C_(i,j+7) = AES128(seed_A, b), where each matrix coefficient C_(i,j) is a 16-bit string interpreted as a nonnegative integer in the little-endian byte order, such that C_(i,j) = (c_0, c_1, ...,c_15) \equiv c_0 * 2^0 + c_1 *\ 2^1 + ... + c_15 *\ 2^15<a href="#section-6.6.1-2.1.2.1.2.2.1" class="pilcrow">¶</a></p>
+                      <p id="section-6.6.1-2.1.2.1.2.2.1">C_(i,j) || C_(i,j+1) || ... || C_(i,j+7) = AES128(seed_A, b), where each matrix coefficient C_(i,j) is a 16-bit string interpreted as a nonnegative integer in the little-endian byte order, such that C_(i,j) = c_0 * 2^0 + c_1 *\ 2^1 + ... + c_15 *\ 2^15 corresponding to the bit string (c_0, c_1, ...,c_15)<a href="#section-6.6.1-2.1.2.1.2.2.1" class="pilcrow">¶</a></p>
 </li>
                     <li id="section-6.6.1-2.1.2.1.2.3">
                       <p id="section-6.6.1-2.1.2.1.2.3.1">For k = 0 to 7 do<a href="#section-6.6.1-2.1.2.1.2.3.1" class="pilcrow">¶</a></p>
@@ -1701,7 +1701,7 @@ generates n coefficients (i.e., a full matrix row).<a href="#section-6.6.2-1" cl
                   <p id="section-6.6.2-2.1.2.1.1">b = i||seed_A, where i is encoded as a 16-bit string represented in the little-endian byte order such that (i_0, i_1 , ..., i_15) \equiv i_0 * 2^0 + i_1 * 2^1 + ... + i_15 *\ 2^15, and hence the bitlength of b is |b| = lenA+16<a href="#section-6.6.2-2.1.2.1.1" class="pilcrow">¶</a></p>
 </li>
                 <li id="section-6.6.2-2.1.2.2">
-                  <p id="section-6.6.2-2.1.2.2.1">C_(i,0) || C_(i,1) || ... || C_(i,n-1) = SHAKE128(b, 16*n), where each matrix coefficient C_(i,j) is a 16-bit string interpreted as a nonnegative integer in the little-endian byte order, such that C_(i,j) = (c_0, c_1, ..., c_15)\equiv c_0 * 2^0 + c_1 *\ 2^1 + ... + c_15 *\ 2^15<a href="#section-6.6.2-2.1.2.2.1" class="pilcrow">¶</a></p>
+                  <p id="section-6.6.2-2.1.2.2.1">C_(i,0) || C_(i,1) || ... || C_(i,n-1) = SHAKE128(b, 16*n), where each matrix coefficient C_(i,j) is a 16-bit string interpreted as a nonnegative integer in the little-endian byte order, such that C_(i,j) = c_0 * 2^0 + c_1 *\ 2^1 + ... + c_15 *\ 2^15 corresponding to the bit string (c_0, c_1, ..., c_15)<a href="#section-6.6.2-2.1.2.2.1" class="pilcrow">¶</a></p>
 </li>
                 <li id="section-6.6.2-2.1.2.3">
                   <p id="section-6.6.2-2.1.2.3.1">For j = 0 to n - 1 do<a href="#section-6.6.2-2.1.2.3.1" class="pilcrow">¶</a></p>
@@ -1773,8 +1773,8 @@ outputs the keypair (pk, sk) = (seedA || b, s || seedA || b || S^T || pkh).<a hr
             <p id="section-7.1-2.10.1">Return public key pk = (seedA || b) and secret key sk = (s || seedA || b || S^T || pkh).
 ST = S^T is encoded row-by-row from ST_(0,0) to ST_(nHat−1,n−1), where
 each matrix coefficient ST_(i,j) is a signed integer encoded as a 16-bit string
-in the little-endian byte order such that (s_0, s_1, ..., s_15) = ST_(i,j) =
-−s_15 * 2^15 + (s_0 + s_1 * 2 + s_2 * 2^2 + ... + s_14 * 2^14)<a href="#section-7.1-2.10.1" class="pilcrow">¶</a></p>
+in the little-endian byte order such that ST_(i,j) = −s_15 * 2^15 + (s_0 + s_1 * 2 + s_2 * 2^2 + ... + s_14 * 2^14)
+corresponding to the bit string (s_0, s_1, ..., s_15)<a href="#section-7.1-2.10.1" class="pilcrow">¶</a></p>
 </li>
         </ol>
 </section>
@@ -2059,13 +2059,20 @@ their corresponding ephemeral variants).<a href="#section-9-3" class="pilcrow">�
               <td class="text-center" rowspan="1" colspan="1">512</td>
               <td class="text-left" rowspan="1" colspan="1">Bitlength of salt in FrodoKEM</td>
             </tr>
+          </tbody>
+        </table>
+<table class="center" id="table-3">
+          <caption><a href="#table-3" class="selfRef">Table 3</a></caption>
+<thead>
             <tr>
-              <td class="text-right" rowspan="1" colspan="1">Name</td>
-              <td class="text-center" rowspan="1" colspan="1">eFrodoKEM-640</td>
-              <td class="text-center" rowspan="1" colspan="1">eFrodoKEM-976</td>
-              <td class="text-center" rowspan="1" colspan="1">eFrodoKEM-1344</td>
-              <td class="text-left" rowspan="1" colspan="1">Description</td>
+              <th class="text-right" rowspan="1" colspan="1">Name</th>
+              <th class="text-center" rowspan="1" colspan="1">eFrodoKEM-640</th>
+              <th class="text-center" rowspan="1" colspan="1">eFrodoKEM-976</th>
+              <th class="text-center" rowspan="1" colspan="1">eFrodoKEM-1344</th>
+              <th class="text-left" rowspan="1" colspan="1">Description</th>
             </tr>
+          </thead>
+          <tbody>
             <tr>
               <td class="text-right" rowspan="1" colspan="1">lenSE</td>
               <td class="text-center" rowspan="1" colspan="1">128</td>
@@ -2082,13 +2089,102 @@ their corresponding ephemeral variants).<a href="#section-9-3" class="pilcrow">�
             </tr>
           </tbody>
         </table>
-<div class="alignLeft art-text artwork" id="section-9.1-4">
+<div class="alignLeft art-text artwork" id="section-9.1-5">
 <pre>
                     Table 2: Additional parameters for FrodoKEM depending on variant.
-</pre><a href="#section-9.1-4" class="pilcrow">¶</a>
+</pre><a href="#section-9.1-5" class="pilcrow">¶</a>
 </div>
-<table class="center" id="table-3">
-          <caption><a href="#table-3" class="selfRef">Table 3</a></caption>
+<table class="center" id="table-4">
+          <caption><a href="#table-4" class="selfRef">Table 4</a></caption>
+<thead>
+            <tr>
+              <th class="text-right" rowspan="1" colspan="1">Name</th>
+              <th class="text-center" rowspan="1" colspan="1">sigma</th>
+              <th class="text-right" rowspan="1" colspan="1">0</th>
+              <th class="text-right" rowspan="1" colspan="1">+-1</th>
+              <th class="text-right" rowspan="1" colspan="1">+-2</th>
+              <th class="text-right" rowspan="1" colspan="1">+-3</th>
+              <th class="text-right" rowspan="1" colspan="1">+-4</th>
+              <th class="text-right" rowspan="1" colspan="1">+-5</th>
+              <th class="text-right" rowspan="1" colspan="1">+-6</th>
+              <th class="text-right" rowspan="1" colspan="1">+-7</th>
+              <th class="text-right" rowspan="1" colspan="1">+-8</th>
+              <th class="text-right" rowspan="1" colspan="1">+-9</th>
+              <th class="text-right" rowspan="1" colspan="1">+-10</th>
+              <th class="text-right" rowspan="1" colspan="1">+-11</th>
+              <th class="text-right" rowspan="1" colspan="1">+-12</th>
+              <th class="text-center" rowspan="1" colspan="1">order</th>
+              <th class="text-center" rowspan="1" colspan="1">divergence</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="text-right" rowspan="1" colspan="1">X_Frodo-640</td>
+              <td class="text-center" rowspan="1" colspan="1">2.8</td>
+              <td class="text-right" rowspan="1" colspan="1">9288</td>
+              <td class="text-right" rowspan="1" colspan="1">8720</td>
+              <td class="text-right" rowspan="1" colspan="1">7216</td>
+              <td class="text-right" rowspan="1" colspan="1">5264</td>
+              <td class="text-right" rowspan="1" colspan="1">3384</td>
+              <td class="text-right" rowspan="1" colspan="1">1918</td>
+              <td class="text-right" rowspan="1" colspan="1">958</td>
+              <td class="text-right" rowspan="1" colspan="1">422</td>
+              <td class="text-right" rowspan="1" colspan="1">164</td>
+              <td class="text-right" rowspan="1" colspan="1">56</td>
+              <td class="text-right" rowspan="1" colspan="1">17</td>
+              <td class="text-right" rowspan="1" colspan="1">4</td>
+              <td class="text-right" rowspan="1" colspan="1">1</td>
+              <td class="text-center" rowspan="1" colspan="1">200</td>
+              <td class="text-center" rowspan="1" colspan="1">0.324 x 10^-4</td>
+            </tr>
+            <tr>
+              <td class="text-right" rowspan="1" colspan="1">X_Frodo-976</td>
+              <td class="text-center" rowspan="1" colspan="1">2.3</td>
+              <td class="text-right" rowspan="1" colspan="1">11278</td>
+              <td class="text-right" rowspan="1" colspan="1">10277</td>
+              <td class="text-right" rowspan="1" colspan="1">7774</td>
+              <td class="text-right" rowspan="1" colspan="1">4882</td>
+              <td class="text-right" rowspan="1" colspan="1">2545</td>
+              <td class="text-right" rowspan="1" colspan="1">1101</td>
+              <td class="text-right" rowspan="1" colspan="1">396</td>
+              <td class="text-right" rowspan="1" colspan="1">118</td>
+              <td class="text-right" rowspan="1" colspan="1">29</td>
+              <td class="text-right" rowspan="1" colspan="1">6</td>
+              <td class="text-right" rowspan="1" colspan="1">1</td>
+              <td class="text-right" rowspan="1" colspan="1"> </td>
+              <td class="text-right" rowspan="1" colspan="1"> </td>
+              <td class="text-center" rowspan="1" colspan="1">500</td>
+              <td class="text-center" rowspan="1" colspan="1">0.140 x 10^-4</td>
+            </tr>
+            <tr>
+              <td class="text-right" rowspan="1" colspan="1">X_Frodo-1344</td>
+              <td class="text-center" rowspan="1" colspan="1">1.4</td>
+              <td class="text-right" rowspan="1" colspan="1">18286</td>
+              <td class="text-right" rowspan="1" colspan="1">14320</td>
+              <td class="text-right" rowspan="1" colspan="1">6876</td>
+              <td class="text-right" rowspan="1" colspan="1">2023</td>
+              <td class="text-right" rowspan="1" colspan="1">364</td>
+              <td class="text-right" rowspan="1" colspan="1">40</td>
+              <td class="text-right" rowspan="1" colspan="1">2</td>
+              <td class="text-right" rowspan="1" colspan="1"> </td>
+              <td class="text-right" rowspan="1" colspan="1"> </td>
+              <td class="text-right" rowspan="1" colspan="1"> </td>
+              <td class="text-right" rowspan="1" colspan="1"> </td>
+              <td class="text-right" rowspan="1" colspan="1"> </td>
+              <td class="text-right" rowspan="1" colspan="1"> </td>
+              <td class="text-center" rowspan="1" colspan="1">1000</td>
+              <td class="text-center" rowspan="1" colspan="1">0.264 x 10^-4</td>
+            </tr>
+          </tbody>
+        </table>
+<div class="alignLeft art-text artwork" id="section-9.1-7">
+<pre>
+                 Table 3: Error distributions. Probabilities are shown for each integer value from 0 up to +-12.
+                                The last two columns correspond to Renyi's order and divergence.
+</pre><a href="#section-9.1-7" class="pilcrow">¶</a>
+</div>
+<table class="center" id="table-5">
+          <caption><a href="#table-5" class="selfRef">Table 5</a></caption>
 <thead>
             <tr>
               <th class="text-right" rowspan="1" colspan="1">Table entries</th>
@@ -2178,14 +2274,14 @@ their corresponding ephemeral variants).<a href="#section-9-3" class="pilcrow">�
             </tr>
           </tbody>
         </table>
-<div class="alignLeft art-text artwork" id="section-9.1-6">
+<div class="alignLeft art-text artwork" id="section-9.1-9">
 <pre>
-        Table 3: The distribution table entries T_X(i),
+        Table 4: The distribution table entries T_X(i),
               for 0 &lt;= i &lt;= d, for sampling.
-</pre><a href="#section-9.1-6" class="pilcrow">¶</a>
+</pre><a href="#section-9.1-9" class="pilcrow">¶</a>
 </div>
-<table class="center" id="table-4">
-          <caption><a href="#table-4" class="selfRef">Table 4</a></caption>
+<table class="center" id="table-6">
+          <caption><a href="#table-6" class="selfRef">Table 6</a></caption>
 <thead>
             <tr>
               <th class="text-right" rowspan="1" colspan="1"> </th>
@@ -2240,10 +2336,10 @@ their corresponding ephemeral variants).<a href="#section-9-3" class="pilcrow">�
             </tr>
           </tbody>
         </table>
-<div class="alignLeft art-text artwork" id="section-9.1-8">
+<div class="alignLeft art-text artwork" id="section-9.1-11">
 <pre>
-                    Table 4: Sizes (in bits) of inputs and outputs.
-</pre><a href="#section-9.1-8" class="pilcrow">¶</a>
+                    Table 5: Sizes (in bits) of inputs and outputs.
+</pre><a href="#section-9.1-11" class="pilcrow">¶</a>
 </div>
 </section>
 </div>
