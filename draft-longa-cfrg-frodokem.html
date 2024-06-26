@@ -1193,9 +1193,6 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.1">
                 <p id="section-toc.1-1.9.2.1.1"><a href="#section-9.1" class="auto internal xref">9.1</a>.  <a href="#name-parameters-2" class="internal xref">Parameters</a></p>
 </li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.2">
-                <p id="section-toc.1-1.9.2.2.1"><a href="#section-9.2" class="auto internal xref">9.2</a>.  <a href="#name-aligned-table" class="internal xref">Aligned Table</a></p>
-</li>
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10">
@@ -1953,19 +1950,7 @@ their corresponding ephemeral variants).<a href="#section-9-3" class="pilcrow">�
 <section id="section-9.1">
         <h3 id="name-parameters-2">
 <a href="#section-9.1" class="section-number selfRef">9.1. </a><a href="#name-parameters-2" class="section-name selfRef">Parameters</a>
-      </h3>
-</section>
-</div>
-<div id="aligned-table">
-<section id="section-9.2">
-        <h3 id="name-aligned-table">
-<a href="#section-9.2" class="section-number selfRef">9.2. </a><a href="#name-aligned-table" class="section-name selfRef">Aligned Table</a>
         </h3>
-<p id="section-9.2-1">| Left Aligned | Center Aligned | Right Aligned |
-|:-------------|:--------------:|--------------:|
-| Item 1       |     Item 2     |        Item 3 |
-| Item 4       |     Item 5     |        Item 6 |
-| Item 7       |     Item 8     |        Item 9 |<a href="#section-9.2-1" class="pilcrow">¶</a></p>
 <table class="center" id="table-1">
           <caption><a href="#table-1" class="selfRef">Table 1</a></caption>
 <thead>
@@ -2043,83 +2028,222 @@ their corresponding ephemeral variants).<a href="#section-9-3" class="pilcrow">�
             </tr>
           </tbody>
         </table>
-<div class="alignLeft art-text artwork" id="section-9.2-3">
+<div class="alignLeft art-text artwork" id="section-9.1-2">
 <pre>
-                                      Table 1: Parameters for FrodoKEM.
-</pre><a href="#section-9.2-3" class="pilcrow">¶</a>
+                                   Table 1: Parameters for FrodoKEM.
+</pre><a href="#section-9.1-2" class="pilcrow">¶</a>
 </div>
-<p id="section-9.2-4">+=========+=================+==================+==================+================================================+
-   |   Name  |   FrodoKEM-640  |   FrodoKEM-976   |   FrodoKEM-1344  | Description                                    |
-   +=========+=================+==================+==================+================================================+
-   |   lenSE |       256       |       384        |       512        | Bitlength of seedSE in FrodoKEM                |
-   +---------+-----------------+------------------+------------------+------------------------------------------------+
-   | lensalt |       256       |       384        |       512        | Bitlength of salt in FrodoKEM                  |
-   +=========+=======+================================================================================================+
-   |   Name  |  eFrodoKEM-640  |   eFrodoKEM-976  |  eFrodoKEM-1344  | Description                                    |
-   +=========+=================+==================+==================+================================================+
-   |   lenSE |       128       |       192        |       256        | Bitlength of seedSE in eFrodoKEM               |
-   +---------+-----------------+------------------+------------------+------------------------------------------------+
-   | lensalt |        0        |        0         |        0         | No salt in eFrodoKEM                           |
-   +---------+-----------------+------------------+------------------+------------------------------------------------+<a href="#section-9.2-4" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-9.2-5">
+<table class="center" id="table-2">
+          <caption><a href="#table-2" class="selfRef">Table 2</a></caption>
+<thead>
+            <tr>
+              <th class="text-right" rowspan="1" colspan="1">Name</th>
+              <th class="text-center" rowspan="1" colspan="1">FrodoKEM-640</th>
+              <th class="text-center" rowspan="1" colspan="1">FrodoKEM-976</th>
+              <th class="text-center" rowspan="1" colspan="1">FrodoKEM-1344</th>
+              <th class="text-left" rowspan="1" colspan="1">Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="text-right" rowspan="1" colspan="1">lenSE</td>
+              <td class="text-center" rowspan="1" colspan="1">256</td>
+              <td class="text-center" rowspan="1" colspan="1">384</td>
+              <td class="text-center" rowspan="1" colspan="1">512</td>
+              <td class="text-left" rowspan="1" colspan="1">Bitlength of seedSE in FrodoKEM</td>
+            </tr>
+            <tr>
+              <td class="text-right" rowspan="1" colspan="1">lensalt</td>
+              <td class="text-center" rowspan="1" colspan="1">256</td>
+              <td class="text-center" rowspan="1" colspan="1">384</td>
+              <td class="text-center" rowspan="1" colspan="1">512</td>
+              <td class="text-left" rowspan="1" colspan="1">Bitlength of salt in FrodoKEM</td>
+            </tr>
+            <tr>
+              <td class="text-right" rowspan="1" colspan="1">Name</td>
+              <td class="text-center" rowspan="1" colspan="1">eFrodoKEM-640</td>
+              <td class="text-center" rowspan="1" colspan="1">eFrodoKEM-976</td>
+              <td class="text-center" rowspan="1" colspan="1">eFrodoKEM-1344</td>
+              <td class="text-left" rowspan="1" colspan="1">Description</td>
+            </tr>
+            <tr>
+              <td class="text-right" rowspan="1" colspan="1">lenSE</td>
+              <td class="text-center" rowspan="1" colspan="1">128</td>
+              <td class="text-center" rowspan="1" colspan="1">192</td>
+              <td class="text-center" rowspan="1" colspan="1">256</td>
+              <td class="text-left" rowspan="1" colspan="1">Bitlength of seedSE in eFrodoKEM</td>
+            </tr>
+            <tr>
+              <td class="text-right" rowspan="1" colspan="1">lensalt</td>
+              <td class="text-center" rowspan="1" colspan="1">0</td>
+              <td class="text-center" rowspan="1" colspan="1">0</td>
+              <td class="text-center" rowspan="1" colspan="1">0</td>
+              <td class="text-left" rowspan="1" colspan="1">No salt in eFrodoKEM</td>
+            </tr>
+          </tbody>
+        </table>
+<div class="alignLeft art-text artwork" id="section-9.1-4">
 <pre>
-                       Table 2: Additional parameters for FrodoKEM depending on variant.
-</pre><a href="#section-9.2-5" class="pilcrow">¶</a>
+                    Table 2: Additional parameters for FrodoKEM depending on variant.
+</pre><a href="#section-9.1-4" class="pilcrow">¶</a>
 </div>
-<p id="section-9.2-6">+===============+================+================+=================+
-   | Table entries |  FrodoKEM-640  |  FrodoKEM-976  |  FrodoKEM-1344  |
-   +===============+================+================+=================+
-   |        T_X(0) |       4,643    |      5,638     |       9,142     |
-   +---------------+----------------+----------------+-----------------+
-   |        T_X(1) |      13,363    |     15,915     |      23,462     |
-   +---------------+----------------+----------------+-----------------+
-   |        T_X(2) |      20,579    |     23,689     |      30,338     |
-   +---------------+----------------+----------------+-----------------+
-   |        T_X(3) |      25,843    |     28,571     |      32,361     |
-   +---------------+----------------+----------------+-----------------+
-   |        T_X(4) |      29,227    |     31,116     |      32,725     |
-   +---------------+----------------+----------------+-----------------+
-   |        T_X(5) |      31,145    |     32,217     |      32,765     |
-   +---------------+----------------+----------------+-----------------+
-   |        T_X(6) |      32,103    |     32,613     |      32,767     |
-   +---------------+----------------+----------------+-----------------+
-   |        T_X(7) |      32,525    |     32,731     |                 |
-   +---------------+----------------+----------------+-----------------+
-   |        T_X(8) |      32,689    |     32,760     |                 |
-   +---------------+----------------+----------------+-----------------+
-   |        T_X(9) |      32,745    |     32,766     |                 |
-   +---------------+----------------+----------------+-----------------+
-   |       T_X(10) |      32,762    |     32,767     |                 |
-   +---------------+----------------+----------------+-----------------+
-   |       T_X(11) |      32,766    |                |                 |
-   +---------------+----------------+----------------+-----------------+
-   |       T_X(12) |      32,767    |                |                 |
-   +---------------+----------------+----------------+-----------------+<a href="#section-9.2-6" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-9.2-7">
+<table class="center" id="table-3">
+          <caption><a href="#table-3" class="selfRef">Table 3</a></caption>
+<thead>
+            <tr>
+              <th class="text-right" rowspan="1" colspan="1">Table entries</th>
+              <th class="text-center" rowspan="1" colspan="1">FrodoKEM-640</th>
+              <th class="text-center" rowspan="1" colspan="1">FrodoKEM-976</th>
+              <th class="text-center" rowspan="1" colspan="1">FrodoKEM-1344</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="text-right" rowspan="1" colspan="1">T_X(0)</td>
+              <td class="text-center" rowspan="1" colspan="1">4,643</td>
+              <td class="text-center" rowspan="1" colspan="1">5,638</td>
+              <td class="text-center" rowspan="1" colspan="1">9,142</td>
+            </tr>
+            <tr>
+              <td class="text-right" rowspan="1" colspan="1">T_X(1)</td>
+              <td class="text-center" rowspan="1" colspan="1">13,363</td>
+              <td class="text-center" rowspan="1" colspan="1">15,915</td>
+              <td class="text-center" rowspan="1" colspan="1">23,462</td>
+            </tr>
+            <tr>
+              <td class="text-right" rowspan="1" colspan="1">T_X(2)</td>
+              <td class="text-center" rowspan="1" colspan="1">20,579</td>
+              <td class="text-center" rowspan="1" colspan="1">23,689</td>
+              <td class="text-center" rowspan="1" colspan="1">30,338</td>
+            </tr>
+            <tr>
+              <td class="text-right" rowspan="1" colspan="1">T_X(3)</td>
+              <td class="text-center" rowspan="1" colspan="1">25,843</td>
+              <td class="text-center" rowspan="1" colspan="1">28,571</td>
+              <td class="text-center" rowspan="1" colspan="1">32,361</td>
+            </tr>
+            <tr>
+              <td class="text-right" rowspan="1" colspan="1">T_X(4)</td>
+              <td class="text-center" rowspan="1" colspan="1">29,227</td>
+              <td class="text-center" rowspan="1" colspan="1">31,116</td>
+              <td class="text-center" rowspan="1" colspan="1">32,725</td>
+            </tr>
+            <tr>
+              <td class="text-right" rowspan="1" colspan="1">T_X(5)</td>
+              <td class="text-center" rowspan="1" colspan="1">31,145</td>
+              <td class="text-center" rowspan="1" colspan="1">32,217</td>
+              <td class="text-center" rowspan="1" colspan="1">32,765</td>
+            </tr>
+            <tr>
+              <td class="text-right" rowspan="1" colspan="1">T_X(6)</td>
+              <td class="text-center" rowspan="1" colspan="1">32,103</td>
+              <td class="text-center" rowspan="1" colspan="1">32,613</td>
+              <td class="text-center" rowspan="1" colspan="1">32,767</td>
+            </tr>
+            <tr>
+              <td class="text-right" rowspan="1" colspan="1">T_X(7)</td>
+              <td class="text-center" rowspan="1" colspan="1">32,525</td>
+              <td class="text-center" rowspan="1" colspan="1">32,731</td>
+              <td class="text-center" rowspan="1" colspan="1"> </td>
+            </tr>
+            <tr>
+              <td class="text-right" rowspan="1" colspan="1">T_X(8)</td>
+              <td class="text-center" rowspan="1" colspan="1">32,689</td>
+              <td class="text-center" rowspan="1" colspan="1">32,760</td>
+              <td class="text-center" rowspan="1" colspan="1"> </td>
+            </tr>
+            <tr>
+              <td class="text-right" rowspan="1" colspan="1">T_X(9)</td>
+              <td class="text-center" rowspan="1" colspan="1">32,745</td>
+              <td class="text-center" rowspan="1" colspan="1">32,766</td>
+              <td class="text-center" rowspan="1" colspan="1"> </td>
+            </tr>
+            <tr>
+              <td class="text-right" rowspan="1" colspan="1">T_X(10)</td>
+              <td class="text-center" rowspan="1" colspan="1">32,762</td>
+              <td class="text-center" rowspan="1" colspan="1">32,767</td>
+              <td class="text-center" rowspan="1" colspan="1"> </td>
+            </tr>
+            <tr>
+              <td class="text-right" rowspan="1" colspan="1">T_X(11)</td>
+              <td class="text-center" rowspan="1" colspan="1">32,766</td>
+              <td class="text-center" rowspan="1" colspan="1"> </td>
+              <td class="text-center" rowspan="1" colspan="1"> </td>
+            </tr>
+            <tr>
+              <td class="text-right" rowspan="1" colspan="1">T_X(12)</td>
+              <td class="text-center" rowspan="1" colspan="1">32,767</td>
+              <td class="text-center" rowspan="1" colspan="1"> </td>
+              <td class="text-center" rowspan="1" colspan="1"> </td>
+            </tr>
+          </tbody>
+        </table>
+<div class="alignLeft art-text artwork" id="section-9.1-6">
 <pre>
-           Table 3: The distribution table entries T_X(i),
-                    for 0 &lt;= i &lt;= d, for sampling.
-</pre><a href="#section-9.2-7" class="pilcrow">¶</a>
+        Table 3: The distribution table entries T_X(i),
+              for 0 &lt;= i &lt;= d, for sampling.
+</pre><a href="#section-9.1-6" class="pilcrow">¶</a>
 </div>
-<p id="section-9.2-8">+================+=================+=================+=================+==================+
-   |                |  secret key sk  |  public key pk  |  ciphertext ct  | shared secret ss |
-   +================+=================+=================+=================+==================+
-   |   FrodoKEM-640 |      19,888     |       9,616     |       9,752     |        16        |
-   +----------------+-----------------+-----------------+-----------------+------------------+
-   |  eFrodoKEM-640 |      19,888     |       9,616     |       9,720     |        16        |
-   +----------------+-----------------+-----------------+-----------------+------------------+
-   |   FrodoKEM-976 |      31,296     |      15,632     |      15,792     |        24        |
-   +----------------+-----------------+-----------------+-----------------+------------------+
-   |  eFrodoKEM-976 |      31,296     |      15,632     |      15,744     |        24        |
-   +----------------+-----------------+-----------------+-----------------+------------------+
-   |  FrodoKEM-1344 |      43,088     |      21,520     |      21,696     |        32        |
-   +----------------+-----------------+-----------------+-----------------+------------------+
-   | eFrodoKEM-1344 |      43,088     |      21,520     |      21,632     |        32        |
-   +----------------+-----------------+-----------------+-----------------+------------------+<a href="#section-9.2-8" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-9.2-9">
+<table class="center" id="table-4">
+          <caption><a href="#table-4" class="selfRef">Table 4</a></caption>
+<thead>
+            <tr>
+              <th class="text-right" rowspan="1" colspan="1"> </th>
+              <th class="text-center" rowspan="1" colspan="1">secret key sk</th>
+              <th class="text-center" rowspan="1" colspan="1">public key pk</th>
+              <th class="text-center" rowspan="1" colspan="1">ciphertext ct</th>
+              <th class="text-center" rowspan="1" colspan="1">shared secret ss</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="text-right" rowspan="1" colspan="1">FrodoKEM-640</td>
+              <td class="text-center" rowspan="1" colspan="1">19,888</td>
+              <td class="text-center" rowspan="1" colspan="1">9,616</td>
+              <td class="text-center" rowspan="1" colspan="1">9,752</td>
+              <td class="text-center" rowspan="1" colspan="1">16</td>
+            </tr>
+            <tr>
+              <td class="text-right" rowspan="1" colspan="1">eFrodoKEM-640</td>
+              <td class="text-center" rowspan="1" colspan="1">19,888</td>
+              <td class="text-center" rowspan="1" colspan="1">9,616</td>
+              <td class="text-center" rowspan="1" colspan="1">9,720</td>
+              <td class="text-center" rowspan="1" colspan="1">16</td>
+            </tr>
+            <tr>
+              <td class="text-right" rowspan="1" colspan="1">FrodoKEM-976</td>
+              <td class="text-center" rowspan="1" colspan="1">31,296</td>
+              <td class="text-center" rowspan="1" colspan="1">15,632</td>
+              <td class="text-center" rowspan="1" colspan="1">15,792</td>
+              <td class="text-center" rowspan="1" colspan="1">24</td>
+            </tr>
+            <tr>
+              <td class="text-right" rowspan="1" colspan="1">eFrodoKEM-976</td>
+              <td class="text-center" rowspan="1" colspan="1">31,296</td>
+              <td class="text-center" rowspan="1" colspan="1">15,632</td>
+              <td class="text-center" rowspan="1" colspan="1">15,744</td>
+              <td class="text-center" rowspan="1" colspan="1">24</td>
+            </tr>
+            <tr>
+              <td class="text-right" rowspan="1" colspan="1">FrodoKEM-1344</td>
+              <td class="text-center" rowspan="1" colspan="1">43,088</td>
+              <td class="text-center" rowspan="1" colspan="1">21,520</td>
+              <td class="text-center" rowspan="1" colspan="1">21,696</td>
+              <td class="text-center" rowspan="1" colspan="1">32</td>
+            </tr>
+            <tr>
+              <td class="text-right" rowspan="1" colspan="1">eFrodoKEM-1344</td>
+              <td class="text-center" rowspan="1" colspan="1">43,088</td>
+              <td class="text-center" rowspan="1" colspan="1">21,520</td>
+              <td class="text-center" rowspan="1" colspan="1">21,632</td>
+              <td class="text-center" rowspan="1" colspan="1">32</td>
+            </tr>
+          </tbody>
+        </table>
+<div class="alignLeft art-text artwork" id="section-9.1-8">
 <pre>
                     Table 4: Sizes (in bits) of inputs and outputs.
-</pre><a href="#section-9.2-9" class="pilcrow">¶</a>
+</pre><a href="#section-9.1-8" class="pilcrow">¶</a>
 </div>
 </section>
 </div>
