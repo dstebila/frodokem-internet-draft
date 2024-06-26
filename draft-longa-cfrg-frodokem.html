@@ -1193,6 +1193,9 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.1">
                 <p id="section-toc.1-1.9.2.1.1"><a href="#section-9.1" class="auto internal xref">9.1</a>.  <a href="#name-parameters-2" class="internal xref">Parameters</a></p>
 </li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.2">
+                <p id="section-toc.1-1.9.2.2.1"><a href="#section-9.2" class="auto internal xref">9.2</a>.  <a href="#name-aligned-table" class="internal xref">Aligned Table</a></p>
+</li>
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10">
@@ -1952,8 +1955,20 @@ their corresponding ephemeral variants).<a href="#section-9-3" class="pilcrow">�
 <section id="section-9.1">
         <h3 id="name-parameters-2">
 <a href="#section-9.1" class="section-number selfRef">9.1. </a><a href="#name-parameters-2" class="section-name selfRef">Parameters</a>
+      </h3>
+</section>
+</div>
+<div id="aligned-table">
+<section id="section-9.2">
+        <h3 id="name-aligned-table">
+<a href="#section-9.2" class="section-number selfRef">9.2. </a><a href="#name-aligned-table" class="section-name selfRef">Aligned Table</a>
         </h3>
-<p id="section-9.1-1">+=========+=================+==================+==================+================================================+
+<p id="section-9.2-1">| Left Aligned | Center Aligned | Right Aligned |
+|:-------------|:--------------:|--------------:|
+| Item 1       |     Item 2     |        Item 3 |
+| Item 4       |     Item 5     |        Item 6 |
+| Item 7       |     Item 8     |        Item 9 |<a href="#section-9.2-1" class="pilcrow">¶</a></p>
+<p id="section-9.2-2">+=========+=================+==================+==================+================================================+
    |   Name  | (e)FrodoKEM-640 |  (e)FrodoKEM-976 | (e)FrodoKEM-1344 | Description                                    |
    +=========+=================+==================+==================+================================================+
    |       D |        15       |        16        |        16        | Bitlength of q                                 |
@@ -1973,13 +1988,13 @@ their corresponding ephemeral variants).<a href="#section-9-3" class="pilcrow">�
    |  lensec |      128        |       192        |        256       | Number of bits matching the bit-security level |
    +---------+-----------------+------------------+------------------+------------------------------------------------+
    |   SHAKE |    SHAKE128     |     SHAKE256     |     SHAKE256     | SHAKE variant used for hashing                 |
-   +---------+-----------------+------------------+------------------+------------------------------------------------+<a href="#section-9.1-1" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-9.1-2">
+   +---------+-----------------+------------------+------------------+------------------------------------------------+<a href="#section-9.2-2" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-9.2-3">
 <pre>
                                       Table 1: Parameters for FrodoKEM.
-</pre><a href="#section-9.1-2" class="pilcrow">¶</a>
+</pre><a href="#section-9.2-3" class="pilcrow">¶</a>
 </div>
-<p id="section-9.1-3">+=========+=================+==================+==================+================================================+
+<p id="section-9.2-4">+=========+=================+==================+==================+================================================+
    |   Name  |   FrodoKEM-640  |   FrodoKEM-976   |   FrodoKEM-1344  | Description                                    |
    +=========+=================+==================+==================+================================================+
    |   lenSE |       256       |       384        |       512        | Bitlength of seedSE in FrodoKEM                |
@@ -1991,13 +2006,13 @@ their corresponding ephemeral variants).<a href="#section-9-3" class="pilcrow">�
    |   lenSE |       128       |       192        |       256        | Bitlength of seedSE in eFrodoKEM               |
    +---------+-----------------+------------------+------------------+------------------------------------------------+
    | lensalt |        0        |        0         |        0         | No salt in eFrodoKEM                           |
-   +---------+-----------------+------------------+------------------+------------------------------------------------+<a href="#section-9.1-3" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-9.1-4">
+   +---------+-----------------+------------------+------------------+------------------------------------------------+<a href="#section-9.2-4" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-9.2-5">
 <pre>
                        Table 2: Additional parameters for FrodoKEM depending on variant.
-</pre><a href="#section-9.1-4" class="pilcrow">¶</a>
+</pre><a href="#section-9.2-5" class="pilcrow">¶</a>
 </div>
-<p id="section-9.1-5">+===============+================+================+=================+
+<p id="section-9.2-6">+===============+================+================+=================+
    | Table entries |  FrodoKEM-640  |  FrodoKEM-976  |  FrodoKEM-1344  |
    +===============+================+================+=================+
    |        T_X(0) |       4,643    |      5,638     |       9,142     |
@@ -2025,14 +2040,14 @@ their corresponding ephemeral variants).<a href="#section-9-3" class="pilcrow">�
    |       T_X(11) |      32,766    |                |                 |
    +---------------+----------------+----------------+-----------------+
    |       T_X(12) |      32,767    |                |                 |
-   +---------------+----------------+----------------+-----------------+<a href="#section-9.1-5" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-9.1-6">
+   +---------------+----------------+----------------+-----------------+<a href="#section-9.2-6" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-9.2-7">
 <pre>
            Table 3: The distribution table entries T_X(i),
                     for 0 &lt;= i &lt;= d, for sampling.
-</pre><a href="#section-9.1-6" class="pilcrow">¶</a>
+</pre><a href="#section-9.2-7" class="pilcrow">¶</a>
 </div>
-<p id="section-9.1-7">+================+=================+=================+=================+==================+
+<p id="section-9.2-8">+================+=================+=================+=================+==================+
    |                |  secret key sk  |  public key pk  |  ciphertext ct  | shared secret ss |
    +================+=================+=================+=================+==================+
    |   FrodoKEM-640 |      19,888     |       9,616     |       9,752     |        16        |
@@ -2046,11 +2061,11 @@ their corresponding ephemeral variants).<a href="#section-9-3" class="pilcrow">�
    |  FrodoKEM-1344 |      43,088     |      21,520     |      21,696     |        32        |
    +----------------+-----------------+-----------------+-----------------+------------------+
    | eFrodoKEM-1344 |      43,088     |      21,520     |      21,632     |        32        |
-   +----------------+-----------------+-----------------+-----------------+------------------+<a href="#section-9.1-7" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-9.1-8">
+   +----------------+-----------------+-----------------+-----------------+------------------+<a href="#section-9.2-8" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-9.2-9">
 <pre>
                     Table 4: Sizes (in bits) of inputs and outputs.
-</pre><a href="#section-9.1-8" class="pilcrow">¶</a>
+</pre><a href="#section-9.2-9" class="pilcrow">¶</a>
 </div>
 </section>
 </div>

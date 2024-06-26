@@ -83,6 +83,7 @@ Table of Contents
    8.  FrodoKEM variants
    9.  Parameter Sets
      9.1.  Parameters
+     9.2.  Aligned Table
    10. Security Considerations
    11. IANA Considerations
    12. Normative References
@@ -649,6 +650,13 @@ Table of Contents
    and FrodoKEM-1344-SHAKE (and their corresponding ephemeral variants).
 
 9.1.  Parameters
+
+9.2.  Aligned Table
+
+   | Left Aligned | Center Aligned | Right
+   Aligned | |:-------------|:--------------:|--------------:| | Item
+   1 | Item 2 | Item 3 | | Item 4 | Item 5 | Item 6 | | Item 7 | Item
+   8 | Item 9 |
 
    +=========+=================+==================+==================+==
    ==============================================+ | Name |
