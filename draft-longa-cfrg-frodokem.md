@@ -361,15 +361,15 @@ generates 8 coefficients.
 
       1. b = i\|\|j\|\|0\|\|0\|\|0\|\|0\|\|0\|\|0, where each concatenated element is encoded as a 16-bit string represented in the little-endian byte order such that, e.g., (i_0, i_1, ..., i_15) \equiv i_0 \* 2^0 + i_1 \* 2^1 + ... + i_15 *\ 2^15, and \|b\| = 128
 
-	   2. C_(i,j) \|\| C_(i,j+1) \|\| ... \|\| C_(i,j+7) = AES128(seed_A, b), where each matrix coefficient C_(i,j) is a 16-bit string interpreted as a nonnegative integer in the little-endian byte order, such that C_(i,j) = (c_0, c_1, ...,c_15) \equiv c_0 \* 2^0 + c_1 *\ 2^1 + ... + c_15 *\ 2^15
+      2. C_(i,j) \|\| C_(i,j+1) \|\| ... \|\| C_(i,j+7) = AES128(seed_A, b), where each matrix coefficient C_(i,j) is a 16-bit string interpreted as a nonnegative integer in the little-endian byte order, such that C_(i,j) = (c_0, c_1, ...,c_15) \equiv c_0 \* 2^0 + c_1 *\ 2^1 + ... + c_15 *\ 2^15
 
       3. For k = 0 to 7 do
 
-   	   1. A_(i,j+k) = C_(i,j+k) mod q
+         1. A_(i,j+k) = C_(i,j+k) mod q
 
-	   4. End for
+      4. End for
 
-  2. End for
+   2. End for
 
 2. End for
 
@@ -548,27 +548,17 @@ their corresponding ephemeral variants).
 | Item 4       |     Item 5     |        Item 6 |
 | Item 7       |     Item 8     |        Item 9 |
 
-   +=========+=================+==================+==================+================================================+
-   |   Name  | (e)FrodoKEM-640 |  (e)FrodoKEM-976 | (e)FrodoKEM-1344 | Description                                    |
-   +=========+=================+==================+==================+================================================+
-   |       D |        15       |        16        |        16        | Bitlength of q                                 |
-   +---------+-----------------+------------------+------------------+------------------------------------------------+
-   |       q |      32768      |      65536       |      65536       | Power-of-two integer modulus                   |
-   +---------+-----------------+------------------+------------------+------------------------------------------------+
-   |       n |       640       |       976        |       1344       | Integer matrix dimension                       |
-   +---------+-----------------+------------------+------------------+------------------------------------------------+
-   |    nHat |        8        |        8         |         8        | Integer matrix dimension                       |
-   +---------+-----------------+------------------+------------------+------------------------------------------------+
-   |       B |        2        |        3         |         4        | Number of bits encoded per matrix entry        |
-   +---------+-----------------+------------------+------------------+------------------------------------------------+
-   |       d |       12        |        10        |         6        | Integer defining the support of X              |
-   +---------+-----------------+------------------+------------------+------------------------------------------------+
-   |    lenA |      128        |       128        |        128       | Bitlength of seeds for generation of matrix A  |
-   +---------+-----------------+------------------+------------------+------------------------------------------------+
-   |  lensec |      128        |       192        |        256       | Number of bits matching the bit-security level |
-   +---------+-----------------+------------------+------------------+------------------------------------------------+
-   |   SHAKE |    SHAKE128     |     SHAKE256     |     SHAKE256     | SHAKE variant used for hashing                 |
-   +---------+-----------------+------------------+------------------+------------------------------------------------+
+|  Name  | (e)FrodoKEM-640 | (e)FrodoKEM-976 | (e)FrodoKEM-1344 | Description                                    |
+|-------:|:---------------:|:---------------:|:----------------:|:-----------------------------------------------|
+|      D |        15       |        16       |        16        | Bitlength of q                                 |
+|      q |      32768      |      65536      |      65536       | Power-of-two integer modulus                   |
+|      n |       640       |       976       |       1344       | Integer matrix dimension                       |
+|   nHat |        8        |        8        |         8        | Integer matrix dimension                       |
+|      B |        2        |        3        |         4        | Number of bits encoded per matrix entry        |
+|      d |        12       |        10       |         6        | Integer defining the support of X              |
+|   lenA |       128       |       128       |        128       | Bitlength of seeds for generation of matrix A  |
+| lensec |       128       |       192       |        256       | Number of bits matching the bit-security level |
+|  SHAKE |    SHAKE128     |     SHAKE256    |     SHAKE256     | SHAKE variant used for hashing                 |
 
                                           Table 1: Parameters for FrodoKEM.
 
