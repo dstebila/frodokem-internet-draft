@@ -43,7 +43,7 @@ This memo specifies FrodoKEM, an IND-CCA2 secure Key Encapsulation Mechanism (KE
 # Introduction
 
 FrodoKEM is a conservative yet practical post-quantum key encapsulation
-mechanism whose security derives from cautious parameterizations of the
+mechanism (KEM) whose security derives from cautious parameterizations of the
 well-studied learning with errors problem, which in turn has close
 connections to conjectured-hard problems on generic, "algebraically
 unstructured" lattices.
@@ -61,9 +61,18 @@ algorithms (_KeyGen_, _Encapsulate_, _Decapsulate_):
   outputs a shared secret.
 
 These algorithms are assembled as a two-pass protocol that allows two
-parties to derive a shared secret.  This shared secret can then be used
-to establish a secure communication channel using a symmetric-key
-algorithm.
+parties, A and B, to derive a shared secret in an interactive fashion:
+In the first pass, party B producing a ciphertext with the _Encapsulate_
+operation needs to first receive or retrieve the public key from party A,
+who is responsible for _KeyGen_ and _Decapsulate_.
+In the second pass, this party A uses its secret key and the ciphertext
+to execute the _Decapsulate_ operation.
+The shared secret produced by this protocol can then be used to establish
+a secure communication channel using a symmetric-key algorithm.
+
+# Overview
+
+FrodoKEM is an IND-CCA2 KEM ...
 
 # Conventions and Definitions
 
