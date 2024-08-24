@@ -580,7 +580,7 @@ In contrast to eFrodoKEM, standard FrodoKEM incorporates some changes to address
 certain multi-ciphertext attacks [Annex]. Specifically, standard FrodoKEM doubles the
 length of the seedSE value and incorporates a public random salt value into
 encapsulation (see Table 2).
- 
+
 
 # Parameter Sets
 
@@ -709,7 +709,6 @@ TODO acknowledge.
             August 2015.
             https://nvlpubs.nist.gov/nistpubs/fips/nist.fips.202.pdf
 
-            
 ## Informative References
 
 [Frodo17]   E. Alkim, J. W. Bos, L. Ducas, K. Easterbrook, P. Longa, B. LaMacchia, I. Mironov, M. Naehrig, V. Nikolaenko, C. Peikert, A. Raghunathan, and D. Stebila.
@@ -724,7 +723,7 @@ TODO acknowledge.
 
 [Reg10]     O. Regev. The learning with errors problem (invited survey).
             In IEEE Conference on Computational Complexity, pages 191–204, 2010.
- 
+
 [Pei16]     C. Peikert. A decade of lattice cryptography.
             Foundations and Trends in Theoretical Computer Science, 10(4):283–424, 2016.
 
