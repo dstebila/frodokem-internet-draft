@@ -42,7 +42,7 @@ This memo specifies FrodoKEM, an IND-CCA2 secure Key Encapsulation Mechanism (KE
 
 # Introduction
 
-FrodoKEM is a conservative yet practical post-quantum key encapsulation
+FrodoKEM [Frodo17] is a conservative yet practical post-quantum key encapsulation
 mechanism (KEM) whose security derives from cautious parameterizations of the
 well-studied learning with errors problem, which in turn has close
 connections to conjectured-hard problems on generic, "algebraically
@@ -72,7 +72,51 @@ a secure communication channel using a symmetric-key algorithm.
 
 # Overview
 
-FrodoKEM is an IND-CCA2 KEM ...
+The core of FrodoKEM is a public-key encryption scheme called FrodoPKE,
+whose IND-CPA security is tightly related to the hardness of a corresponding
+learning with errors problem. Here we briefly recall the scientific lineage
+of these systems. See the surveys [Mic10, Reg10, Pei16] for further details.
+The seminal works of Ajtai [Ajt96] (published in 1996) and Ajtai–Dwork [AD97]
+(published in 1997) gave the first cryptographic constructions whose
+security properties followed from the conjectured worst-case hardness of
+various problems on point lattices in R^n. In subsequent years, these works
+were substantially refined and improved. Notably, in work published in 2005,
+Regev [Reg09] defined the learning with errors (LWE) problem, proved the
+hardness of (certain parameterizations of) LWE assuming the hardness of
+various worst-case lattice problems against quantum algorithms, and defined
+a public-key encryption scheme whose IND-CPA security is tightly related to
+the hardness of LWE.
+
+Later on, in work published in 2011, Lindner and Peikert [LP11] gave a more
+efficient LWE-based public-key encryption scheme that uses a square public
+matrix A of dimension n with integer coefficients modulo q, instead of an
+oblong rectangular one.
+
+The FrodoPKE scheme described in this document is an instantiation and
+implementation of the Lindner–Peikert scheme [LP11] with some modifications,
+such as: pseudorandom generation of the public matrix A from a small seed,
+more balanced key and ciphertext sizes, and new LWE parameters.
+
+## Chosen-ciphertext security
+
+FrodoKEM achieves IND-CCA security by way of a transformation of the
+IND-CPA-secure FrodoPKE. In work published in 1999, Fujisaki and Okamoto
+[FO99] gave a generic transform from an IND-CPA PKE to an IND-CCA PKE, in
+the random-oracle model. At a high level, the Fujisaki–Okamoto (FO) transform
+derives encryption coins pseudorandomly, and decryption regenerates these
+coins to re-encrypt and check that the ciphertext is well-formed. In 2016,
+Targhi and Unruh [TU16] gave a modification of the Fujisaki–Okamoto transform
+that achieves IND-CCA security in the quantum random-oracle model (QROM) by
+adding an extra hash.
+In 2017, Hofheinz, Hovelmanns, and Kiltz [HHK17] gave several variants of the
+Fujisaki–Okamoto and Targhi–Unruh transforms that in particular convert an
+IND-CPA-secure PKE into an IND-CCA-secure KEM, and analyzed them in both the
+classical and quantum random-oracle models, even for PKEs with non-zero
+decryption error. Jiang et al. [JZC+18] show how to prove security of one of
+these variant FO transforms in the QROM without requiring the extra hash from
+Targhi–Unruh. FrodoKEM is constructed from FrodoPKE using a slight variant
+of Jiang et al.'s transform that includes additional values in hash
+computations to reduce the risk of multi-target attacks.
 
 # Conventions and Definitions
 
@@ -96,13 +140,15 @@ bit strings r^(i) is represented by (r^(0), r^(1), ..., r^(t-1)).
 AES128(k, a) denotes the 128-bit AES128 output under key k for a 128-bit
 input a.
 
-SHAKE128(x, y)	and SHAKE256(x, y) denote the y first bits of SHAKE128
+SHAKE128(x, y) and SHAKE256(x, y) denote the y first bits of SHAKE128
 and SHAKE256 (resp.) output for input x.
 
 Matrices are represented in capitals with no italics (e.g., A and C).
 For an n1 \* n2 matrix C, its (i,j)th coefficient (i.e., the entry in the
 ith row and jth column) is denoted by C_(i,j), where 0 <= i < n1 and
 0 <= j < n2. The transpose of matrix C is denoted by C^T.
+
+AES128 and SHAKE are specified in [FIPS197] and [FIPS202], respectively. 
 
 # Parameters
 
@@ -530,6 +576,12 @@ produced for a single public key is expected to be equal or greater than 2^8.
 Ephemeral FrodoKEM shall be used for applications in which that same figure is
 expected to be smaller than 2^8.
 
+In contrast to eFrodoKEM, standard FrodoKEM incorporates some changes to address
+certain multi-ciphertext attacks [Annex]. Specifically, standard FrodoKEM doubles the
+length of the seedSE value and incorporates a public random salt value into
+encapsulation (see Table 2).
+ 
+
 # Parameter Sets
 
 This document specifies the following twelve parameter sets:
@@ -644,3 +696,58 @@ This document has no IANA actions.
 {:numbered="false"}
 
 TODO acknowledge.
+
+# References
+
+## Normative References
+
+[FIPS197]   NIST, FIPS 197, "Advanced Encryption Standard (AES)",
+            November 2001.
+            https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.197-upd1.pdf
+
+[FIPS202]   NIST, FIPS 202, "SHA-3 Standard: Permutation-Based Hash and Extendable-Output Functions",
+            August 2015.
+            https://nvlpubs.nist.gov/nistpubs/fips/nist.fips.202.pdf
+
+            
+## Informative References
+
+[Frodo17]   E. Alkim, J. W. Bos, L. Ducas, K. Easterbrook, P. Longa, B. LaMacchia, I. Mironov, M. Naehrig, V. Nikolaenko, C. Peikert, A. Raghunathan, and D. Stebila.
+            FrodoKEM: Learning With Errors Key Encapsulation, 2017.
+            NIST's Round 3 algorithm specification and supporting documentatation available at https://frodokem.org/files/FrodoKEM-specification-20210604.pdf (2021)
+
+[Annex]     FrodoKEM Team. Annex on FrodoKEM updates, April 2023.
+            https://frodokem.org/files/FrodoKEM-annex-20230418.pdf
+
+[Mic10]     D. Micciancio. Cryptographic functions from worst-case complexity assumptions.
+            Information Security and Cryptography, pages 427–452, 2010.
+
+[Reg10]     O. Regev. The learning with errors problem (invited survey).
+            In IEEE Conference on Computational Complexity, pages 191–204, 2010.
+ 
+[Pei16]     C. Peikert. A decade of lattice cryptography.
+            Foundations and Trends in Theoretical Computer Science, 10(4):283–424, 2016.
+
+[Ajt96]     M. Ajtai. Generating hard instances of lattice problems (extended abstract).
+            In 28th Annual ACM Symposium on Theory of Computing, pages 99–108, 1996.
+
+[AD97]      M. Ajtai and C. Dwork. A public-key cryptosystem with worst-case/average-case equivalence.
+            In 29th Annual ACM Symposium on Theory of Computing, pages 284–293, 1997.
+
+[Reg09]     O. Regev. On lattices, learning with errors, random linear codes, and cryptography.
+            Journal of the ACM, 56(6):34, 2009. Preliminary version in STOC 2005.
+
+[LP11]      R. Lindner and C. Peikert. Better key sizes (and attacks) for LWE-based encryption.
+            In Topics in Cryptology – CT-RSA 2011, volume 6558 of Lecture Notes in Computer Science, pages 319–339, 2011.
+
+[FO99]      E. Fujisaki and T. Okamoto. Secure integration of asymmetric and symmetric encryption schemes.
+            In Advances in Cryptology – CRYPTO’99, volume 1666 of Lecture Notes in Computer Science, pages 537–554, 1999.
+
+[TU16]      E. E. Targhi and D. Unruh. Post-quantum security of the Fujisaki-Okamoto and OAEP transforms.
+            In TCC 2016-B: 14th Theory of Cryptography Conference, Part II, volume 9986 of Lecture Notes in Computer Science, pages 192–216, 2016.
+
+[HHK17]     D. Hofheinz, K. Hovelmanns, and E. Kiltz. A modular analysis of the Fujisaki-Okamoto transformation.
+            In TCC 2017: 15th Theory of Cryptography Conference, Part I, volume 10677 of Lecture Notes in Computer Science, pages 341–371, 2017.
+
+[JZC+18]    H. Jiang, Z. Zhang, L. Chen, H. Wang, and Z. Ma. IND-CCA-secure key encapsulation mechanism in the quantum random oracle model, revisited.
+            In Advances in Cryptology – CRYPTO 2018, Part III, volume 10993 of Lecture Notes in Computer Science, pages 96–125, 2018.
