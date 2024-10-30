@@ -61,11 +61,12 @@ algorithms (_KeyGen_, _Encapsulate_, _Decapsulate_):
   outputs a shared secret.
 
 These algorithms are assembled as a two-pass protocol that allows two
-parties, A and B, to derive a shared secret in an interactive fashion:
-In the first pass, party B producing a ciphertext with the _Encapsulate_
-operation needs to first receive or retrieve the public key from party A,
-who is responsible for _KeyGen_ and _Decapsulate_.
-In the second pass, this party A uses its secret key and the ciphertext
+parties, A and B, to derive a shared secret in an interactive fashion.
+Assume that party A is responsible for the _KeyGen_ and _Decapsulate_
+operations, and that party B is responsible for _Encapsulate_.
+In the first pass, after receiving or retrieving party A's public key,
+party B produces a ciphertext with the _Encapsulate_ operation.
+In the second pass, party A uses its secret key and the ciphertext
 to execute the _Decapsulate_ operation.
 The shared secret produced by this protocol can then be used to establish
 a secure communication channel using a symmetric-key algorithm.
@@ -242,7 +243,7 @@ The function Encode(b) is defined as follows.
 
 2. End for
 
-3.  Return C
+3. Return C
 
 The corresponding decoding function Decode(C) decodes an nHat \* nHat
 matrix C into a bit string of length l = B \* nHat^2. It extracts B bits
@@ -299,9 +300,9 @@ The function Pack(C) is defined as follows.
 
    2. End for
 
-   3. End for
+2. End for
 
-2. Output the octet string corresponding to the bit string b = (b_0, b_1, ..., b_(D\*n1\*n2 - 1)), as per XXXX.
+3. Output the octet string corresponding to the bit string b = (b_0, b_1, ..., b_(D\*n1\*n2 - 1)), as per XXXX.
 
 The function Unpack does the reverse of this process to transform an octet string o
 to an n1 \* n2 matrix C with entries C_(i,j) in Z_q, converting the input to a bit
@@ -478,14 +479,13 @@ outputs the keypair (pk, sk) = (seedA \|\| b, s \|\| seedA \|\| b \|\| S^T \|\| 
 9. Compute pkh = SHAKE(seedA \|\| b, lensec)
 
 10. Return public key pk = (seedA \|\| b) and secret key sk = (s \|\| seedA \|\| b \|\| S^T \|\| pkh).
-ST = S^T is encoded row-by-row from ST_(0,0) to ST_(nHat−1,n−1), where
-each matrix coefficient ST_(i,j) is a signed integer encoded as a 16-bit string
-in the little-endian byte order such that ST_(i,j) = −s_15 * 2^15 + (s_0 + s_1 * 2 + s_2 * 2^2 + ... + s_14 * 2^14)
-corresponding to the bit string (s_0, s_1, ..., s_15)
+ST = S^T is encoded row-by-row from ST_(0,0) to ST_(nHat−1,n−1), where each matrix coefficient ST_(i,j)
+is a signed integer encoded as a 16-bit string (s_0, s_1, ..., s_15) in the little-endian byte order
+corresponding to ST_(i,j) = −s_15 * 2^15 + (s_0 + s_1 * 2 + s_2 * 2^2 + ... + s_14 * 2^14)
 
 ## Encapsulation
 
-The encapsulation algorithm takes as input a public key pk = (seedA \|\| b), and
+The encapsulation algorithm takes as input a public key pk = (seedA \|\| b), requires randomness, and
 outputs a ciphertext c = (c1 \|\| c2 \|\| salt) and a shared secret ss.
 
 1.  Choose uniformly random values u and salt of bitlengths lensec and lensalt (resp.)
@@ -576,7 +576,7 @@ produced for a single public key is expected to be equal or greater than 2^8.
 Ephemeral FrodoKEM shall be used for applications in which that same figure is
 expected to be smaller than 2^8.
 
-In contrast to eFrodoKEM, standard FrodoKEM incorporates some changes to address
+In contrast to ephemeral FrodoKEM, standard FrodoKEM incorporates some changes to address
 certain multi-ciphertext attacks [Annex]. Specifically, standard FrodoKEM doubles the
 length of the seedSE value and incorporates a public random salt value into
 encapsulation (see Table 2).
