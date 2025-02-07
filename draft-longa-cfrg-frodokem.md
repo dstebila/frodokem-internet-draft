@@ -200,8 +200,8 @@ string (b_0, b_1, ..., b_15) is converted into two octets f and g (in
 this order) as
 
 ```
-f = b_7 * 2^7 + b_6 * 2^6 + b_5 * 2^5 + b_4 * 2^4 + b_3 * 2^3 + b_2 * 2^2 + b_1 * 2 + b_0
-g = b_15 * 2^7 + b_14 * 2^6 + b_13 * 2^5 + b_12 * 2^4 + b_11 * 2^3 + b_10 * 2^2 + b_9 * 2 + b_8
+f = b[7] * 2^7 + b[6] * 2^6 + b[5] * 2^5 + b[4] * 2^4 + b[3] * 2^3 + b[2] * 2^2 + b[1] * 2 + b[0]
+g = b[15] * 2^7 + b[14] * 2^6 + b[13] * 2^5 + b[12] * 2^4 + b[11] * 2^3 + b[10] * 2^2 + b[9] * 2 + b[8]
 ```
 
 The conversion from octet string to bit string is the reverse of this
@@ -220,8 +220,8 @@ Recall that 2^B <= q. The encoding function ec() encodes an integer
 ec(val) = val * q / 2^B.
 
 Using this function, the function Encode(b) encodes a given bit string
-b = (b_0, ..., b_(l-1)) of length l = B \* nHat^2 as an nHat \* nHat
-matrix C with coefficients C_(i,j) in Z_q by applying ec(\cdot) to B-bit
+b = (b[0], ..., b[l-1]) of length l = B * nHat^2 as an nHat \* nHat
+matrix C with coefficients C[i,j] in Z_q by applying ec(·) to B-bit
 sub-strings sequentially and filling the matrix row by row entry-wise.
 The function Encode(b) is defined as follows.
 
@@ -230,36 +230,36 @@ for i = 0 to nHat - 1 do
    for j = 0 to nHat - 1 do
       val = 0
       for k = 0 to B - 1 do
-         val = val + b_((i * nHat + j)B + k) * 2^k
+         val = val + b[(i * nHat + j)B + k] * 2^k
       end for
-      set C_(i,j) = val * q / 2^B
+      set C[i,j] = val * q / 2^B
    end for
 end for
 
 return C
 ```
 
-The corresponding decoding function Decode(C) decodes an nHat \* nHat
-matrix C into a bit string of length l = B \* nHat^2. It extracts B bits
+The corresponding decoding function Decode(C) decodes an nHat * nHat
+matrix C into a bit string of length l = B * nHat^2. It extracts B bits
 from each entry by applying the function dc():
 
 ```
-dc(c) = ⌊ c * 2^B/q ⌉ mod 2^B.
+dc(c) = ⌊ c * 2^B / q ⌉ mod 2^B.
 ```
 
 That is, the Z_q-entry is interpreted as an integer, then divided by q/2^B
 and rounded. This amounts to rounding to the B most significant bits of
 each entry. With these definitions, it is the case that dc(ec(val)) = val
-for all 0 ≤ val < 2^B.
+for all 0 <= val < 2^B.
 The function Decode(C) is defined as follows.
 
 ```
 for i = 0 to nHat - 1 do
     for j = 0 to nHat - 1 do
-        c = ⌊ C_(i,j) * 2^B / q ⌉ mod 2^B
-        Set c = c_0 * 2^0 + c_1 * 2^1 + ... + c_(B-1) * 2^(B-1)
+        c = ⌊ C[i,j] * 2^B / q ⌉ mod 2^B
+        Set c = c[0] * 2^0 + c[1] * 2^1 + ... + c[B-1] * 2^{B-1}
         for k = 0 to B - 1 do
-            b_((i * nHat + j)B + k) = c_k
+            b[(i * nHat + j)B + k] = c[k]
         end for
     end for
 end for
@@ -279,33 +279,33 @@ The function Pack(C) is defined as follows.
 ```
 for i = 0 to n1 - 1 do
     for j = 0 to n2 - 1 do
-        Set C_(i,j) = c_0 * 2^0 + c_1 * 2^1 + ... + c_(D-1) * 2^(D-1)
+        Set C[i,j] = c[0] * 2^0 + c_1 * 2^1 + ... + c[D-1] * 2^{D-1}
         for k = 0 to D - 1 do
-            b_((i * n2 + j)D + k) = c_(D-1-k)
+            b[(i * n2 + j)D + k] = c[D-1-k]
         end for
     end for
 end for
 
 return the octet string corresponding to the bit string 
-b = (b_0, b_1, ..., b_(D * n1 * n2 - 1)), as per XXXX.
+b = (b[0], b[1], ..., b[D * n1 * n2 - 1]), as per XXXX.
 ```
 
 
 The function Unpack does the reverse of this process to transform an octet string o
-to an n1 \* n2 matrix C with entries C_(i,j) in Z_q, converting the input to a bit
+to an n1 * n2 matrix C with entries C_(i,j) in Z_q, converting the input to a bit
 string, and then extracting D-bit strings and storing each as matrix coefficients
-C_(i,j) for 0 <= i < n1 and 0 <= j < n2 (row-by-row from C_(0,0) to C_(n1-1,n2-1)).
+C[i,j] for 0 <= i < n1 and 0 <= j < n2 (row-by-row from C_(0,0) to C_(n1-1,n2-1)).
 The function Unpack(o, n1, n2) is defined as follows:
 
 ```
 Convert the input octet string o to a bit string 
-b = (b_0, b_1, ..., b_(D * n1 * n2 - 1)), as per XXXX.
+b = (b[0], b[1], ..., b[D * n1 * n2 - 1]), as per XXXX.
 
 for i = 0 to n1 - 1 do
     for j = 0 to n2 - 1 do
-        C_(i,j) = 0
+        C[i,j] = 0
         for k = 0 to D - 1 do
-            C_(i,j) = C_(i,j) + b_((i * n2 + j)D + k) * 2^(D-1-k)
+            C[i,j] = C[i,j] + b[(i * n2 + j)D + k] * 2^(D-1-k)
         end for
     end for
 end for
@@ -319,7 +319,7 @@ The error distribution X used in FrodoKEM is a discrete, symmetric distribution 
 Z, centered at zero and with small support, which approximates a rounded continuous
 Gaussian distribution.
 
-The support of X is S_X = \{−d, −d+1, ..., −1, 0, 1, ..., d−1, d\} for a positive
+The support of X is S_X = {−d, −d+1, ..., −1, 0, 1, ..., d−1, d} for a positive
 integer d. The probabilities X(z) = X(−z) for z in S_X are given by a discrete
 probability density function, which is described by a table
 
@@ -329,12 +329,12 @@ T_X = (T_X(0), T_X(1), ..., T_X(d))
 
 of d+1 positive integers related to the cumulative distribution function.
 
-Given a random bit string r = (r_0, r_1, ..., r_15), the function Sample(r) returns
+Given a random bit string r = (r[0], r[1], ..., r[15]), the function Sample(r) returns
 a sample e from FrodoKEM’s error distribution X via inversion sampling using a
 table T_X, as follows (note that T_X(d) is never accessed):
 
 ```
-t = r_1 * 2^0 + r_2 * 2^1 + ... + r_15 * 2^14
+t = r[1] * 2^0 + r[2] * 2^1 + ... + r[15] * 2^14
 
 e = 0
 
@@ -344,7 +344,7 @@ for i = 0 to d - 1 do
     end if
 end for
 
-e = (-1)^(r_0) * e
+e = (-1)^(r[0]) * e
 
 return e
 ```
@@ -364,14 +364,14 @@ We define the function SampleMatrix which samples an n1 \* n2 matrix using the
 function Sample.
 
 Given (n1 * n2) 16-bit random strings r^(i) and the dimension values n1 and n2,
-SampleMatrix((r^(0), ..., r^(n1\*n2 - 1)), n1, n2) generates an n1 * n2 matrix
+SampleMatrix((r^(0), ..., r^(n1*n2 - 1)), n1, n2) generates an n1 * n2 matrix
 E row-by-row from E_(0,0) to E_(n1-1,n2-1) by successively calling the function
 Sample n1 * n2 times, as follows:
 	
 ```
 for i = 0 to n1 - 1 do
     for j = 0 to n2 - 1 do
-        E_(i,j) = Sample(r^(i * n2 + j))
+        E[i,j] = Sample(r^(i * n2 + j))
     end for
 end for
 
@@ -403,24 +403,24 @@ generates n coefficients (i.e., a full matrix row).
 for i = 0 to n - 1 do
     for j = 0 to n - 1 step 8 do
         b = i || j || 0 || 0 || 0 || 0 || 0 || 0
-        // Each concatenated element is encoded as a 16-bit string 
-        // represented in little-endian byte order, such that:
-        // (i_0, i_1, ..., i_15) ≡ i_0 * 2^0 + i_1 * 2^1 + ... + i_15 * 2^15
-        // and |b| = 128
+        # Each concatenated element is encoded as a 16-bit string 
+        # represented in little-endian byte order, such that:
+        # (i_0, i_1, ..., i_15) ≡ i_0 * 2^0 + i_1 * 2^1 + ... + i_15 * 2^15
+        # and |b| = 128
 
-        C_(i,j) || C_(i,j+1) || ... || C_(i,j+7) = AES128(seed_A, b)
-        // Each matrix coefficient C_(i,j) is a 16-bit string interpreted 
-        // as a nonnegative integer in little-endian byte order:
-        // C_(i,j) = c_0 * 2^0 + c_1 * 2^1 + ... + c_15 * 2^15
-        // corresponding to the bit string (c_0, c_1, ..., c_15)
+        C[i,j] || C[i,j+1] || ... || C[i,j+7] = AES128(seed_A, b)
+        # Each matrix coefficient C_(i,j) is a 16-bit string interpreted 
+        # as a nonnegative integer in little-endian byte order:
+        # C_(i,j) = c_0 * 2^0 + c_1 * 2^1 + ... + c_15 * 2^15
+        # corresponding to the bit string (c_0, c_1, ..., c_15)
 
         for k = 0 to 7 do
-            A_(i,j+k) = C_(i,j+k) mod q
+            A[i,j+k] = C[i,j+k] mod q
         end for
     end for
 end for
 
-Output A
+return A
 ```
 
 
@@ -433,7 +433,7 @@ outputs the keypair (pk, sk) = (seedA || b, s || seedA || b || S^T || pkh).
 
 ```
 Choose uniformly random seeds s, seedSE, and z of bitlengths lensec, lenSE, and lenA (resp.)
-seedA = SHAKE(z, lenA) // Generate pseudorandom seed
+seedA = SHAKE(z, lenA) # Generate pseudorandom seed
 A = Gen(seedA) // Generate the matrix A
 (r^(0), r^(1), ..., r^(2 * n * nHat - 1)) = SHAKE(0x5F || seedSE, 32 * n * nHat) # Generate pseudorandom bit string
 
@@ -451,7 +451,7 @@ where each matrix coefficient ST_(i,j) is a signed integer encoded
 as a 16-bit string (s_0, s_1, ..., s_15) in the little-endian byte order, i.e.
 
 ```
-ST_(i,j) = −s_15 * 2^15 + (s_0 + s_1 * 2 + s_2 * 2^2 + ... + s_14 * 2^14).
+ST[i,j] = −s_15 * 2^15 + (s[0] + s[1] * 2 + s[2] * 2^2 + ... + s[14] * 2^14).
 ```
 
 ## Encapsulation
