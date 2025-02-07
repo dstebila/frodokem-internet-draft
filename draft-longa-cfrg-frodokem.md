@@ -5,29 +5,33 @@ category: info
 
 docname: draft-longa-cfrg-frodokem-latest
 submissiontype: IRTF
-date: 2024-04-23
+date: 2025-02-07
 v: 3
 ipr: trust200902
-area: IRTF
 workgroup: CFRG
 pi: [toc, sortrefs, symrefs]
 keyword:
- - next generation
- - unicorn
- - sparkling distributed ledger
+ - FrodoKEM
+ - PQC
 venue:
   group: WG
-  type: Working Group
-  mail: WG@example.com
-  arch: https://example.com/WG
-  github: USER/REPO
-  latest: https://example.com/LATEST
+  group: Working Group
+  repo: github.com/dstebila/frodokem-internet-draft
 
 author:
  -
-    fullname: Your Name Here
-    organization: Your Organization Here
-    email: your.email@example.com
+    fullname: Patrick Longa
+    organization: Microsoft
+    email: plonga@microsoft.com
+ -
+    fullname: Douglas Stebila
+    organization: University of Waterloo
+    email: stebila@uwaterloo.ca
+ -
+    fullname: Stephan Ehlen
+    organization: Federal Office for Information Security (BSI)
+    email: stephan.ehlen@bsi.bund.de
+
 
 normative:
 
@@ -36,7 +40,7 @@ informative:
 
 --- abstract
 
-This memo specifies FrodoKEM, an IND-CCA2 secure Key Encapsulation Mechanism (KEM).
+This internet draft specifies FrodoKEM, an IND-CCA2 secure Key Encapsulation Mechanism (KEM).
 
 --- middle
 
@@ -49,7 +53,7 @@ connections to conjectured-hard problems on generic, "algebraically
 unstructured" lattices.
 
 As a key encapsulation mechanism, FrodoKEM is a three-tuple of
-algorithms (_KeyGen_, _Encapsulate_, _Decapsulate_):
+algorithms, (_KeyGen_, _Encapsulate_, _Decapsulate_):
 
 -  _KeyGen_ takes no inputs, requires randomness, and outputs a private
   key and a public key;
@@ -127,27 +131,27 @@ computations to reduce the risk of multi-target attacks.
 
 We describe the symbols and abbreviations used throughout this document.
 
-Z represents the set of integers and Z_q represents the set of integers
-modulo q.
+-  Z represents the set of integers and Z_q represents the set of integers
+   modulo q.
 
-$\lfloor$ x $\rceil$ is	the rounding of x to the nearest integer. If
-x = y + 1/2 for some y in Z, then $\lfloor$ x $\rceil$ = y + 1.
+-  ⌊ x ⌉ is	the rounding of x to the nearest integer. If
+   x = y + 1/2 for some y in Z, then ⌊ x ⌉ = y + 1.
 
-A 16-bit bit string is represented by r^(i). And a sequence of t 16-bit
-bit strings r^(i) is represented by (r^(0), r^(1), ..., r^(t-1)).
+-  A 16-bit bit string is represented by r^(i). And a sequence of t 16-bit
+   bit strings r^(i) is represented by (r^(0), r^(1), ..., r^(t-1)).
 
-AES128(k, a) denotes the 128-bit AES128 output under key k for a 128-bit
-input a.
+-  AES128(k, a) denotes the 128-bit AES128 output under key k for a 128-bit
+   input a.
 
-SHAKE128(x, y) and SHAKE256(x, y) denote the y first bits of SHAKE128
-and SHAKE256 (resp.) output for input x.
+-  SHAKE128(x, y) and SHAKE256(x, y) denote the y first bits of SHAKE128
+   and SHAKE256 (resp.) output for input x.
 
-Matrices are represented in capitals with no italics (e.g., A and C).
-For an n1 * n2 matrix C, its (i,j)th coefficient (i.e., the entry in the
-ith row and jth column) is denoted by C[i,j], where 0 <= i < n1 and
-0 <= j < n2. The transpose of matrix C is denoted by C^T.
+-  Matrices are represented in capitals with no italics (e.g., A and C).
+   For an n1 * n2 matrix C, its (i,j)th coefficient (i.e., the entry in the
+   ith row and jth column) is denoted by C[i,j], where 0 <= i < n1 and
+   0 <= j < n2. The transpose of matrix C is denoted by C^T.
 
-AES128 and SHAKE are specified in [FIPS197] and [FIPS202], respectively.
+-  AES128 and SHAKE are specified in [FIPS197] and [FIPS202], respectively.
 
 # Parameters
 
@@ -155,35 +159,35 @@ The FrodoKEM parameters are implicit inputs to the FrodoKEM algorithms
 defined in the next sections. A FrodoKEM parameter set specifies the
 following:
 
-A positive integer D <= 16 that defines the modulus parameter q = 2^D.
+-  A positive integer D <= 16 that defines the modulus parameter q = 2^D.
 
-Positive integers n, nHat specifying matrix dimensions. It holds that n,
-nHat \equiv 0 mod 8.
+-  Positive integers n, nHat specifying matrix dimensions. It holds that n,
+   nHat \equiv 0 mod 8.
 
-A positive integer B <= D specifying the number of bits encoded in each
-matrix entry.
+-  A positive integer B <= D specifying the number of bits encoded in each
+   matrix entry.
 
-A positive integer lenA specifying the bitlength of seeds for the
-generation of the matrix A.
+-  A positive integer lenA specifying the bitlength of seeds for the
+   generation of the matrix A.
 
-A positive integer lensec specifying the number of bits that match the
-bit-security level. Valid values are 128, 192 and 256. This is used to
-determine the bitlength of seeds (not associated to the matrix A), of hash
-value outputs and of values associated to the generation of the shared
-secrets.
+-  A positive integer lensec specifying the number of bits that match the
+   bit-security level. Valid values are 128, 192 and 256. This is used to
+   determine the bitlength of seeds (not associated to the matrix A), of hash
+   value outputs and of values associated to the generation of the shared
+   secrets.
 
-A positive integer lenSE specifying the bitlength of the seed value seedSE.
+-  A positive integer lenSE specifying the bitlength of the seed value seedSE.
 
-A positive integer lensalt specifying the bitlength of the value salt.
+-  A positive integer lensalt specifying the bitlength of the value salt.
 
-A discrete, symmetric error distribution X on Z with support given by
-S_X = {−d, −d+1, ..., −1, 0, 1, ..., d−1, d} for a small integer d.
+-  A discrete, symmetric error distribution X on Z with support given by
+   S_X = {−d, −d+1, ..., −1, 0, 1, ..., d−1, d} for a small integer d.
 
-A table T_X = (T_X(0), T_X(1), ..., T_X(d)) with (d+1) positive integers
-based on the cumulative distribution function for X.
+-  A table T_X = (T_X(0), T_X(1), ..., T_X(d)) with (d+1) positive integers
+   based on the cumulative distribution function for X.
 
-The values for these parameters corresponding to each parameter set are
-given in Section XXXX.
+   The values for these parameters corresponding to each parameter set are
+   given in Section XXXX.
 
 # Supporting functions
 
@@ -253,7 +257,7 @@ each entry. With these definitions, it is the case that dc(ec(val)) = val
 for all 0 <= val < 2^B.
 The function Decode(C) is defined as follows.
 
-```
+```pseudocode
 for i = 0 to nHat - 1 do
     for j = 0 to nHat - 1 do
         c = ⌊ C[i,j] * 2^B / q ⌉ mod 2^B
@@ -276,7 +280,7 @@ The function Pack packs an n1 * n2 matrix C with entries C[i,j] in Z_q to an
 octet string by concatenating the D-bit matrix coefficients.
 The function Pack(C) is defined as follows.
 
-```
+```pseudocode
 for i = 0 to n1 - 1 do
     for j = 0 to n2 - 1 do
         Set C[i,j] = c[0] * 2^0 + c[1] * 2^1 + ... + c[D-1] * 2^{D-1}
@@ -286,10 +290,9 @@ for i = 0 to n1 - 1 do
     end for
 end for
 
-return the octet string corresponding to the bit string 
+return the octet string corresponding to the bit string
 b = (b[0], b[1], ..., b[D * n1 * n2 - 1]), as per XXXX.
 ```
-
 
 The function Unpack does the reverse of this process to transform an octet string o
 to an n1 * n2 matrix C with entries C[i,j] in Z_q, converting the input to a bit
@@ -297,8 +300,8 @@ string, and then extracting D-bit strings and storing each as matrix coefficient
 C[i,j] for 0 <= i < n1 and 0 <= j < n2 (row-by-row from C[0,0] to C[n1-1, n2-1].
 The function Unpack(o, n1, n2) is defined as follows:
 
-```
-Convert the input octet string o to a bit string 
+```pseudocode
+Convert the input octet string o to a bit string
 b = (b[0], b[1], ..., b[D * n1 * n2 - 1]), as per XXXX.
 
 for i = 0 to n1 - 1 do
@@ -323,7 +326,7 @@ The support of X is S_X = {−d, −d+1, ..., −1, 0, 1, ..., d−1, d} for a p
 integer d. The probabilities X(z) = X(−z) for z in S_X are given by a discrete
 probability density function, which is described by a table
 
-```
+```pseudocode
 T_X = (T_X(0), T_X(1), ..., T_X(d))
 ```
 
@@ -333,7 +336,7 @@ Given a random bit string r = (r[0], r[1], ..., r[15]), the function Sample(r) r
 a sample e from FrodoKEM’s error distribution X via inversion sampling using a
 table T_X, as follows (note that T_X(d) is never accessed):
 
-```
+```pseudocode
 t = r[1] * 2^0 + r[2] * 2^1 + ... + r[15] * 2^14
 
 e = 0
@@ -368,7 +371,7 @@ SampleMatrix((r^(0), ..., r^(n1*n2 - 1)), n1, n2) generates an n1 * n2 matrix
 E row-by-row from E[0,0] to E[n1-1,n2-1] by successively calling the function
 Sample n1 * n2 times, as follows:
 	
-```
+```pseudocode
 for i = 0 to n1 - 1 do
     for j = 0 to n2 - 1 do
         E[i,j] = Sample(r^(i * n2 + j))
@@ -399,17 +402,17 @@ generates 8 coefficients.
 The algorithm for the case using SHAKE128 is shown below. Each call to SHAKE128
 generates n coefficients (i.e., a full matrix row).
 
-```
+```pseudocode
 for i = 0 to n - 1 do
     for j = 0 to n - 1 step 8 do
         b = i || j || 0 || 0 || 0 || 0 || 0 || 0
-        # Each concatenated element is encoded as a 16-bit string 
+        # Each concatenated element is encoded as a 16-bit string
         # represented in little-endian byte order, such that:
         # (i[0], i[1], ..., i[15]) ≡ i[0] * 2^0 + i[1] * 2^1 + ... + i[15] * 2^15
         # and |b| = 128
 
         C[i,j] || C[i,j+1] || ... || C[i,j+7] = AES128(seed_A, b)
-        # Each matrix coefficient C[i,j] is a 16-bit string interpreted 
+        # Each matrix coefficient C[i,j] is a 16-bit string interpreted
         # as a non-negative integer in little-endian byte order:
         # C[i,j] = c[0] * 2^0 + c[1] * 2^1 + ... + c[15] * 2^15
         # corresponding to the bit string (c[0], c[1], ..., c[15])
@@ -431,7 +434,7 @@ return A
 The key generation algorithm accepts no input, requires randomness, and
 outputs the keypair (pk, sk) = (seedA || b, s || seedA || b || S^T || pkh).
 
-```
+```pseudocode
 Choose uniformly random seeds s, seedSE, and z of bitlengths lensec, lenSE, and lenA (resp.)
 seedA = SHAKE(z, lenA) # Generate pseudorandom seed
 A = Gen(seedA) // Generate the matrix A
@@ -446,8 +449,8 @@ pk = (seedA || b)
 sk = (s || seedA || b || S^T || pkh)
 ```
 
-Here, the matrix ST = S^T is encoded row-by-row from ST[0,0] to ST[nHat−1,n−1], 
-where each matrix coefficient ST[i,j] is a signed integer encoded 
+Here, the matrix ST = S^T is encoded row-by-row from ST[0,0] to ST[nHat−1,n−1],
+where each matrix coefficient ST[i,j] is a signed integer encoded
 as a 16-bit string (s[0], s[1], ..., s[15]) in the little-endian byte order, i.e.
 
 ```
@@ -459,7 +462,7 @@ ST[i,j] = −s[15] * 2^15 + (s[0] + s[1] * 2 + s[2] * 2^2 + ... + s[14] * 2^14).
 The encapsulation algorithm takes as input a public key pk = (seedA || b), requires randomness, and
 outputs a ciphertext c = (c1 || c2 || salt) and a shared secret ss.
 
-```plaintext
+```pseudocode
 Choose uniformly random values u and salt of lengths lensec and lensalt
 pkh = SHAKE(pk, lensec)  # Compute pkh
 seedSE || k = SHAKE(pkh || u || salt, lenSE + lensec)  # Generate pseudorandom values
@@ -485,8 +488,8 @@ return (c1 || c2 || salt), ss  # Return ciphertext and shared secret
 The decapsulation algorithm takes as input a ciphertext c = (c1 || c2 || salt) and
 a secret key sk = (s || seedA || b || S^T || pkh), and outputs a shared secret ss.
 
-```plaintext
-B' = Unpack(c1, nHat, n) 
+```pseudocode
+B' = Unpack(c1, nHat, n)
 C = Unpack(c2, nHat, nHat)
 M = C - B' * S
 u' = Decode(M)
@@ -503,7 +506,7 @@ E" = SampleMatrix((r^(2 * nHat * n), r^(2 * nHat * n + 1), ..., r^(2 * nHat * n 
 B = Unpack(b, n, nHat)
 V = S' * B + E"
 C' = V + Encode(u')
-kHat = k' if B' == B" and C == C' else s 
+kHat = k' if B' == B" and C == C' else s
 ss = SHAKE(c1 || c2 || salt || kHat, lensec)  # Compute shared secret ss
 
 return ss  # Return shared secret ss
