@@ -143,8 +143,8 @@ SHAKE128(x, y) and SHAKE256(x, y) denote the y first bits of SHAKE128
 and SHAKE256 (resp.) output for input x.
 
 Matrices are represented in capitals with no italics (e.g., A and C).
-For an n1 \* n2 matrix C, its (i,j)th coefficient (i.e., the entry in the
-ith row and jth column) is denoted by C_(i,j), where 0 <= i < n1 and
+For an n1 * n2 matrix C, its (i,j)th coefficient (i.e., the entry in the
+ith row and jth column) is denoted by C[i,j], where 0 <= i < n1 and
 0 <= j < n2. The transpose of matrix C is denoted by C^T.
 
 AES128 and SHAKE are specified in [FIPS197] and [FIPS202], respectively.
@@ -192,11 +192,11 @@ given in Section XXXX.
 This document follows the little-endian formatting for octet encoding of
 bit strings.
 
-A bit string b = (b_0, b_1, ..., b_(|b|-1)) is converted to an octet
+A bit string b = (b[0], b[1], ..., b[|b|-1]) is converted to an octet
 string by taking bits from left to right, packing those from the least
 significant bit of each octet to the most significant bit, and moving to
 the next octet when each octet fills up. For example, the 16-bit bit
-string (b_0, b_1, ..., b_15) is converted into two octets f and g (in
+string (b[0], b[1], ..., b[15]) is converted into two octets f and g (in
 this order) as
 
 ```
@@ -264,7 +264,7 @@ for i = 0 to nHat - 1 do
     end for
 end for
 
-return (b_0, ..., b_(l-1))
+return (b[0], ..., b[l-1])
 ```
 
 ## Packing matrices modulo q
@@ -272,14 +272,14 @@ return (b_0, ..., b_(l-1))
 We define packing and unpacking functions to transform matrices with entries
 in Z_q to bit strings and vice versa.
 
-The function Pack packs an n1 * n2 matrix C with entries C_(i,j) in Z_q to an
+The function Pack packs an n1 * n2 matrix C with entries C[i,j] in Z_q to an
 octet string by concatenating the D-bit matrix coefficients.
 The function Pack(C) is defined as follows.
 
 ```
 for i = 0 to n1 - 1 do
     for j = 0 to n2 - 1 do
-        Set C[i,j] = c[0] * 2^0 + c_1 * 2^1 + ... + c[D-1] * 2^{D-1}
+        Set C[i,j] = c[0] * 2^0 + c[1] * 2^1 + ... + c[D-1] * 2^{D-1}
         for k = 0 to D - 1 do
             b[(i * n2 + j)D + k] = c[D-1-k]
         end for
@@ -292,9 +292,9 @@ b = (b[0], b[1], ..., b[D * n1 * n2 - 1]), as per XXXX.
 
 
 The function Unpack does the reverse of this process to transform an octet string o
-to an n1 * n2 matrix C with entries C_(i,j) in Z_q, converting the input to a bit
+to an n1 * n2 matrix C with entries C[i,j] in Z_q, converting the input to a bit
 string, and then extracting D-bit strings and storing each as matrix coefficients
-C[i,j] for 0 <= i < n1 and 0 <= j < n2 (row-by-row from C_(0,0) to C_(n1-1,n2-1)).
+C[i,j] for 0 <= i < n1 and 0 <= j < n2 (row-by-row from C[0,0] to C[n1-1, n2-1].
 The function Unpack(o, n1, n2) is defined as follows:
 
 ```
@@ -365,7 +365,7 @@ function Sample.
 
 Given (n1 * n2) 16-bit random strings r^(i) and the dimension values n1 and n2,
 SampleMatrix((r^(0), ..., r^(n1*n2 - 1)), n1, n2) generates an n1 * n2 matrix
-E row-by-row from E_(0,0) to E_(n1-1,n2-1) by successively calling the function
+E row-by-row from E[0,0] to E[n1-1,n2-1] by successively calling the function
 Sample n1 * n2 times, as follows:
 	
 ```
@@ -386,7 +386,7 @@ implicit dimension n that is fixed per parameter set, and outputs an n \* n
 pseudorandom matrix A, where all the coefficients are in Z_q.
 There are two options for instantiating Gen: one based on AES128 and another
 based on SHAKE128.
-In both cases, the matrix A is generated row-by-row from A_(0,0) to A_(n-1,n-1).
+In both cases, the matrix A is generated row-by-row from A[0,0] to A[n-1,n-1].
 
 ### Matrix A generation with AES128
 
@@ -405,14 +405,14 @@ for i = 0 to n - 1 do
         b = i || j || 0 || 0 || 0 || 0 || 0 || 0
         # Each concatenated element is encoded as a 16-bit string 
         # represented in little-endian byte order, such that:
-        # (i_0, i_1, ..., i_15) ≡ i_0 * 2^0 + i_1 * 2^1 + ... + i_15 * 2^15
+        # (i[0], i[1], ..., i[15]) ≡ i[0] * 2^0 + i[1] * 2^1 + ... + i[15] * 2^15
         # and |b| = 128
 
         C[i,j] || C[i,j+1] || ... || C[i,j+7] = AES128(seed_A, b)
-        # Each matrix coefficient C_(i,j) is a 16-bit string interpreted 
-        # as a nonnegative integer in little-endian byte order:
-        # C_(i,j) = c_0 * 2^0 + c_1 * 2^1 + ... + c_15 * 2^15
-        # corresponding to the bit string (c_0, c_1, ..., c_15)
+        # Each matrix coefficient C[i,j] is a 16-bit string interpreted 
+        # as a non-negative integer in little-endian byte order:
+        # C[i,j] = c[0] * 2^0 + c[1] * 2^1 + ... + c[15] * 2^15
+        # corresponding to the bit string (c[0], c[1], ..., c[15])
 
         for k = 0 to 7 do
             A[i,j+k] = C[i,j+k] mod q
@@ -446,12 +446,12 @@ pk = (seedA || b)
 sk = (s || seedA || b || S^T || pkh)
 ```
 
-Here, the matrix ST = S^T is encoded row-by-row from ST_(0,0) to ST_(nHat−1,n−1), 
-where each matrix coefficient ST_(i,j) is a signed integer encoded 
-as a 16-bit string (s_0, s_1, ..., s_15) in the little-endian byte order, i.e.
+Here, the matrix ST = S^T is encoded row-by-row from ST[0,0] to ST[nHat−1,n−1], 
+where each matrix coefficient ST[i,j] is a signed integer encoded 
+as a 16-bit string (s[0], s[1], ..., s[15]) in the little-endian byte order, i.e.
 
 ```
-ST[i,j] = −s_15 * 2^15 + (s[0] + s[1] * 2 + s[2] * 2^2 + ... + s[14] * 2^14).
+ST[i,j] = −s[15] * 2^15 + (s[0] + s[1] * 2 + s[2] * 2^2 + ... + s[14] * 2^14).
 ```
 
 ## Encapsulation
