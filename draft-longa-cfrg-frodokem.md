@@ -203,10 +203,10 @@ the next octet when each octet fills up. For example, the 16-bit bit
 string (b[0], b[1], ..., b[15]) is converted into two octets f and g (in
 this order) as
 
-```
+~~~
 f = b[7] * 2^7 + b[6] * 2^6 + b[5] * 2^5 + b[4] * 2^4 + b[3] * 2^3 + b[2] * 2^2 + b[1] * 2 + b[0]
 g = b[15] * 2^7 + b[14] * 2^6 + b[13] * 2^5 + b[12] * 2^4 + b[11] * 2^3 + b[10] * 2^2 + b[9] * 2 + b[8]
-```
+~~~
 
 The conversion from octet string to bit string is the reverse of this
 process.
@@ -229,7 +229,7 @@ matrix C with coefficients C[i,j] in Z_q by applying ec(·) to B-bit
 sub-strings sequentially and filling the matrix row by row entry-wise.
 The function Encode(b) is defined as follows.
 
-```
+~~~
 for i = 0 to nHat - 1 do
    for j = 0 to nHat - 1 do
       val = 0
@@ -241,15 +241,15 @@ for i = 0 to nHat - 1 do
 end for
 
 return C
-```
+~~~
 
 The corresponding decoding function Decode(C) decodes an nHat * nHat
 matrix C into a bit string of length l = B * nHat^2. It extracts B bits
 from each entry by applying the function dc():
 
-```
+~~~
 dc(c) = ⌊ c * 2^B / q ⌉ mod 2^B.
-```
+~~~
 
 That is, the Z_q-entry is interpreted as an integer, then divided by q/2^B
 and rounded. This amounts to rounding to the B most significant bits of
@@ -257,7 +257,7 @@ each entry. With these definitions, it is the case that dc(ec(val)) = val
 for all 0 <= val < 2^B.
 The function Decode(C) is defined as follows.
 
-```pseudocode
+~~~pseudocode
 for i = 0 to nHat - 1 do
     for j = 0 to nHat - 1 do
         c = ⌊ C[i,j] * 2^B / q ⌉ mod 2^B
@@ -269,7 +269,7 @@ for i = 0 to nHat - 1 do
 end for
 
 return (b[0], ..., b[l-1])
-```
+~~~
 
 ## Packing matrices modulo q
 
@@ -280,7 +280,7 @@ The function Pack packs an n1 * n2 matrix C with entries C[i,j] in Z_q to an
 octet string by concatenating the D-bit matrix coefficients.
 The function Pack(C) is defined as follows.
 
-```pseudocode
+~~~pseudocode
 for i = 0 to n1 - 1 do
     for j = 0 to n2 - 1 do
         Set C[i,j] = c[0] * 2^0 + c[1] * 2^1 + ... + c[D-1] * 2^{D-1}
@@ -292,7 +292,7 @@ end for
 
 return the octet string corresponding to the bit string
 b = (b[0], b[1], ..., b[D * n1 * n2 - 1]), as per XXXX.
-```
+~~~
 
 The function Unpack does the reverse of this process to transform an octet string o
 to an n1 * n2 matrix C with entries C[i,j] in Z_q, converting the input to a bit
@@ -300,7 +300,7 @@ string, and then extracting D-bit strings and storing each as matrix coefficient
 C[i,j] for 0 <= i < n1 and 0 <= j < n2 (row-by-row from C[0,0] to C[n1-1, n2-1].
 The function Unpack(o, n1, n2) is defined as follows:
 
-```pseudocode
+~~~pseudocode
 Convert the input octet string o to a bit string
 b = (b[0], b[1], ..., b[D * n1 * n2 - 1]), as per XXXX.
 
@@ -314,7 +314,7 @@ for i = 0 to n1 - 1 do
 end for
 
 return C
-```
+~~~
 
 ## Sampling from the error distribution
 
@@ -326,9 +326,9 @@ The support of X is S_X = {−d, −d+1, ..., −1, 0, 1, ..., d−1, d} for a p
 integer d. The probabilities X(z) = X(−z) for z in S_X are given by a discrete
 probability density function, which is described by a table
 
-```pseudocode
+~~~
 T_X = (T_X(0), T_X(1), ..., T_X(d))
-```
+~~~
 
 of d+1 positive integers related to the cumulative distribution function.
 
@@ -336,7 +336,7 @@ Given a random bit string r = (r[0], r[1], ..., r[15]), the function Sample(r) r
 a sample e from FrodoKEM’s error distribution X via inversion sampling using a
 table T_X, as follows (note that T_X(d) is never accessed):
 
-```pseudocode
+~~~pseudocode
 t = r[1] * 2^0 + r[2] * 2^1 + ... + r[15] * 2^14
 
 e = 0
@@ -350,7 +350,7 @@ end for
 e = (-1)^(r[0]) * e
 
 return e
-```
+~~~
 
 The output of the algorithm is a small integer in the range
 {-d, -d+1, ..., -1, 0, 1, ..., d-1, d}. The tables T_X corresponding to each of
@@ -371,7 +371,7 @@ SampleMatrix((r^(0), ..., r^(n1*n2 - 1)), n1, n2) generates an n1 * n2 matrix
 E row-by-row from E[0,0] to E[n1-1,n2-1] by successively calling the function
 Sample n1 * n2 times, as follows:
 	
-```pseudocode
+~~~pseudocode
 for i = 0 to n1 - 1 do
     for j = 0 to n2 - 1 do
         E[i,j] = Sample(r^(i * n2 + j))
@@ -379,7 +379,7 @@ for i = 0 to n1 - 1 do
 end for
 
 return E
-```
+~~~
 
 
 ## Pseudorandom matrix generation
@@ -402,7 +402,7 @@ generates 8 coefficients.
 The algorithm for the case using SHAKE128 is shown below. Each call to SHAKE128
 generates n coefficients (i.e., a full matrix row).
 
-```pseudocode
+~~~pseudocode
 for i = 0 to n - 1 do
     for j = 0 to n - 1 step 8 do
         b = i || j || 0 || 0 || 0 || 0 || 0 || 0
@@ -424,7 +424,7 @@ for i = 0 to n - 1 do
 end for
 
 return A
-```
+~~~
 
 
 # FrodoKEM
@@ -434,7 +434,7 @@ return A
 The key generation algorithm accepts no input, requires randomness, and
 outputs the keypair (pk, sk) = (seedA || b, s || seedA || b || S^T || pkh).
 
-```pseudocode
+~~~pseudocode
 Choose uniformly random seeds s, seedSE, and z of bitlengths lensec, lenSE, and lenA (resp.)
 seedA = SHAKE(z, lenA) # Generate pseudorandom seed
 A = Gen(seedA) // Generate the matrix A
@@ -447,22 +447,22 @@ b = Pack(B)
 pkh = SHAKE(seedA || b, lensec)
 pk = (seedA || b)
 sk = (s || seedA || b || S^T || pkh)
-```
+~~~
 
 Here, the matrix ST = S^T is encoded row-by-row from ST[0,0] to ST[nHat−1,n−1],
 where each matrix coefficient ST[i,j] is a signed integer encoded
 as a 16-bit string (s[0], s[1], ..., s[15]) in the little-endian byte order, i.e.
 
-```
+~~~
 ST[i,j] = −s[15] * 2^15 + (s[0] + s[1] * 2 + s[2] * 2^2 + ... + s[14] * 2^14).
-```
+~~~
 
 ## Encapsulation
 
 The encapsulation algorithm takes as input a public key pk = (seedA || b), requires randomness, and
 outputs a ciphertext c = (c1 || c2 || salt) and a shared secret ss.
 
-```pseudocode
+~~~pseudocode
 Choose uniformly random values u and salt of lengths lensec and lensalt
 pkh = SHAKE(pk, lensec)  # Compute pkh
 seedSE || k = SHAKE(pkh || u || salt, lenSE + lensec)  # Generate pseudorandom values
@@ -480,7 +480,7 @@ c2 = Pack(C)
 ss = SHAKE(c1 || c2 || salt || k, lensec)  # Compute shared secret ss
 
 return (c1 || c2 || salt), ss  # Return ciphertext and shared secret
-```
+~~~
 
 
 ## Decapsulation
@@ -488,7 +488,7 @@ return (c1 || c2 || salt), ss  # Return ciphertext and shared secret
 The decapsulation algorithm takes as input a ciphertext c = (c1 || c2 || salt) and
 a secret key sk = (s || seedA || b || S^T || pkh), and outputs a shared secret ss.
 
-```pseudocode
+~~~pseudocode
 B' = Unpack(c1, nHat, n)
 C = Unpack(c2, nHat, nHat)
 M = C - B' * S
@@ -510,7 +510,7 @@ kHat = k' if B' == B" and C == C' else s
 ss = SHAKE(c1 || c2 || salt || kHat, lensec)  # Compute shared secret ss
 
 return ss  # Return shared secret ss
-```
+~~~
 
 
 # FrodoKEM variants
