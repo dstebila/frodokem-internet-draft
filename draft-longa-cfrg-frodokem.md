@@ -525,7 +525,7 @@ that is intended for applications in which the number of ciphertexts produced
 relative to any single public key is small. Concretely, the use of standard
 FrodoKEM is recommended for applications in which the number of ciphertexts
 produced for a single public key is expected to be equal or greater than 2^8.
-Ephemeral FrodoKEM shall be used for applications in which that same figure is
+Ephemeral FrodoKEM MUST be used for applications in which that same figure is
 expected to be smaller than 2^8.
 
 In contrast to ephemeral FrodoKEM, standard FrodoKEM incorporates some changes to address
