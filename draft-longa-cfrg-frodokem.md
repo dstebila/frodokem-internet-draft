@@ -51,13 +51,11 @@ unstructured" lattices.
 As a key encapsulation mechanism, FrodoKEM is a three-tuple of
 algorithms (_KeyGen_, _Encapsulate_, _Decapsulate_):
 
-*  _KeyGen_ takes no inputs, requires randomness, and outputs a private
+-  _KeyGen_ takes no inputs, requires randomness, and outputs a private
   key and a public key;
-
-*  _Encapsulate_ takes as input a public key, requires randomness, and
+-  _Encapsulate_ takes as input a public key, requires randomness, and
   outputs a ciphertext and a shared secret;
-
-*  _Decapsulate_ takes as input a ciphertext and a private key, and
+-  _Decapsulate_ takes as input a ciphertext and a private key, and
   outputs a shared secret.
 
 These algorithms are assembled as a two-pass protocol that allows two
@@ -179,7 +177,7 @@ A positive integer lenSE specifying the bitlength of the seed value seedSE.
 A positive integer lensalt specifying the bitlength of the value salt.
 
 A discrete, symmetric error distribution X on Z with support given by
-S_X = \{−d, −d+1, ..., −1, 0, 1, ..., d−1, d\} for a small integer d.
+S_X = {−d, −d+1, ..., −1, 0, 1, ..., d−1, d} for a small integer d.
 
 A table T_X = (T_X(0), T_X(1), ..., T_X(d)) with (d+1) positive integers
 based on the cumulative distribution function for X.
@@ -352,7 +350,7 @@ return e
 ```
 
 The output of the algorithm is a small integer in the range
-\{-d, -d+1, ..., -1, 0, 1, ..., d-1, d\}. The tables T_X corresponding to each of
+{-d, -d+1, ..., -1, 0, 1, ..., d-1, d}. The tables T_X corresponding to each of
 FrodoKEM’s parameter sets are given in Table XXXX.
 
 We emphasize that it is important to perform this sampling in constant time to
@@ -396,7 +394,6 @@ The algorithm for the case using AES128 is shown below. Each call to AES128
 generates 8 coefficients.
 
 
-
 ### Matrix A generation with SHAKE128
 
 The algorithm for the case using SHAKE128 is shown below. Each call to SHAKE128
@@ -427,114 +424,91 @@ Output A
 ```
 
 
-
 # FrodoKEM
 
 ## Key Generation
 
 The key generation algorithm accepts no input, requires randomness, and
-outputs the keypair (pk, sk) = (seedA \|\| b, s \|\| seedA \|\| b \|\| S^T \|\| pkh).
+outputs the keypair (pk, sk) = (seedA || b, s || seedA || b || S^T || pkh).
 
-1. Choose uniformly random seeds s, seedSE and z of bitlengths lensec, lenSE and lenA (resp.)
+```
+Choose uniformly random seeds s, seedSE, and z of bitlengths lensec, lenSE, and lenA (resp.)
+seedA = SHAKE(z, lenA) // Generate pseudorandom seed
+A = Gen(seedA) // Generate the matrix A
+(r^(0), r^(1), ..., r^(2 * n * nHat - 1)) = SHAKE(0x5F || seedSE, 32 * n * nHat) # Generate pseudorandom bit string
 
-2. Generate pseudorandom seed seedA = SHAKE(z, lenA)
+S^T = SampleMatrix((r^(0), r^(1), ..., r^(n * nHat − 1)), nHat, n) # Sample matrix S
+E = SampleMatrix((r^(n * nHat), r^(n * nHat + 1), ..., r^(2 * n * nHat − 1)), n, nHat) # Sample error matrix
+B = A * S + E
+b = Pack(B)
+pkh = SHAKE(seedA || b, lensec)
+pk = (seedA || b)
+sk = (s || seedA || b || S^T || pkh)
+```
 
-3. Generate the matrix A = Gen(seedA)
+Here, the matrix ST = S^T is encoded row-by-row from ST_(0,0) to ST_(nHat−1,n−1), 
+where each matrix coefficient ST_(i,j) is a signed integer encoded 
+as a 16-bit string (s_0, s_1, ..., s_15) in the little-endian byte order, i.e.
 
-4. Generate pseudorandom bit string (r^(0), r^(1), ..., r^(2\*n\*nHat - 1)) = SHAKE(0x5F \|\| seedSE, 32\*n\*nHat)
-
-5. Sample error matrix S^T = SampleMatrix((r^(0), r^(1), ..., r^(n\*nHat − 1)), nHat, n)
-
-6. Sample error matrix E = SampleMatrix((r^(n\*nHat), r^(n\*nHat + 1), ..., r^(2\*n\*nHat − 1)), n, nHat)
-
-7. Compute matrix B = A\*S + E
-
-8. Compute b = Pack(B)
-
-9. Compute pkh = SHAKE(seedA \|\| b, lensec)
-
-10. Return public key pk = (seedA \|\| b) and secret key sk = (s \|\| seedA \|\| b \|\| S^T \|\| pkh).
-ST = S^T is encoded row-by-row from ST_(0,0) to ST_(nHat−1,n−1), where each matrix coefficient ST_(i,j)
-is a signed integer encoded as a 16-bit string (s_0, s_1, ..., s_15) in the little-endian byte order
-corresponding to ST_(i,j) = −s_15 * 2^15 + (s_0 + s_1 * 2 + s_2 * 2^2 + ... + s_14 * 2^14)
+```
+ST_(i,j) = −s_15 * 2^15 + (s_0 + s_1 * 2 + s_2 * 2^2 + ... + s_14 * 2^14).
+```
 
 ## Encapsulation
 
-The encapsulation algorithm takes as input a public key pk = (seedA \|\| b), requires randomness, and
-outputs a ciphertext c = (c1 \|\| c2 \|\| salt) and a shared secret ss.
+The encapsulation algorithm takes as input a public key pk = (seedA || b), requires randomness, and
+outputs a ciphertext c = (c1 || c2 || salt) and a shared secret ss.
 
-1.  Choose uniformly random values u and salt of bitlengths lensec and lensalt (resp.)
+```plaintext
+Choose uniformly random values u and salt of lengths lensec and lensalt
+pkh = SHAKE(pk, lensec)  # Compute pkh
+seedSE || k = SHAKE(pkh || u || salt, lenSE + lensec)  # Generate pseudorandom values
+r = SHAKE(0x96 || seedSE, 16 * (2 * nHat * n + nHat^2))  # Generate pseudorandom bit string
+S' = SampleMatrix((r^(0), r^(1), ..., r^(nHat * n - 1)), nHat, n)  # Sample error matrix S'
+E' = SampleMatrix((r^(nHat * n), r^(nHat * n + 1), ..., r^(2 * nHat * n - 1)), nHat, n)  # Sample error matrix E'
+A = Gen(seedA)  # Generate the matrix A
+B' = S' * A + E'
+c1 = Pack(B')
+E" = SampleMatrix((r^(2 * nHat * n), r^(2 * nHat * n + 1), ..., r^(2 * nHat * n + nHat^2 - 1)), nHat, nHat)  # Sample error matrix E"
+B = Unpack(b, n, nHat)
+V = S' * B + E"
+C = V + Encode(u)
+c2 = Pack(C)
+ss = SHAKE(c1 || c2 || salt || k, lensec)  # Compute shared secret ss
 
-2.  Compute pkh = SHAKE(pk, lensec)
+return (c1 || c2 || salt), ss  # Return ciphertext and shared secret
+```
 
-3.  Generate pseudorandom values seedSE \|\| k = SHAKE(pkh \|\| u \|\| salt, lenSE+lensec)
-
-4.  Generate pseudorandom bit string (r^(0), r^(1), ..., r^(2\*nHat\*n + nHat^2 - 1)) = SHAKE(0x96 \|\| seedSE, 16(2\*nHat\*n + nHat^2))
-
-5.  Sample error matrix S' = SampleMatrix((r^(0), r^(1), ..., r^(nHat\*n - 1)), nHat, n)
-
-6.  Sample error matrix E' = SampleMatrix((r^(nHat\*n), r^(nHat\*n + 1), ..., r^(2\*nHat\*n - 1)), nHat, n)
-
-7.  Generate the matrix A = Gen(seedA)
-
-8.  Compute matrix B' = S'\*A + E'
-
-9.  Compute c1 = Pack(B')
-
-10. Sample error matrix E" = SampleMatrix((r^(2\*nHat\*n), r^(2\*nHat\*n + 1), ..., r^(2\*nHat\*n + nHat^2 - 1)), nHat, nHat)
-
-11. Compute matrix B = Unpack(b, n, nHat)
-
-12. Compute matrix V = S'\*B + E"
-
-13. Compute matrix C = V + Encode(u)
-
-14. Compute c2 = Pack(C)
-
-15. Compute ss = SHAKE(c1 \|\| c2 \|\| salt \|\|k, lensec)
-
-16. Return ciphertext c = (c1 \|\| c2 \|\| salt) and shared secret ss
 
 ## Decapsulation
 
-The decapsulation algorithm takes as input a ciphertext c = (c1 \|\| c2 \|\| salt) and
-a secret key sk = (s \|\| seedA \|\| b \|\| S^T \|\| pkh), and outputs a shared secret ss.
+The decapsulation algorithm takes as input a ciphertext c = (c1 || c2 || salt) and
+a secret key sk = (s || seedA || b || S^T || pkh), and outputs a shared secret ss.
 
-1.  Compute matrix B' = Unpack(c1, nHat, n)
+```plaintext
+B' = Unpack(c1, nHat, n) 
+C = Unpack(c2, nHat, nHat)
+M = C - B' * S
+u' = Decode(M)
+seedSE' || k' = SHAKE(pkh || u' || salt, lenSE + lensec)
+r = SHAKE(0x96 || seedSE', 16 * (2 * nHat * n + nHat^2))
 
-2.  Compute matrix C  = Unpack(c2, nHat, nHat)
+S' = SampleMatrix((r^(0), r^(1), ..., r^(nHat * n - 1)), nHat, n)  # Sample error matrix S'
+E' = SampleMatrix((r^(nHat * n), r^(nHat * n + 1), ..., r^(2 * nHat * n - 1)), nHat, n)  # Sample error matrix E'
 
-3.  Compute matrix M = C - B'*S
+A = Gen(seedA)  # Generate the matrix A
 
-4.  Compute u' = Decode(M)
+B" = S' * A + E'
+E" = SampleMatrix((r^(2 * nHat * n), r^(2 * nHat * n + 1), ..., r^(2 * nHat * n + nHat^2 - 1)), nHat, nHat)  # Sample error matrix E"
+B = Unpack(b, n, nHat)
+V = S' * B + E"
+C' = V + Encode(u')
+kHat = k' if B' == B" and C == C' else s 
+ss = SHAKE(c1 || c2 || salt || kHat, lensec)  # Compute shared secret ss
 
-5.  Generate pseudorandom values seedSE' \|\| k' = SHAKE(pkh \|\| u' \|\|salt, lenSE+lensec)
+return ss  # Return shared secret ss
+```
 
-6.  Generate pseudorandom bit string (r^(0), r^(1), ..., r^(2\*nHat\*n + nHat^2 - 1)) = SHAKE(0x96 \|\| seedSE', 16
-(2\*nHat\*n + nHat^2))
-
-7.  Sample error matrix S' = SampleMatrix((r^(0), r^(1), ..., r^(nHat\*n - 1)), nHat, n)
-
-8.  Sample error matrix E' = SampleMatrix((r^(nHat\*n), r^(nHat\*n + 1), ..., r^(2\*nHat\*n - 1)), nHat, n)
-
-9.  Generate the matrix A  = Gen(seedA)
-
-10.  Compute matrix B" = S'\*A + E'
-
-11.  Sample error matrix E" = SampleMatrix((r^(2\*nHat\*n), r^(2\*nHat\*n + 1), ..., r^(2\*nHat\*n+ nHat^2 - 1)),
-nHat, nHat)
-
-12.  Compute matrix B = Unpack(b, n, nHat)
-
-13.  Compute matrix V = S'\*B + E"
-
-14.  Compute matrix C' = V + Encode(u')
-
-15.  If B' = B" and C = C' then kHat = k' else kHat = s
-
-16.  Compute ss = SHAKE(c1 \|\| c2 \|\| salt \|\| kHat, lensec)
-
-17.  Return shared secret ss
 
 # FrodoKEM variants
 
