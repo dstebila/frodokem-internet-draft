@@ -269,9 +269,8 @@ Table of Contents
    16-bit bit string (b[0], b[1], ..., b[15]) is converted into two
    octets f and g (in this order) as
 
-   f = b[7] * 2^7 + b[6] * 2^6 + b[5] * 2^5 + b[4] * 2^4 + b[3] * 2^3 +
-   b[2] * 2^2 + b[1] * 2 + b[0] g = b[15] * 2^7 + b[14] * 2^6 + b[13] *
-   2^5 + b[12] * 2^4 + b[11] * 2^3 + b[10] * 2^2 + b[9] * 2 + b[8]
+f = b[7] * 2^7 + b[6] * 2^6 + b[5] * 2^5 + b[4] * 2^4 + b[3] * 2^3 + b[2] * 2^2 + b[1] * 2 + b[0]
+g = b[15] * 2^7 + b[14] * 2^6 + b[13] * 2^5 + b[12] * 2^4 + b[11] * 2^3 + b[10] * 2^2 + b[9] * 2 + b[8]
 
    The conversion from octet string to bit string is the reverse of this
    process.
@@ -295,11 +294,17 @@ Table of Contents
    B-bit sub-strings sequentially and filling the matrix row by row
    entry-wise.  The function Encode(b) is defined as follows.
 
-   ``` for i = 0 to nHat - 1 do for j = 0 to nHat - 1 do val = 0 for k =
-   0 to B - 1 do val = val + b[(i * nHat + j)B + k] * 2^k end for set
-   C[i,j] = val * q / 2^B end for end for
+   for i = 0 to nHat - 1 do
+      for j = 0 to nHat - 1 do
+         val = 0
+         for k = 0 to B - 1 do
+            val = val + b[(i * nHat + j)B + k] * 2^k
+         end for
+         set C[i,j] = val * q / 2^B
+      end for
+   end for
 
-   return C ```
+   return C
 
    The corresponding decoding function Decode(C) decodes an nHat * nHat
    matrix C into a bit string of length l = B * nHat^2.  It extracts B
@@ -313,12 +318,17 @@ Table of Contents
    case that dc(ec(val)) = val for all 0 <= val < 2^B.  The function
    Decode(C) is defined as follows.
 
-   ```pseudocode for i = 0 to nHat - 1 do for j = 0 to nHat - 1 do c = ⌊
-   C[i,j] * 2^B / q ⌉ mod 2^B Set c = c[0] * 2^0 + c[1] * 2^1 + ... +
-   c[B-1] * 2^{B-1} for k = 0 to B - 1 do b[(i * nHat + j)B + k] = c[k]
-   end for end for end for
+   for i = 0 to nHat - 1 do
+       for j = 0 to nHat - 1 do
+           c = ⌊ C[i,j] * 2^B / q ⌉ mod 2^B
+           Set c = c[0] * 2^0 + c[1] * 2^1 + ... + c[B-1] * 2^{B-1}
+           for k = 0 to B - 1 do
+               b[(i * nHat + j)B + k] = c[k]
+           end for
+       end for
+   end for
 
-   return (b[0], ..., b[l-1]) ```
+   return (b[0], ..., b[l-1])
 
 7.3.  Packing matrices modulo q
 
@@ -329,12 +339,17 @@ Table of Contents
    Z_q to an octet string by concatenating the D-bit matrix
    coefficients.  The function Pack(C) is defined as follows.
 
-   ```pseudocode for i = 0 to n1 - 1 do for j = 0 to n2 - 1 do Set
-   C[i,j] = c[0] * 2^0 + c[1] * 2^1 + ... + c[D-1] * 2^{D-1} for k = 0
-   to D - 1 do b[(i * n2 + j)D + k] = c[D-1-k] end for end for end for
+   for i = 0 to n1 - 1 do
+       for j = 0 to n2 - 1 do
+           Set C[i,j] = c[0] * 2^0 + c[1] * 2^1 + ... + c[D-1] * 2^{D-1}
+           for k = 0 to D - 1 do
+               b[(i * n2 + j)D + k] = c[D-1-k]
+           end for
+       end for
+   end for
 
-   return the octet string corresponding to the bit string b = (b[0],
-   b[1], ..., b[D * n1 * n2 - 1]), as per XXXX. ```
+   return the octet string corresponding to the bit string
+   b = (b[0], b[1], ..., b[D * n1 * n2 - 1]), as per XXXX.
 
    The function Unpack does the reverse of this process to transform an
    octet string o to an n1 * n2 matrix C with entries C[i,j] in Z_q,
@@ -343,14 +358,19 @@ Table of Contents
    n1 and 0 <= j < n2 (row-by-row from C[0,0] to C[n1-1, n2-1].  The
    function Unpack(o, n1, n2) is defined as follows:
 
-   ```pseudocode Convert the input octet string o to a bit string b =
-   (b[0], b[1], ..., b[D * n1 * n2 - 1]), as per XXXX.
+   Convert the input octet string o to a bit string
+   b = (b[0], b[1], ..., b[D * n1 * n2 - 1]), as per XXXX.
 
-   for i = 0 to n1 - 1 do for j = 0 to n2 - 1 do C[i,j] = 0 for k = 0 to
-   D - 1 do C[i,j] = C[i,j] + b[(i * n2 + j)D + k] * 2^(D-1-k) end for
-   end for end for
+   for i = 0 to n1 - 1 do
+       for j = 0 to n2 - 1 do
+           C[i,j] = 0
+           for k = 0 to D - 1 do
+               C[i,j] = C[i,j] + b[(i * n2 + j)D + k] * 2^(D-1-k)
+           end for
+       end for
+   end for
 
-   return C ```
+   return C
 
 7.4.  Sampling from the error distribution
 
@@ -363,7 +383,7 @@ Table of Contents
    are given by a discrete probability density function, which is
    described by a table
 
-   pseudocode T_X = (T_X(0), T_X(1), ..., T_X(d))
+   T_X = (T_X(0), T_X(1), ..., T_X(d))
 
    of d+1 positive integers related to the cumulative distribution
    function.
@@ -373,15 +393,19 @@ Table of Contents
    inversion sampling using a table T_X, as follows (note that T_X(d) is
    never accessed):
 
-   ```pseudocode t = r[1] * 2^0 + r[2] * 2^1 + ... + r[15] * 2^14
+   t = r[1] * 2^0 + r[2] * 2^1 + ... + r[15] * 2^14
 
    e = 0
 
-   for i = 0 to d - 1 do if t > T_X(i) then e = e + 1 end if end for
+   for i = 0 to d - 1 do
+       if t > T_X(i) then
+           e = e + 1
+       end if
+   end for
 
    e = (-1)^(r[0]) * e
 
-   return e ```
+   return e
 
    The output of the algorithm is a small integer in the range {-d,
    -d+1, ..., -1, 0, 1, ..., d-1, d}. The tables T_X corresponding to
@@ -404,10 +428,13 @@ Table of Contents
    by successively calling the function Sample n1 * n2 times, as
    follows:
 
-   ```pseudocode for i = 0 to n1 - 1 do for j = 0 to n2 - 1 do E[i,j] =
-   Sample(r^(i * n2 + j)) end for end for
+   for i = 0 to n1 - 1 do
+       for j = 0 to n2 - 1 do
+           E[i,j] = Sample(r^(i * n2 + j))
+       end for
+   end for
 
-   return E ```
+   return E
 
 7.6.  Pseudorandom matrix generation
 
@@ -428,24 +455,27 @@ Table of Contents
    The algorithm for the case using SHAKE128 is shown below.  Each call
    to SHAKE128 generates n coefficients (i.e., a full matrix row).
 
-   ```pseudocode for i = 0 to n - 1 do for j = 0 to n - 1 step 8 do b =
-   i || j || 0 || 0 || 0 || 0 || 0 || 0 # Each concatenated element is
-   encoded as a 16-bit string # represented in little-endian byte order,
-   such that: # (i[0], i[1], ..., i[15]) ≡ i[0] * 2^0 + i[1] * 2^1 + ...
-   + i[15] * 2^15 # and |b| = 128
+   for i = 0 to n - 1 do
+       for j = 0 to n - 1 step 8 do
+           b = i || j || 0 || 0 || 0 || 0 || 0 || 0
+           # Each concatenated element is encoded as a 16-bit string
+           # represented in little-endian byte order, such that:
+           # (i[0], i[1], ..., i[15]) ≡ i[0] * 2^0 + i[1] * 2^1 + ... + i[15] * 2^15
+           # and |b| = 128
 
-       C[i,j] || C[i,j+1] || ... || C[i,j+7] = AES128(seed_A, b)
-       # Each matrix coefficient C[i,j] is a 16-bit string interpreted
-       # as a non-negative integer in little-endian byte order:
-       # C[i,j] = c[0] * 2^0 + c[1] * 2^1 + ... + c[15] * 2^15
-       # corresponding to the bit string (c[0], c[1], ..., c[15])
+           C[i,j] || C[i,j+1] || ... || C[i,j+7] = AES128(seed_A, b)
+           # Each matrix coefficient C[i,j] is a 16-bit string interpreted
+           # as a non-negative integer in little-endian byte order:
+           # C[i,j] = c[0] * 2^0 + c[1] * 2^1 + ... + c[15] * 2^15
+           # corresponding to the bit string (c[0], c[1], ..., c[15])
 
-       for k = 0 to 7 do
-           A[i,j+k] = C[i,j+k] mod q
+           for k = 0 to 7 do
+               A[i,j+k] = C[i,j+k] mod q
+           end for
        end for
-   end for end for
+   end for
 
-   return A ```
+   return A
 
 8.  FrodoKEM
 
@@ -455,25 +485,25 @@ Table of Contents
    and outputs the keypair (pk, sk) = (seedA || b, s || seedA || b ||
    S^T || pkh).
 
-   ```pseudocode Choose uniformly random seeds s, seedSE, and z of
-   bitlengths lensec, lenSE, and lenA (resp.) seedA = SHAKE(z, lenA) #
-   Generate pseudorandom seed A = Gen(seedA) // Generate the matrix A
-   (r^(0), r^(1), ..., r^(2 * n * nHat - 1)) = SHAKE(0x5F || seedSE, 32
-   * n * nHat) # Generate pseudorandom bit string
+   Choose uniformly random seeds s, seedSE, and z of bitlengths lensec, lenSE, and lenA (resp.)
+   seedA = SHAKE(z, lenA) # Generate pseudorandom seed
+   A = Gen(seedA) // Generate the matrix A
+   (r^(0), r^(1), ..., r^(2 * n * nHat - 1)) = SHAKE(0x5F || seedSE, 32 * n * nHat) # Generate pseudorandom bit string
 
-   S^T = SampleMatrix((r^(0), r^(1), ..., r^(n * nHat − 1)), nHat, n) #
-   Sample matrix S E = SampleMatrix((r^(n * nHat), r^(n * nHat + 1),
-   ..., r^(2 * n * nHat − 1)), n, nHat) # Sample error matrix B = A * S
-   + E b = Pack(B) pkh = SHAKE(seedA || b, lensec) pk = (seedA || b) sk
-   = (s || seedA || b || S^T || pkh) ```
+   S^T = SampleMatrix((r^(0), r^(1), ..., r^(n * nHat − 1)), nHat, n) # Sample matrix S
+   E = SampleMatrix((r^(n * nHat), r^(n * nHat + 1), ..., r^(2 * n * nHat − 1)), n, nHat) # Sample error matrix
+   B = A * S + E
+   b = Pack(B)
+   pkh = SHAKE(seedA || b, lensec)
+   pk = (seedA || b)
+   sk = (s || seedA || b || S^T || pkh)
 
    Here, the matrix ST = S^T is encoded row-by-row from ST[0,0] to
    ST[nHat−1,n−1], where each matrix coefficient ST[i,j] is a signed
    integer encoded as a 16-bit string (s[0], s[1], ..., s[15]) in the
    little-endian byte order, i.e.
 
-   ST[i,j] = −s[15] * 2^15 + (s[0] + s[1] * 2 + s[2] * 2^2 + ... + s[14]
-   * 2^14).
+ST[i,j] = −s[15] * 2^15 + (s[0] + s[1] * 2 + s[2] * 2^2 + ... + s[14] * 2^14).
 
 8.2.  Encapsulation
 
@@ -489,22 +519,23 @@ Table of Contents
 
                                  Table 1
 
-   ```pseudocode Choose uniformly random values u and salt of lengths
-   lensec and lensalt pkh = SHAKE(pk, lensec) # Compute pkh seedSE || k
-   = SHAKE(pkh || u || salt, lenSE + lensec) # Generate pseudorandom
-   values r = SHAKE(0x96 || seedSE, 16 * (2 * nHat * n + nHat^2)) #
-   Generate pseudorandom bit string S' = SampleMatrix((r^(0), r^(1),
-   ..., r^(nHat * n - 1)), nHat, n) # Sample error matrix S' E' =
-   SampleMatrix((r^(nHat * n), r^(nHat * n + 1), ..., r^(2 * nHat * n -
-   1)), nHat, n) # Sample error matrix E' A = Gen(seedA) # Generate the
-   matrix A B' = S' * A + E' c1 = Pack(B') E" = SampleMatrix((r^(2 *
-   nHat * n), r^(2 * nHat * n + 1), ..., r^(2 * nHat * n + nHat^2 - 1)),
-   nHat, nHat) # Sample error matrix E" B = Unpack(b, n, nHat) V = S' *
-   B + E" C = V + Encode(u) c2 = Pack(C) ss = SHAKE(c1 || c2 || salt ||
-   k, lensec) # Compute shared secret ss
+   Choose uniformly random values u and salt of lengths lensec and lensalt
+   pkh = SHAKE(pk, lensec)  # Compute pkh
+   seedSE || k = SHAKE(pkh || u || salt, lenSE + lensec)  # Generate pseudorandom values
+   r = SHAKE(0x96 || seedSE, 16 * (2 * nHat * n + nHat^2))  # Generate pseudorandom bit string
+   S' = SampleMatrix((r^(0), r^(1), ..., r^(nHat * n - 1)), nHat, n)  # Sample error matrix S'
+   E' = SampleMatrix((r^(nHat * n), r^(nHat * n + 1), ..., r^(2 * nHat * n - 1)), nHat, n)  # Sample error matrix E'
+   A = Gen(seedA)  # Generate the matrix A
+   B' = S' * A + E'
+   c1 = Pack(B')
+   E" = SampleMatrix((r^(2 * nHat * n), r^(2 * nHat * n + 1), ..., r^(2 * nHat * n + nHat^2 - 1)), nHat, nHat)  # Sample error matrix E"
+   B = Unpack(b, n, nHat)
+   V = S' * B + E"
+   C = V + Encode(u)
+   c2 = Pack(C)
+   ss = SHAKE(c1 || c2 || salt || k, lensec)  # Compute shared secret ss
 
-   return (c1 || c2 || salt), ss # Return ciphertext and shared secret
-   ```
+   return (c1 || c2 || salt), ss  # Return ciphertext and shared secret
 
 8.3.  Decapsulation
 
@@ -523,24 +554,27 @@ Table of Contents
 
                                   Table 2
 
-   ```pseudocode B' = Unpack(c1, nHat, n) C = Unpack(c2, nHat, nHat) M =
-   C - B' * S u' = Decode(M) seedSE' || k' = SHAKE(pkh || u' || salt,
-   lenSE + lensec) r = SHAKE(0x96 || seedSE', 16 * (2 * nHat * n +
-   nHat^2))
+   B' = Unpack(c1, nHat, n)
+   C = Unpack(c2, nHat, nHat)
+   M = C - B' * S
+   u' = Decode(M)
+   seedSE' || k' = SHAKE(pkh || u' || salt, lenSE + lensec)
+   r = SHAKE(0x96 || seedSE', 16 * (2 * nHat * n + nHat^2))
 
-   S' = SampleMatrix((r^(0), r^(1), ..., r^(nHat * n - 1)), nHat, n) #
-   Sample error matrix S' E' = SampleMatrix((r^(nHat * n), r^(nHat * n +
-   1), ..., r^(2 * nHat * n - 1)), nHat, n) # Sample error matrix E'
+   S' = SampleMatrix((r^(0), r^(1), ..., r^(nHat * n - 1)), nHat, n)  # Sample error matrix S'
+   E' = SampleMatrix((r^(nHat * n), r^(nHat * n + 1), ..., r^(2 * nHat * n - 1)), nHat, n)  # Sample error matrix E'
 
-   A = Gen(seedA) # Generate the matrix A
+   A = Gen(seedA)  # Generate the matrix A
 
-   B" = S' * A + E' E" = SampleMatrix((r^(2 * nHat * n), r^(2 * nHat * n
-   + 1), ..., r^(2 * nHat * n + nHat^2 - 1)), nHat, nHat) # Sample error
-   matrix E" B = Unpack(b, n, nHat) V = S' * B + E" C' = V + Encode(u')
-   kHat = k' if B' == B" and C == C' else s ss = SHAKE(c1 || c2 ||
-   salt || kHat, lensec) # Compute shared secret ss
+   B" = S' * A + E'
+   E" = SampleMatrix((r^(2 * nHat * n), r^(2 * nHat * n + 1), ..., r^(2 * nHat * n + nHat^2 - 1)), nHat, nHat)  # Sample error matrix E"
+   B = Unpack(b, n, nHat)
+   V = S' * B + E"
+   C' = V + Encode(u')
+   kHat = k' if B' == B" and C == C' else s
+   ss = SHAKE(c1 || c2 || salt || kHat, lensec)  # Compute shared secret ss
 
-   return ss # Return shared secret ss ```
+   return ss  # Return shared secret ss
 
 9.  FrodoKEM variants
 

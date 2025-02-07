@@ -1474,10 +1474,12 @@ significant bit of each octet to the most significant bit, and moving to
 the next octet when each octet fills up. For example, the 16-bit bit
 string (b[0], b[1], ..., b[15]) is converted into two octets f and g (in
 this order) as<a href="#section-7.1-2" class="pilcrow">¶</a></p>
-<p id="section-7.1-3"><code>
+<div class="alignLeft art-text artwork" id="section-7.1-3">
+<pre>
 f = b[7] * 2^7 + b[6] * 2^6 + b[5] * 2^5 + b[4] * 2^4 + b[3] * 2^3 + b[2] * 2^2 + b[1] * 2 + b[0]
 g = b[15] * 2^7 + b[14] * 2^6 + b[13] * 2^5 + b[12] * 2^4 + b[11] * 2^3 + b[10] * 2^2 + b[9] * 2 + b[8]
-</code><a href="#section-7.1-3" class="pilcrow">¶</a></p>
+</pre><a href="#section-7.1-3" class="pilcrow">¶</a>
+</div>
 <p id="section-7.1-4">The conversion from octet string to bit string is the reverse of this
 process.<a href="#section-7.1-4" class="pilcrow">¶</a></p>
 <p id="section-7.1-5">For FrodoKEM, it is always the case that |b| is a multiple of 8 when
@@ -1498,7 +1500,8 @@ b = (b[0], ..., b[l-1]) of length l = B * nHat^2 as an nHat * nHat
 matrix C with coefficients C[i,j] in Z_q by applying ec(·) to B-bit
 sub-strings sequentially and filling the matrix row by row entry-wise.
 The function Encode(b) is defined as follows.<a href="#section-7.2-4" class="pilcrow">¶</a></p>
-<p id="section-7.2-5">```
+<div class="alignLeft art-text artwork" id="section-7.2-5">
+<pre>
 for i = 0 to nHat - 1 do
    for j = 0 to nHat - 1 do
       val = 0
@@ -1507,21 +1510,26 @@ for i = 0 to nHat - 1 do
       end for
       set C[i,j] = val * q / 2^B
    end for
-end for<a href="#section-7.2-5" class="pilcrow">¶</a></p>
-<p id="section-7.2-6">return C
-```<a href="#section-7.2-6" class="pilcrow">¶</a></p>
-<p id="section-7.2-7">The corresponding decoding function Decode(C) decodes an nHat * nHat
+end for
+
+return C
+</pre><a href="#section-7.2-5" class="pilcrow">¶</a>
+</div>
+<p id="section-7.2-6">The corresponding decoding function Decode(C) decodes an nHat * nHat
 matrix C into a bit string of length l = B * nHat^2. It extracts B bits
-from each entry by applying the function dc():<a href="#section-7.2-7" class="pilcrow">¶</a></p>
-<p id="section-7.2-8"><code>
+from each entry by applying the function dc():<a href="#section-7.2-6" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-7.2-7">
+<pre>
 dc(c) = ⌊ c * 2^B / q ⌉ mod 2^B.
-</code><a href="#section-7.2-8" class="pilcrow">¶</a></p>
-<p id="section-7.2-9">That is, the Z_q-entry is interpreted as an integer, then divided by q/2^B
+</pre><a href="#section-7.2-7" class="pilcrow">¶</a>
+</div>
+<p id="section-7.2-8">That is, the Z_q-entry is interpreted as an integer, then divided by q/2^B
 and rounded. This amounts to rounding to the B most significant bits of
 each entry. With these definitions, it is the case that dc(ec(val)) = val
 for all 0 &lt;= val &lt; 2^B.
-The function Decode(C) is defined as follows.<a href="#section-7.2-9" class="pilcrow">¶</a></p>
-<p id="section-7.2-10">```pseudocode
+The function Decode(C) is defined as follows.<a href="#section-7.2-8" class="pilcrow">¶</a></p>
+<div class="lang-pseudocode sourcecode" id="section-7.2-9">
+<pre>
 for i = 0 to nHat - 1 do
     for j = 0 to nHat - 1 do
         c = ⌊ C[i,j] * 2^B / q ⌉ mod 2^B
@@ -1530,9 +1538,11 @@ for i = 0 to nHat - 1 do
             b[(i * nHat + j)B + k] = c[k]
         end for
     end for
-end for<a href="#section-7.2-10" class="pilcrow">¶</a></p>
-<p id="section-7.2-11">return (b[0], ..., b[l-1])
-```<a href="#section-7.2-11" class="pilcrow">¶</a></p>
+end for
+
+return (b[0], ..., b[l-1])
+</pre><a href="#section-7.2-9" class="pilcrow">¶</a>
+</div>
 </section>
 </div>
 <div id="packing-matrices-modulo-q">
@@ -1545,7 +1555,8 @@ in Z_q to bit strings and vice versa.<a href="#section-7.3-1" class="pilcrow">¶
 <p id="section-7.3-2">The function Pack packs an n1 * n2 matrix C with entries C[i,j] in Z_q to an
 octet string by concatenating the D-bit matrix coefficients.
 The function Pack(C) is defined as follows.<a href="#section-7.3-2" class="pilcrow">¶</a></p>
-<p id="section-7.3-3">```pseudocode
+<div class="lang-pseudocode sourcecode" id="section-7.3-3">
+<pre>
 for i = 0 to n1 - 1 do
     for j = 0 to n2 - 1 do
         Set C[i,j] = c[0] * 2^0 + c[1] * 2^1 + ... + c[D-1] * 2^{D-1}
@@ -1553,28 +1564,34 @@ for i = 0 to n1 - 1 do
             b[(i * n2 + j)D + k] = c[D-1-k]
         end for
     end for
-end for<a href="#section-7.3-3" class="pilcrow">¶</a></p>
-<p id="section-7.3-4">return the octet string corresponding to the bit string
+end for
+
+return the octet string corresponding to the bit string
 b = (b[0], b[1], ..., b[D * n1 * n2 - 1]), as per XXXX.
-```<a href="#section-7.3-4" class="pilcrow">¶</a></p>
-<p id="section-7.3-5">The function Unpack does the reverse of this process to transform an octet string o
+</pre><a href="#section-7.3-3" class="pilcrow">¶</a>
+</div>
+<p id="section-7.3-4">The function Unpack does the reverse of this process to transform an octet string o
 to an n1 * n2 matrix C with entries C[i,j] in Z_q, converting the input to a bit
 string, and then extracting D-bit strings and storing each as matrix coefficients
 C[i,j] for 0 &lt;= i &lt; n1 and 0 &lt;= j &lt; n2 (row-by-row from C[0,0] to C[n1-1, n2-1].
-The function Unpack(o, n1, n2) is defined as follows:<a href="#section-7.3-5" class="pilcrow">¶</a></p>
-<p id="section-7.3-6">```pseudocode
+The function Unpack(o, n1, n2) is defined as follows:<a href="#section-7.3-4" class="pilcrow">¶</a></p>
+<div class="lang-pseudocode sourcecode" id="section-7.3-5">
+<pre>
 Convert the input octet string o to a bit string
-b = (b[0], b[1], ..., b[D * n1 * n2 - 1]), as per XXXX.<a href="#section-7.3-6" class="pilcrow">¶</a></p>
-<p id="section-7.3-7">for i = 0 to n1 - 1 do
+b = (b[0], b[1], ..., b[D * n1 * n2 - 1]), as per XXXX.
+
+for i = 0 to n1 - 1 do
     for j = 0 to n2 - 1 do
         C[i,j] = 0
         for k = 0 to D - 1 do
             C[i,j] = C[i,j] + b[(i * n2 + j)D + k] * 2^(D-1-k)
         end for
     end for
-end for<a href="#section-7.3-7" class="pilcrow">¶</a></p>
-<p id="section-7.3-8">return C
-```<a href="#section-7.3-8" class="pilcrow">¶</a></p>
+end for
+
+return C
+</pre><a href="#section-7.3-5" class="pilcrow">¶</a>
+</div>
 </section>
 </div>
 <div id="sampling-from-the-error-distribution">
@@ -1588,31 +1605,39 @@ Gaussian distribution.<a href="#section-7.4-1" class="pilcrow">¶</a></p>
 <p id="section-7.4-2">The support of X is S_X = {−d, −d+1, ..., −1, 0, 1, ..., d−1, d} for a positive
 integer d. The probabilities X(z) = X(−z) for z in S_X are given by a discrete
 probability density function, which is described by a table<a href="#section-7.4-2" class="pilcrow">¶</a></p>
-<p id="section-7.4-3"><code>pseudocode
+<div class="alignLeft art-text artwork" id="section-7.4-3">
+<pre>
 T_X = (T_X(0), T_X(1), ..., T_X(d))
-</code><a href="#section-7.4-3" class="pilcrow">¶</a></p>
+</pre><a href="#section-7.4-3" class="pilcrow">¶</a>
+</div>
 <p id="section-7.4-4">of d+1 positive integers related to the cumulative distribution function.<a href="#section-7.4-4" class="pilcrow">¶</a></p>
 <p id="section-7.4-5">Given a random bit string r = (r[0], r[1], ..., r[15]), the function Sample(r) returns
 a sample e from FrodoKEM’s error distribution X via inversion sampling using a
 table T_X, as follows (note that T_X(d) is never accessed):<a href="#section-7.4-5" class="pilcrow">¶</a></p>
-<p id="section-7.4-6">```pseudocode
-t = r[1] * 2^0 + r[2] * 2^1 + ... + r[15] * 2^14<a href="#section-7.4-6" class="pilcrow">¶</a></p>
-<p id="section-7.4-7">e = 0<a href="#section-7.4-7" class="pilcrow">¶</a></p>
-<p id="section-7.4-8">for i = 0 to d - 1 do
+<div class="lang-pseudocode sourcecode" id="section-7.4-6">
+<pre>
+t = r[1] * 2^0 + r[2] * 2^1 + ... + r[15] * 2^14
+
+e = 0
+
+for i = 0 to d - 1 do
     if t &gt; T_X(i) then
         e = e + 1
     end if
-end for<a href="#section-7.4-8" class="pilcrow">¶</a></p>
-<p id="section-7.4-9">e = (-1)^(r[0]) * e<a href="#section-7.4-9" class="pilcrow">¶</a></p>
-<p id="section-7.4-10">return e
-```<a href="#section-7.4-10" class="pilcrow">¶</a></p>
-<p id="section-7.4-11">The output of the algorithm is a small integer in the range
+end for
+
+e = (-1)^(r[0]) * e
+
+return e
+</pre><a href="#section-7.4-6" class="pilcrow">¶</a>
+</div>
+<p id="section-7.4-7">The output of the algorithm is a small integer in the range
 {-d, -d+1, ..., -1, 0, 1, ..., d-1, d}. The tables T_X corresponding to each of
-FrodoKEM’s parameter sets are given in Table XXXX.<a href="#section-7.4-11" class="pilcrow">¶</a></p>
-<p id="section-7.4-12">We emphasize that it is important to perform this sampling in constant time to
+FrodoKEM’s parameter sets are given in Table XXXX.<a href="#section-7.4-7" class="pilcrow">¶</a></p>
+<p id="section-7.4-8">We emphasize that it is important to perform this sampling in constant time to
 avoid exposing timing side-channels, which is why the for-loop of the algorithm
 does a complete loop through the entire table T_X. Similarly, the comparison in
-the if-loop needs to be implemented in a constant-time manner.<a href="#section-7.4-12" class="pilcrow">¶</a></p>
+the if-loop needs to be implemented in a constant-time manner.<a href="#section-7.4-8" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="matrix-sampling-from-the-error-distribution">
@@ -1626,14 +1651,17 @@ function Sample.<a href="#section-7.5-1" class="pilcrow">¶</a></p>
 SampleMatrix((r^(0), ..., r^(n1*n2 - 1)), n1, n2) generates an n1 * n2 matrix
 E row-by-row from E[0,0] to E[n1-1,n2-1] by successively calling the function
 Sample n1 * n2 times, as follows:<a href="#section-7.5-2" class="pilcrow">¶</a></p>
-<p id="section-7.5-3">```pseudocode
+<div class="lang-pseudocode sourcecode" id="section-7.5-3">
+<pre>
 for i = 0 to n1 - 1 do
     for j = 0 to n2 - 1 do
         E[i,j] = Sample(r^(i * n2 + j))
     end for
-end for<a href="#section-7.5-3" class="pilcrow">¶</a></p>
-<p id="section-7.5-4">return E
-```<a href="#section-7.5-4" class="pilcrow">¶</a></p>
+end for
+
+return E
+</pre><a href="#section-7.5-3" class="pilcrow">¶</a>
+</div>
 </section>
 </div>
 <div id="pseudorandom-matrix-generation">
@@ -1663,30 +1691,31 @@ generates 8 coefficients.<a href="#section-7.6.1-1" class="pilcrow">¶</a></p>
           </h4>
 <p id="section-7.6.2-1">The algorithm for the case using SHAKE128 is shown below. Each call to SHAKE128
 generates n coefficients (i.e., a full matrix row).<a href="#section-7.6.2-1" class="pilcrow">¶</a></p>
-<p id="section-7.6.2-2">```pseudocode
+<div class="lang-pseudocode sourcecode" id="section-7.6.2-2">
+<pre>
 for i = 0 to n - 1 do
     for j = 0 to n - 1 step 8 do
         b = i || j || 0 || 0 || 0 || 0 || 0 || 0
         # Each concatenated element is encoded as a 16-bit string
         # represented in little-endian byte order, such that:
         # (i[0], i[1], ..., i[15]) ≡ i[0] * 2^0 + i[1] * 2^1 + ... + i[15] * 2^15
-        # and |b| = 128<a href="#section-7.6.2-2" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-7.6.2-3">
-<pre>
-    C[i,j] || C[i,j+1] || ... || C[i,j+7] = AES128(seed_A, b)
-    # Each matrix coefficient C[i,j] is a 16-bit string interpreted
-    # as a non-negative integer in little-endian byte order:
-    # C[i,j] = c[0] * 2^0 + c[1] * 2^1 + ... + c[15] * 2^15
-    # corresponding to the bit string (c[0], c[1], ..., c[15])
+        # and |b| = 128
 
-    for k = 0 to 7 do
-        A[i,j+k] = C[i,j+k] mod q
+        C[i,j] || C[i,j+1] || ... || C[i,j+7] = AES128(seed_A, b)
+        # Each matrix coefficient C[i,j] is a 16-bit string interpreted
+        # as a non-negative integer in little-endian byte order:
+        # C[i,j] = c[0] * 2^0 + c[1] * 2^1 + ... + c[15] * 2^15
+        # corresponding to the bit string (c[0], c[1], ..., c[15])
+
+        for k = 0 to 7 do
+            A[i,j+k] = C[i,j+k] mod q
+        end for
     end for
-end for end for
-</pre><a href="#section-7.6.2-3" class="pilcrow">¶</a>
+end for
+
+return A
+</pre><a href="#section-7.6.2-2" class="pilcrow">¶</a>
 </div>
-<p id="section-7.6.2-4">return A
-```<a href="#section-7.6.2-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1705,25 +1734,30 @@ end for end for
         </h3>
 <p id="section-8.1-1">The key generation algorithm accepts no input, requires randomness, and
 outputs the keypair (pk, sk) = (seedA || b, s || seedA || b || S^T || pkh).<a href="#section-8.1-1" class="pilcrow">¶</a></p>
-<p id="section-8.1-2">```pseudocode
+<div class="lang-pseudocode sourcecode" id="section-8.1-2">
+<pre>
 Choose uniformly random seeds s, seedSE, and z of bitlengths lensec, lenSE, and lenA (resp.)
 seedA = SHAKE(z, lenA) # Generate pseudorandom seed
 A = Gen(seedA) // Generate the matrix A
-(r^(0), r^(1), ..., r^(2 * n * nHat - 1)) = SHAKE(0x5F || seedSE, 32 * n * nHat) # Generate pseudorandom bit string<a href="#section-8.1-2" class="pilcrow">¶</a></p>
-<p id="section-8.1-3">S^T = SampleMatrix((r^(0), r^(1), ..., r^(n * nHat − 1)), nHat, n) # Sample matrix S
+(r^(0), r^(1), ..., r^(2 * n * nHat - 1)) = SHAKE(0x5F || seedSE, 32 * n * nHat) # Generate pseudorandom bit string
+
+S^T = SampleMatrix((r^(0), r^(1), ..., r^(n * nHat − 1)), nHat, n) # Sample matrix S
 E = SampleMatrix((r^(n * nHat), r^(n * nHat + 1), ..., r^(2 * n * nHat − 1)), n, nHat) # Sample error matrix
 B = A * S + E
 b = Pack(B)
 pkh = SHAKE(seedA || b, lensec)
 pk = (seedA || b)
 sk = (s || seedA || b || S^T || pkh)
-```<a href="#section-8.1-3" class="pilcrow">¶</a></p>
-<p id="section-8.1-4">Here, the matrix ST = S^T is encoded row-by-row from ST[0,0] to ST[nHat−1,n−1],
+</pre><a href="#section-8.1-2" class="pilcrow">¶</a>
+</div>
+<p id="section-8.1-3">Here, the matrix ST = S^T is encoded row-by-row from ST[0,0] to ST[nHat−1,n−1],
 where each matrix coefficient ST[i,j] is a signed integer encoded
-as a 16-bit string (s[0], s[1], ..., s[15]) in the little-endian byte order, i.e.<a href="#section-8.1-4" class="pilcrow">¶</a></p>
-<p id="section-8.1-5"><code>
+as a 16-bit string (s[0], s[1], ..., s[15]) in the little-endian byte order, i.e.<a href="#section-8.1-3" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-8.1-4">
+<pre>
 ST[i,j] = −s[15] * 2^15 + (s[0] + s[1] * 2 + s[2] * 2^2 + ... + s[14] * 2^14).
-</code><a href="#section-8.1-5" class="pilcrow">¶</a></p>
+</pre><a href="#section-8.1-4" class="pilcrow">¶</a>
+</div>
 </section>
 </div>
 <div id="encapsulation">
@@ -1752,7 +1786,8 @@ ST[i,j] = −s[15] * 2^15 + (s[0] + s[1] * 2 + s[2] * 2^2 + ... + s[14] * 2^14).
             </tr>
           </tbody>
         </table>
-<p id="section-8.2-2">```pseudocode
+<div class="lang-pseudocode sourcecode" id="section-8.2-2">
+<pre>
 Choose uniformly random values u and salt of lengths lensec and lensalt
 pkh = SHAKE(pk, lensec)  # Compute pkh
 seedSE || k = SHAKE(pkh || u || salt, lenSE + lensec)  # Generate pseudorandom values
@@ -1767,9 +1802,11 @@ B = Unpack(b, n, nHat)
 V = S' * B + E"
 C = V + Encode(u)
 c2 = Pack(C)
-ss = SHAKE(c1 || c2 || salt || k, lensec)  # Compute shared secret ss<a href="#section-8.2-2" class="pilcrow">¶</a></p>
-<p id="section-8.2-3">return (c1 || c2 || salt), ss  # Return ciphertext and shared secret
-```<a href="#section-8.2-3" class="pilcrow">¶</a></p>
+ss = SHAKE(c1 || c2 || salt || k, lensec)  # Compute shared secret ss
+
+return (c1 || c2 || salt), ss  # Return ciphertext and shared secret
+</pre><a href="#section-8.2-2" class="pilcrow">¶</a>
+</div>
 </section>
 </div>
 <div id="decapsulation">
@@ -1806,25 +1843,31 @@ ss = SHAKE(c1 || c2 || salt || k, lensec)  # Compute shared secret ss<a href="#s
             </tr>
           </tbody>
         </table>
-<p id="section-8.3-2">```pseudocode
+<div class="lang-pseudocode sourcecode" id="section-8.3-2">
+<pre>
 B' = Unpack(c1, nHat, n)
 C = Unpack(c2, nHat, nHat)
 M = C - B' * S
 u' = Decode(M)
 seedSE' || k' = SHAKE(pkh || u' || salt, lenSE + lensec)
-r = SHAKE(0x96 || seedSE', 16 * (2 * nHat * n + nHat^2))<a href="#section-8.3-2" class="pilcrow">¶</a></p>
-<p id="section-8.3-3">S' = SampleMatrix((r^(0), r^(1), ..., r^(nHat * n - 1)), nHat, n)  # Sample error matrix S'
-E' = SampleMatrix((r^(nHat * n), r^(nHat * n + 1), ..., r^(2 * nHat * n - 1)), nHat, n)  # Sample error matrix E'<a href="#section-8.3-3" class="pilcrow">¶</a></p>
-<p id="section-8.3-4">A = Gen(seedA)  # Generate the matrix A<a href="#section-8.3-4" class="pilcrow">¶</a></p>
-<p id="section-8.3-5">B" = S' * A + E'
+r = SHAKE(0x96 || seedSE', 16 * (2 * nHat * n + nHat^2))
+
+S' = SampleMatrix((r^(0), r^(1), ..., r^(nHat * n - 1)), nHat, n)  # Sample error matrix S'
+E' = SampleMatrix((r^(nHat * n), r^(nHat * n + 1), ..., r^(2 * nHat * n - 1)), nHat, n)  # Sample error matrix E'
+
+A = Gen(seedA)  # Generate the matrix A
+
+B" = S' * A + E'
 E" = SampleMatrix((r^(2 * nHat * n), r^(2 * nHat * n + 1), ..., r^(2 * nHat * n + nHat^2 - 1)), nHat, nHat)  # Sample error matrix E"
 B = Unpack(b, n, nHat)
 V = S' * B + E"
 C' = V + Encode(u')
 kHat = k' if B' == B" and C == C' else s
-ss = SHAKE(c1 || c2 || salt || kHat, lensec)  # Compute shared secret ss<a href="#section-8.3-5" class="pilcrow">¶</a></p>
-<p id="section-8.3-6">return ss  # Return shared secret ss
-```<a href="#section-8.3-6" class="pilcrow">¶</a></p>
+ss = SHAKE(c1 || c2 || salt || kHat, lensec)  # Compute shared secret ss
+
+return ss  # Return shared secret ss
+</pre><a href="#section-8.3-2" class="pilcrow">¶</a>
+</div>
 </section>
 </div>
 </section>
