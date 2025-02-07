@@ -201,13 +201,15 @@ the next octet when each octet fills up. For example, the 16-bit bit
 string (b_0, b_1, ..., b_15) is converted into two octets f and g (in
 this order) as
 
-f = b_7 \* 2^7 + b_6 \* 2^6 + b_5 \* 2^5 + b_4 \* 2^4 + b_3 \* 2^3 + b_2 \* 2^2 + b_1 \* 2 + b_0
-g = b_15 \* 2^7 + b_14 \* 2^6 + b_13 \* 2^5 + b_12 \* 2^4 + b_11 \* 2^3 + b_10 \* 2^2 + b_9 \* 2 + b_8
+```
+f = b_7 * 2^7 + b_6 * 2^6 + b_5 * 2^5 + b_4 * 2^4 + b_3 * 2^3 + b_2 * 2^2 + b_1 * 2 + b_0
+g = b_15 * 2^7 + b_14 * 2^6 + b_13 * 2^5 + b_12 * 2^4 + b_11 * 2^3 + b_10 * 2^2 + b_9 * 2 + b_8
+```
 
 The conversion from octet string to bit string is the reverse of this
 process.
 
-For FrodoKEM, it is always the case that \|b\| is a multiple of 8 when
+For FrodoKEM, it is always the case that |b| is a multiple of 8 when
 performing octet encoding of bit strings.
 
 ## Matrix encoding of bit strings
@@ -217,7 +219,7 @@ We define how bit strings are encoded as mod-q integer matrices.
 Recall that 2^B <= q. The encoding function ec() encodes an integer
 0 <= val < 2^B as an element in Z_q by multiplying it by q/2^B = 2^(D-B):
 
-ec(val) = val \* q/2^B.
+ec(val) = val * q / 2^B.
 
 Using this function, the function Encode(b) encodes a given bit string
 b = (b_0, ..., b_(l-1)) of length l = B \* nHat^2 as an nHat \* nHat
@@ -225,31 +227,27 @@ matrix C with coefficients C_(i,j) in Z_q by applying ec(\cdot) to B-bit
 sub-strings sequentially and filling the matrix row by row entry-wise.
 The function Encode(b) is defined as follows.
 
-1. For i = 0 to nHat - 1 do
+```
+for i = 0 to nHat - 1 do
+   for j = 0 to nHat - 1 do
+      val = 0
+      for k = 0 to B - 1 do
+         val = val + b_((i * nHat + j)B + k) * 2^k
+      end for
+      set C_(i,j) = val * q / 2^B
+   end for
+end for
 
-   1. For j = 0 to nHat - 1 do
-
-      1. val = 0
-
-      2. For k = 0 to B - 1 do
-
-         1. val = val + b_((i\*nHat + j)B + k) \* 2^k
-
-      3. End for
-
-      4. Set C_(i,j) = val \* q/2^B
-
-   2. End for
-
-2. End for
-
-3. Return C
+return C
+```
 
 The corresponding decoding function Decode(C) decodes an nHat \* nHat
 matrix C into a bit string of length l = B \* nHat^2. It extracts B bits
 from each entry by applying the function dc():
 
-dc(c) = $\lfloor$ c \* 2^B/q $\rceil$ mod 2^B.
+```
+dc(c) = ⌊ c * 2^B/q ⌉ mod 2^B.
+```
 
 That is, the Z_q-entry is interpreted as an integer, then divided by q/2^B
 and rounded. This amounts to rounding to the B most significant bits of
@@ -257,52 +255,43 @@ each entry. With these definitions, it is the case that dc(ec(val)) = val
 for all 0 ≤ val < 2^B.
 The function Decode(C) is defined as follows.
 
-1. For i = 0 to nHat - 1 do
+```
+for i = 0 to nHat - 1 do
+    for j = 0 to nHat - 1 do
+        c = ⌊ C_(i,j) * 2^B / q ⌉ mod 2^B
+        Set c = c_0 * 2^0 + c_1 * 2^1 + ... + c_(B-1) * 2^(B-1)
+        for k = 0 to B - 1 do
+            b_((i * nHat + j)B + k) = c_k
+        end for
+    end for
+end for
 
-   1. For j = 0 to nHat - 1 do
-
-      1. c = $\lfloor$ C_(i,j) \* 2^B/q $\rceil$ mod 2^B
-
-      2. Set c = c_0 * 2^0 + c_1 * 2^1 + ... + c_(B-1) * 2^(B-1)
-
-      3. For k = 0 to B - 1 do
-
-         1. b_((i*nHat + j)B + k) = c_k
-
-      4. End for
-
-   2. End for
-
-2. End for
-
-3. Return (b_0, ..., b_(l-1)).
+return (b_0, ..., b_(l-1))
+```
 
 ## Packing matrices modulo q
 
 We define packing and unpacking functions to transform matrices with entries
 in Z_q to bit strings and vice versa.
 
-The function Pack packs an n1 \* n2 matrix C with entries C_(i,j) in Z_q to an
+The function Pack packs an n1 * n2 matrix C with entries C_(i,j) in Z_q to an
 octet string by concatenating the D-bit matrix coefficients.
 The function Pack(C) is defined as follows.
 
-1. For i = 0 to n1 - 1 do
+```
+for i = 0 to n1 - 1 do
+    for j = 0 to n2 - 1 do
+        Set C_(i,j) = c_0 * 2^0 + c_1 * 2^1 + ... + c_(D-1) * 2^(D-1)
+        for k = 0 to D - 1 do
+            b_((i * n2 + j)D + k) = c_(D-1-k)
+        end for
+    end for
+end for
 
-   1. For j = 0 to n2 - 1 do
+return the octet string corresponding to the bit string 
+b = (b_0, b_1, ..., b_(D * n1 * n2 - 1)), as per XXXX.
+```
 
-      1. Set C_(i,j) = c_0 * 2^0 + c_1 * 2^1 + ... + c_(D-1) * 2^(D-1)
-
-      2. For k = 0 to D - 1 do
-
-         1. b_((i\*n2 + j)D + k) = c_(D-1-k)
-
-      3. End for
-
-   2. End for
-
-2. End for
-
-3. Output the octet string corresponding to the bit string b = (b_0, b_1, ..., b_(D\*n1\*n2 - 1)), as per XXXX.
 
 The function Unpack does the reverse of this process to transform an octet string o
 to an n1 \* n2 matrix C with entries C_(i,j) in Z_q, converting the input to a bit
@@ -310,25 +299,21 @@ string, and then extracting D-bit strings and storing each as matrix coefficient
 C_(i,j) for 0 <= i < n1 and 0 <= j < n2 (row-by-row from C_(0,0) to C_(n1-1,n2-1)).
 The function Unpack(o, n1, n2) is defined as follows:
 
-1. Convert the input octet string o to a bit string b = (b_0, b_1, ..., b_(D\*n1\*n2 - 1)), as per XXXX.
+```
+Convert the input octet string o to a bit string 
+b = (b_0, b_1, ..., b_(D * n1 * n2 - 1)), as per XXXX.
 
-2. For i = 0 to n1 - 1 do
+for i = 0 to n1 - 1 do
+    for j = 0 to n2 - 1 do
+        C_(i,j) = 0
+        for k = 0 to D - 1 do
+            C_(i,j) = C_(i,j) + b_((i * n2 + j)D + k) * 2^(D-1-k)
+        end for
+    end for
+end for
 
-   1. For j = 0 to n_2 - 1 do
-
-      1. C_(i,j) = 0
-
-      2. For k = 0 to D - 1 do
-
-         1. C_(i,j) = C(i,j) + b_((i\*n2 + j)D + k) \* 2^(D-1-k)
-
-      3. End for
-
-   2. End for
-
-3. End for
-
-4. Output C
+return C
+```
 
 ## Sampling from the error distribution
 
@@ -340,7 +325,9 @@ The support of X is S_X = \{−d, −d+1, ..., −1, 0, 1, ..., d−1, d\} for a
 integer d. The probabilities X(z) = X(−z) for z in S_X are given by a discrete
 probability density function, which is described by a table
 
+```
 T_X = (T_X(0), T_X(1), ..., T_X(d))
+```
 
 of d+1 positive integers related to the cumulative distribution function.
 
@@ -348,23 +335,21 @@ Given a random bit string r = (r_0, r_1, ..., r_15), the function Sample(r) retu
 a sample e from FrodoKEM’s error distribution X via inversion sampling using a
 table T_X, as follows (note that T_X(d) is never accessed):
 
-1. Set t = r_1 \* 2^0 + r_2 * 2^1 + ... + r_15 \* 2^14
+```
+t = r_1 * 2^0 + r_2 * 2^1 + ... + r_15 * 2^14
 
-2. e = 0
+e = 0
 
-3. For i = 0 to d - 1 do
+for i = 0 to d - 1 do
+    if t > T_X(i) then
+        e = e + 1
+    end if
+end for
 
-   1. If t > T_X(i) then
+e = (-1)^(r_0) * e
 
-      1. e = e + 1
-
-   2. End if
-
-4. End for
-
-5. e = (-1)^(r_0) \* e
-
-6. Output e
+return e
+```
 
 The output of the algorithm is a small integer in the range
 \{-d, -d+1, ..., -1, 0, 1, ..., d-1, d\}. The tables T_X corresponding to each of
@@ -380,22 +365,21 @@ the if-loop needs to be implemented in a constant-time manner.
 We define the function SampleMatrix which samples an n1 \* n2 matrix using the
 function Sample.
 
-Given (n1 \* n2) 16-bit random strings r^(i) and the dimension values n1 and n2,
-SampleMatrix((r^(0), ..., r^(n1\*n2 - 1)), n1, n2) generates an n1 \* n2 matrix
+Given (n1 * n2) 16-bit random strings r^(i) and the dimension values n1 and n2,
+SampleMatrix((r^(0), ..., r^(n1\*n2 - 1)), n1, n2) generates an n1 * n2 matrix
 E row-by-row from E_(0,0) to E_(n1-1,n2-1) by successively calling the function
-Sample n1 \* n2 times, as follows:
+Sample n1 * n2 times, as follows:
 	
-1. For i = 0 to n1 - 1 do
+```
+for i = 0 to n1 - 1 do
+    for j = 0 to n2 - 1 do
+        E_(i,j) = Sample(r^(i * n2 + j))
+    end for
+end for
 
-   1. For j = 0 to n2 - 1 do
+return E
+```
 
-      1. E_(i,j) = Sample(r^(i\*n2 + j))
-
-   2. End for
-
-2. End for
-
-3. Output E
 
 ## Pseudorandom matrix generation
 
@@ -411,46 +395,37 @@ In both cases, the matrix A is generated row-by-row from A_(0,0) to A_(n-1,n-1).
 The algorithm for the case using AES128 is shown below. Each call to AES128
 generates 8 coefficients.
 
-1. For i = 0 to n - 1 do
 
-   1. For j = 0 to n - 1 step 8 do
-
-      1. b = i\|\|j\|\|0\|\|0\|\|0\|\|0\|\|0\|\|0, where each concatenated element is encoded as a 16-bit string represented in the little-endian byte order such that, e.g., (i_0, i_1, ..., i_15) \equiv i_0 \* 2^0 + i_1 \* 2^1 + ... + i_15 *\ 2^15, and \|b\| = 128
-
-      2. C_(i,j) \|\| C_(i,j+1) \|\| ... \|\| C_(i,j+7) = AES128(seed_A, b), where each matrix coefficient C_(i,j) is a 16-bit string interpreted as a nonnegative integer in the little-endian byte order, such that C_(i,j) = c_0 \* 2^0 + c_1 *\ 2^1 + ... + c_15 *\ 2^15 corresponding to the bit string (c_0, c_1, ...,c_15)
-
-      3. For k = 0 to 7 do
-
-         1. A_(i,j+k) = C_(i,j+k) mod q
-
-      4. End for
-
-   2. End for
-
-2. End for
-
-3. Output A
 
 ### Matrix A generation with SHAKE128
 
 The algorithm for the case using SHAKE128 is shown below. Each call to SHAKE128
 generates n coefficients (i.e., a full matrix row).
 
-1. For i = 0 to n - 1 do
+```
+for i = 0 to n - 1 do
+    for j = 0 to n - 1 step 8 do
+        b = i || j || 0 || 0 || 0 || 0 || 0 || 0
+        // Each concatenated element is encoded as a 16-bit string 
+        // represented in little-endian byte order, such that:
+        // (i_0, i_1, ..., i_15) ≡ i_0 * 2^0 + i_1 * 2^1 + ... + i_15 * 2^15
+        // and |b| = 128
 
-   1. b = i\|\|seed_A, where i is encoded as a 16-bit string represented in the little-endian byte order such that (i_0, i_1 , ..., i_15) \equiv i_0 \* 2^0 + i_1 \* 2^1 + ... + i_15 *\ 2^15, and hence the bitlength of b is \|b\| = lenA+16
+        C_(i,j) || C_(i,j+1) || ... || C_(i,j+7) = AES128(seed_A, b)
+        // Each matrix coefficient C_(i,j) is a 16-bit string interpreted 
+        // as a nonnegative integer in little-endian byte order:
+        // C_(i,j) = c_0 * 2^0 + c_1 * 2^1 + ... + c_15 * 2^15
+        // corresponding to the bit string (c_0, c_1, ..., c_15)
 
-   2. C_(i,0) \|\| C_(i,1) \|\| ... \|\| C_(i,n-1) = SHAKE128(b, 16\*n), where each matrix coefficient C_(i,j) is a 16-bit string interpreted as a nonnegative integer in the little-endian byte order, such that C_(i,j) = c_0 \* 2^0 + c_1 *\ 2^1 + ... + c_15 *\ 2^15 corresponding to the bit string (c_0, c_1, ..., c_15)
+        for k = 0 to 7 do
+            A_(i,j+k) = C_(i,j+k) mod q
+        end for
+    end for
+end for
 
-   3. For j = 0 to n - 1 do
+Output A
+```
 
-      1. A_(i,j) = C_(i,j) mod q
-
-   4. End for
-
-2. End for
-
-3. Output A
 
 
 # FrodoKEM
