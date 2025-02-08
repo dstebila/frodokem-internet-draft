@@ -26,7 +26,7 @@ author:
  -
     fullname: Douglas Stebila
     organization: University of Waterloo
-    email: stebila@uwaterloo.ca
+    email: dstebila@uwaterloo.ca
  -
     fullname: Stephan Ehlen
     organization: Federal Office for Information Security (BSI)
@@ -53,7 +53,7 @@ connections to conjectured-hard problems on generic, "algebraically
 unstructured" lattices.
 
 As a key encapsulation mechanism, FrodoKEM is a three-tuple of
-algorithms, (_KeyGen_, _Encapsulate_, _Decapsulate_):
+algorithms (_KeyGen_, _Encapsulate_, _Decapsulate_):
 
 -  _KeyGen_ takes no inputs, requires randomness, and outputs a private
   key and a public key;
@@ -72,6 +72,10 @@ In the second pass, party A uses its secret key and the ciphertext
 to execute the _Decapsulate_ operation.
 The shared secret produced by this protocol can then be used to establish
 a secure communication channel using a symmetric-key algorithm.
+
+# Conventions and Definitions
+
+{::boilerplate bcp14-tagged}
 
 # Overview
 
@@ -120,12 +124,6 @@ these variant FO transforms in the QROM without requiring the extra hash from
 Targhi–Unruh. FrodoKEM is constructed from FrodoPKE using a slight variant
 of Jiang et al.'s transform that includes additional values in hash
 computations to reduce the risk of multi-target attacks.
-
-# Conventions and Definitions
-
-{::boilerplate bcp14-tagged}
-
-# Overview
 
 # Notation
 
@@ -224,7 +222,7 @@ Recall that 2^B <= q. The encoding function ec() encodes an integer
 ec(val) = val * q / 2^B.
 
 Using this function, the function Encode(b) encodes a given bit string
-b = (b[0], ..., b[l-1]) of length l = B * nHat^2 as an nHat \* nHat
+b = (b[0], ..., b[l-1]) of length l = B * nHat^2 as an nHat * nHat
 matrix C with coefficients C[i,j] in Z_q by applying ec(·) to B-bit
 sub-strings sequentially and filling the matrix row by row entry-wise.
 The function Encode(b) is defined as follows.
@@ -297,7 +295,7 @@ b = (b[0], b[1], ..., b[D * n1 * n2 - 1]), as per XXXX.
 The function Unpack does the reverse of this process to transform an octet string o
 to an n1 * n2 matrix C with entries C[i,j] in Z_q, converting the input to a bit
 string, and then extracting D-bit strings and storing each as matrix coefficients
-C[i,j] for 0 <= i < n1 and 0 <= j < n2 (row-by-row from C[0,0] to C[n1-1, n2-1].
+C[i,j] for 0 <= i < n1 and 0 <= j < n2 (row-by-row from C[0,0] to C[n1-1, n2-1]).
 The function Unpack(o, n1, n2) is defined as follows:
 
 ~~~pseudocode
@@ -363,11 +361,11 @@ the if-loop needs to be implemented in a constant-time manner.
 
 ## Matrix sampling from the error distribution
 
-We define the function SampleMatrix which samples an n1 \* n2 matrix using the
+We define the function SampleMatrix which samples an n1 * n2 matrix using the
 function Sample.
 
 Given (n1 * n2) 16-bit random strings r^(i) and the dimension values n1 and n2,
-SampleMatrix((r^(0), ..., r^(n1*n2 - 1)), n1, n2) generates an n1 * n2 matrix
+SampleMatrix((r^(0), ..., r^(n1 * n2 - 1)), n1, n2) generates an n1 * n2 matrix
 E row-by-row from E[0,0] to E[n1-1,n2-1] by successively calling the function
 Sample n1 * n2 times, as follows:
 	
@@ -381,11 +379,10 @@ end for
 return E
 ~~~
 
-
 ## Pseudorandom matrix generation
 
 The function Gen takes as input a seed, seedA, of length lenA=128 bits and an
-implicit dimension n that is fixed per parameter set, and outputs an n \* n
+implicit dimension n that is fixed per parameter set, and outputs an n * n
 pseudorandom matrix A, where all the coefficients are in Z_q.
 There are two options for instantiating Gen: one based on AES128 and another
 based on SHAKE128.
@@ -396,12 +393,6 @@ In both cases, the matrix A is generated row-by-row from A[0,0] to A[n-1,n-1].
 The algorithm for the case using AES128 is shown below. Each call to AES128
 generates 8 coefficients.
 
-
-### Matrix A generation with SHAKE128
-
-The algorithm for the case using SHAKE128 is shown below. Each call to SHAKE128
-generates n coefficients (i.e., a full matrix row).
-
 ~~~pseudocode
 for i = 0 to n - 1 do
     for j = 0 to n - 1 step 8 do
@@ -411,7 +402,7 @@ for i = 0 to n - 1 do
         # (i[0], i[1], ..., i[15]) ≡ i[0] * 2^0 + i[1] * 2^1 + ... + i[15] * 2^15
         # and |b| = 128
 
-        C[i,j] || C[i,j+1] || ... || C[i,j+7] = AES128(seed_A, b)
+        C[i,j] || C[i,j+1] || ... || C[i,j+7] = AES128(seedA, b)
         # Each matrix coefficient C[i,j] is a 16-bit string interpreted
         # as a non-negative integer in little-endian byte order:
         # C[i,j] = c[0] * 2^0 + c[1] * 2^1 + ... + c[15] * 2^15
@@ -426,6 +417,32 @@ end for
 return A
 ~~~
 
+### Matrix A generation with SHAKE128
+
+The algorithm for the case using SHAKE128 is shown below. Each call to SHAKE128
+generates n coefficients (i.e., a full matrix row).
+
+~~~pseudocode
+for i = 0 to n - 1 do
+    b = i || seedA
+    # Element i is encoded as a 16-bit string
+    # represented in little-endian byte order, such that:
+    # (i[0], i[1], ..., i[15]) ≡ i[0] * 2^0 + i[1] * 2^1 + ... + i[15] * 2^15
+    # and |b| = lenA + 16
+
+    C[i,0] || C[i,1] || ... || C[i,n-1] = SHAKE128(b, 16 * n)
+    # Each matrix coefficient C[i,j] is a 16-bit string interpreted
+    # as a non-negative integer in little-endian byte order:
+    # C[i,j] = c[0] * 2^0 + c[1] * 2^1 + ... + c[15] * 2^15
+    # corresponding to the bit string (c[0], c[1], ..., c[15])
+
+    for j = 0 to n - 1 do
+        A[i,j] = C[i,j] mod q
+    end for
+end for
+
+return A
+~~~
 
 # FrodoKEM
 
@@ -437,16 +454,17 @@ outputs the keypair (pk, sk) = (seedA || b, s || seedA || b || S^T || pkh).
 ~~~pseudocode
 Choose uniformly random seeds s, seedSE, and z of bitlengths lensec, lenSE, and lenA (resp.)
 seedA = SHAKE(z, lenA) # Generate pseudorandom seed
-A = Gen(seedA) // Generate the matrix A
+A = Gen(seedA) # Generate the matrix A
 (r^(0), r^(1), ..., r^(2 * n * nHat - 1)) = SHAKE(0x5F || seedSE, 32 * n * nHat) # Generate pseudorandom bit string
-
-S^T = SampleMatrix((r^(0), r^(1), ..., r^(n * nHat − 1)), nHat, n) # Sample matrix S
+S^T = SampleMatrix((r^(0), r^(1), ..., r^(n * nHat − 1)), nHat, n) # Sample matrix S transposed
 E = SampleMatrix((r^(n * nHat), r^(n * nHat + 1), ..., r^(2 * n * nHat − 1)), n, nHat) # Sample error matrix
 B = A * S + E
 b = Pack(B)
 pkh = SHAKE(seedA || b, lensec)
 pk = (seedA || b)
 sk = (s || seedA || b || S^T || pkh)
+
+return pk, sk  # Return public key and secret key
 ~~~
 
 Here, the matrix ST = S^T is encoded row-by-row from ST[0,0] to ST[nHat−1,n−1],
@@ -482,7 +500,6 @@ ss = SHAKE(c1 || c2 || salt || k, lensec)  # Compute shared secret ss
 return (c1 || c2 || salt), ss  # Return ciphertext and shared secret
 ~~~
 
-
 ## Decapsulation
 
 The decapsulation algorithm takes as input a ciphertext c = (c1 || c2 || salt) and
@@ -506,12 +523,11 @@ E" = SampleMatrix((r^(2 * nHat * n), r^(2 * nHat * n + 1), ..., r^(2 * nHat * n 
 B = Unpack(b, n, nHat)
 V = S' * B + E"
 C' = V + Encode(u')
-kHat = k' if B' == B" and C == C' else s
+kHat = k' if B' == B" and C == C' else kHat = s
 ss = SHAKE(c1 || c2 || salt || kHat, lensec)  # Compute shared secret ss
 
 return ss  # Return shared secret ss
 ~~~
-
 
 # FrodoKEM variants
 
@@ -532,7 +548,6 @@ In contrast to ephemeral FrodoKEM, standard FrodoKEM incorporates some changes t
 certain multi-ciphertext attacks [Annex]. Specifically, standard FrodoKEM doubles the
 length of the seedSE value and incorporates a public random salt value into
 encapsulation (see Table 2).
-
 
 # Parameter Sets
 
@@ -619,7 +634,6 @@ their corresponding ephemeral variants).
 
                         Table 5: Sizes (in bits) of inputs and outputs.
 
-
 # Security Considerations
 
 FrodoKEM-640, FrodoKEM-976 and FrodoKEM-1344 are designed to be
@@ -636,7 +650,6 @@ Lattice-based cryptographic schemes such as FrodoKEM are still relatively
 young.  Therefore, it is recommended to use FrodoKEM in combination with
 a classical scheme (e.g., based on elliptic curves) while our confidence
 in the security of lattice schemes increases over time.
-
 
 # IANA Considerations
 
