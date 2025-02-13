@@ -11,12 +11,13 @@ ipr: trust200902
 workgroup: CFRG
 pi: [toc, sortrefs, symrefs]
 keyword:
+
  - FrodoKEM
  - PQC
-venue:
-  group: WG
-  group: Working Group
-  repo: github.com/dstebila/frodokem-internet-draft
+    venue:
+    group: WG
+    group: Working Group
+    repo: github.com/dstebila/frodokem-internet-draft
 
 author:
  -
@@ -31,6 +32,10 @@ author:
     fullname: Stephan Ehlen
     organization: Federal Office for Information Security (BSI)
     email: stephan.ehlen@bsi.bund.de
+-
+    fullname: Joppe W. Bos
+    organization: NXP Semiconductors
+    email: joppe.bos@nxp.com
 
 
 normative:
@@ -129,26 +134,28 @@ computations to reduce the risk of multi-target attacks.
 
 We describe the symbols and abbreviations used throughout this document.
 
--  Z represents the set of integers and Z_q represents the set of integers
+-  _Z_ represents the set of integers and _Z_q_ represents the set of integers
    modulo q.
+   
+- _⌊ x ⌉_ is the rounding of x to the nearest integer. If _x = y + 1/2_ for some _y_ in _Z_, 
 
--  ⌊ x ⌉ is	the rounding of x to the nearest integer. If
-   x = y + 1/2 for some y in Z, then ⌊ x ⌉ = y + 1.
+  then _⌊ x ⌉ = y + 1_.
 
--  A 16-bit bit string is represented by r^(i). And a sequence of t 16-bit
-   bit strings r^(i) is represented by (r^(0), r^(1), ..., r^(t-1)).
+- _r^(i)_ is a 16-bit bit string.
 
--  AES128(k, a) denotes the 128-bit AES128 output under key k for a 128-bit
-   input a.
+- _(r^(0), r^(1), ..., r^(t-1))_ is a sequence of _t_ 16-bit bit strings _r^(i)_, each 16-bit long.
 
--  SHAKE128(x, y) and SHAKE256(x, y) denote the y first bits of SHAKE128
-   and SHAKE256 (resp.) output for input x.
-
+-  _AES128(k, a)_ denotes the 128-bit AES128 output under key _k_ for a 128-bit
+   input _a_.
+   
+-  _SHAKE128(x, y)_ and _SHAKE256(x, y)_ denote the _y_ first bits of SHAKE128
+   and SHAKE256 (resp.) output for input _x_.
+   
 -  Matrices are represented in capitals with no italics (e.g., A and C).
-   For an n1 * n2 matrix C, its (i,j)th coefficient (i.e., the entry in the
-   ith row and jth column) is denoted by C[i,j], where 0 <= i < n1 and
-   0 <= j < n2. The transpose of matrix C is denoted by C^T.
-
+   For an _n1 * n2_ matrix C, its (i,j)th coefficient (i.e., the entry in the
+   ith row and jth column) is denoted by C[i,j], where _0 <= i < n1_ and
+   _0 <= j < n2_. The transpose of matrix C is denoted by C^T.
+   
 -  AES128 and SHAKE are specified in [FIPS197] and [FIPS202], respectively.
 
 # Parameters
@@ -157,32 +164,33 @@ The FrodoKEM parameters are implicit inputs to the FrodoKEM algorithms
 defined in the next sections. A FrodoKEM parameter set specifies the
 following:
 
--  A positive integer D <= 16 that defines the modulus parameter q = 2^D.
+-  A positive integer _D <= 16_ that defines the modulus parameter _q = 2^D_.
 
--  Positive integers n, nHat specifying matrix dimensions. It holds that n,
-   nHat \equiv 0 mod 8.
-
--  A positive integer B <= D specifying the number of bits encoded in each
+-  Positive integers _n_, _nHat_ specifying matrix dimensions. It holds that both
+   
+   _n ≡ 0 mod 8_ and _nHat ≡ 0 mod 8_.
+   
+-  A positive integer _B <= D_ specifying the number of bits encoded in each
    matrix entry.
 
--  A positive integer lenA specifying the bitlength of seeds for the
+-  A positive integer _lenA_ specifying the bitlength of seeds for the
    generation of the matrix A.
 
--  A positive integer lensec specifying the number of bits that match the
+-  A positive integer _lensec_ specifying the number of bits that match the
    bit-security level. Valid values are 128, 192 and 256. This is used to
    determine the bitlength of seeds (not associated to the matrix A), of hash
    value outputs and of values associated to the generation of the shared
    secrets.
 
--  A positive integer lenSE specifying the bitlength of the seed value seedSE.
+-  A positive integer _lenSE_ specifying the bitlength of the seed value _seedSE_.
 
--  A positive integer lensalt specifying the bitlength of the value salt.
+-  A positive integer _lensalt_ specifying the bitlength of the value _salt_.
 
--  A discrete, symmetric error distribution X on Z with support given by
-   S_X = {−d, −d+1, ..., −1, 0, 1, ..., d−1, d} for a small integer d.
+-  A discrete, symmetric error distribution _X_ on _Z_ with support given by
+   _S_X = {−d, −d+1, ..., −1, 0, 1, ..., d−1, d}_ for a small integer _d_.
 
--  A table T_X = (T_X(0), T_X(1), ..., T_X(d)) with (d+1) positive integers
-   based on the cumulative distribution function for X.
+-  A table _T_X = (T_X(0), T_X(1), ..., T_X(d))_ with _(d+1)_ positive integers
+   based on the cumulative distribution function for _X_.
 
    The values for these parameters corresponding to each parameter set are
    given in Section XXXX.
