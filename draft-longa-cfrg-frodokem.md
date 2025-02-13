@@ -202,11 +202,11 @@ following:
 This document follows the little-endian formatting for octet encoding of
 bit strings.
 
-A bit string b = (b[0], b[1], ..., b[|b|-1]) is converted to an octet
+A bit string _b = (b[0], b[1], ..., b[|b|-1])_ is converted to an octet
 string by taking bits from left to right, packing those from the least
 significant bit of each octet to the most significant bit, and moving to
 the next octet when each octet fills up. For example, the 16-bit bit
-string (b[0], b[1], ..., b[15]) is converted into two octets f and g (in
+string _(b[0], b[1], ..., b[15])_ is converted into two octets f and g (in
 this order) as
 
 ~~~
@@ -217,57 +217,55 @@ g = b[15] * 2^7 + b[14] * 2^6 + b[13] * 2^5 + b[12] * 2^4 + b[11] * 2^3 + b[10] 
 The conversion from octet string to bit string is the reverse of this
 process.
 
-For FrodoKEM, it is always the case that |b| is a multiple of 8 when
+For FrodoKEM, it is always the case that _|b|_ is a multiple of 8 when
 performing octet encoding of bit strings.
 
 ## Matrix encoding of bit strings
 
-We define how bit strings are encoded as mod-q integer matrices.
+We define how bit strings are encoded as mod-_q_ integer matrices.
+From the FrodoKEM parameters one has _2^B <= q_. The encoding function 
+`ec` encodes an integer _0 <= val < 2^B_ as an element in _Z_q_ by multiplying 
+it by _q/2^B = 2^(D-B)_: `ec(val) = val * q / 2^B.`
 
-Recall that 2^B <= q. The encoding function ec() encodes an integer
-0 <= val < 2^B as an element in Z_q by multiplying it by q/2^B = 2^(D-B):
-
-ec(val) = val * q / 2^B.
-
-Using this function, the function Encode(b) encodes a given bit string
-b = (b[0], ..., b[l-1]) of length l = B * nHat^2 as an nHat * nHat
-matrix C with coefficients C[i,j] in Z_q by applying ec(·) to B-bit
+Using this function, the function `Encode(b)` encodes a given bit string
+_b = (b[0], ..., b[l-1])_ of length _l = B * nHat^2_ as an _nHat * nHat_
+matrix C with coefficients C[i,j] in _Z_q_ by applying `ec` to _B_-bit
 sub-strings sequentially and filling the matrix row by row entry-wise.
-The function Encode(b) is defined as follows.
+The function `Encode(b)` is defined as follows.
 
-~~~
+~~~pseudocode
 for i = 0 to nHat - 1 do
    for j = 0 to nHat - 1 do
       val = 0
       for k = 0 to B - 1 do
-         val = val + b[(i * nHat + j)B + k] * 2^k
+         val = val + b[(i * nHat + j)*B + k] * 2^k
       end for
-      set C[i,j] = val * q / 2^B
+      C[i,j] = val * q / 2^B
    end for
 end for
 
 return C
 ~~~
 
-The corresponding decoding function Decode(C) decodes an nHat * nHat
-matrix C into a bit string of length l = B * nHat^2. It extracts B bits
-from each entry by applying the function dc():
+The corresponding decoding function `Decode(C) `decodes an _nHat * nHat_
+matrix C into a bit string of length _l = B * nHat^2_. It extracts _B_ bits
+from each entry by applying the function `dc`:
 
 ~~~
 dc(c) = ⌊ c * 2^B / q ⌉ mod 2^B.
 ~~~
 
-That is, the Z_q-entry is interpreted as an integer, then divided by q/2^B
-and rounded. This amounts to rounding to the B most significant bits of
-each entry. With these definitions, it is the case that dc(ec(val)) = val
-for all 0 <= val < 2^B.
-The function Decode(C) is defined as follows.
+That is, the _Z_q_-entry is interpreted as an integer, then divided by _q/2^B_
+and rounded. This amounts to rounding to the _B_ most significant bits of
+each entry. With these definitions, it is the case that `dc(ec(val)) = val`
+for all _0 <= val < 2^B_.
+The function `Decode(C)` is defined as follows.
 
 ~~~pseudocode
 for i = 0 to nHat - 1 do
     for j = 0 to nHat - 1 do
         c = ⌊ C[i,j] * 2^B / q ⌉ mod 2^B
-        Set c = c[0] * 2^0 + c[1] * 2^1 + ... + c[B-1] * 2^{B-1}
+        c = c[0] * 2^0 + c[1] * 2^1 + ... + c[B-1] * 2^{B-1}
         for k = 0 to B - 1 do
             b[(i * nHat + j)B + k] = c[k]
         end for
@@ -289,7 +287,7 @@ The function Pack(C) is defined as follows.
 ~~~pseudocode
 for i = 0 to n1 - 1 do
     for j = 0 to n2 - 1 do
-        Set C[i,j] = c[0] * 2^0 + c[1] * 2^1 + ... + c[D-1] * 2^{D-1}
+        C[i,j] = c[0] * 2^0 + c[1] * 2^1 + ... + c[D-1] * 2^{D-1}
         for k = 0 to D - 1 do
             b[(i * n2 + j)D + k] = c[D-1-k]
         end for
@@ -300,11 +298,11 @@ return the octet string corresponding to the bit string
 b = (b[0], b[1], ..., b[D * n1 * n2 - 1]), as per XXXX.
 ~~~
 
-The function Unpack does the reverse of this process to transform an octet string o
-to an n1 * n2 matrix C with entries C[i,j] in Z_q, converting the input to a bit
-string, and then extracting D-bit strings and storing each as matrix coefficients
-C[i,j] for 0 <= i < n1 and 0 <= j < n2 (row-by-row from C[0,0] to C[n1-1, n2-1]).
-The function Unpack(o, n1, n2) is defined as follows:
+The function Unpack does the reverse of this process to transform an octet string _o_
+to an _n1 * n2_ matrix C with entries C[i,j] in _Z_q_, converting the input to a bit
+string, and then extracting _D_-bit strings and storing each as matrix coefficients
+C[i,j] for _0 <= i < n1_ and _0 <= j < n2_ (row-by-row from C[0,0] to C[n1-1, n2-1]).
+The function `Unpack(o, n1, n2)` is defined as follows:
 
 ~~~pseudocode
 Convert the input octet string o to a bit string
@@ -324,27 +322,26 @@ return C
 
 ## Sampling from the error distribution
 
-The error distribution X used in FrodoKEM is a discrete, symmetric distribution on
-Z, centered at zero and with small support, which approximates a rounded continuous
+The error distribution _X_ used in FrodoKEM is a discrete, symmetric distribution on
+_Z_, centered at zero and with small support, which approximates a rounded continuous
 Gaussian distribution.
 
-The support of X is S_X = {−d, −d+1, ..., −1, 0, 1, ..., d−1, d} for a positive
-integer d. The probabilities X(z) = X(−z) for z in S_X are given by a discrete
-probability density function, which is described by a table
+The support of _X_ is _S_X = {−d, −d+1, ..., −1, 0, 1, ..., d−1, d}_ for a positive integer _d_ specified 
+by the FrodoKEM parameter set. The probabilities _X(z) = X(−z)_ for _z_ in _S_X_ are given by a 
+discrete probability density function, which is described by a table
 
 ~~~
 T_X = (T_X(0), T_X(1), ..., T_X(d))
 ~~~
 
-of d+1 positive integers related to the cumulative distribution function.
+of _d+1_ positive integers related to the cumulative distribution function.
 
-Given a random bit string r = (r[0], r[1], ..., r[15]), the function Sample(r) returns
-a sample e from FrodoKEM’s error distribution X via inversion sampling using a
-table T_X, as follows (note that T_X(d) is never accessed):
+Given a random 16-bit string _r = (r[0], r[1], ..., r[15])_, the function `Sample(r)` returns
+a sample _e_ from FrodoKEM’s error distribution _X_ via inversion sampling using a
+table _T_X_, as follows (note that _T_X(d)_ is never accessed):
 
 ~~~pseudocode
 t = r[1] * 2^0 + r[2] * 2^1 + ... + r[15] * 2^14
-
 e = 0
 
 for i = 0 to d - 1 do
@@ -354,29 +351,29 @@ for i = 0 to d - 1 do
 end for
 
 e = (-1)^(r[0]) * e
-
 return e
 ~~~
 
 The output of the algorithm is a small integer in the range
-{-d, -d+1, ..., -1, 0, 1, ..., d-1, d}. The tables T_X corresponding to each of
+_{-d, -d+1, ..., -1, 0, 1, ..., d-1, d}_. The tables T_X corresponding to each of
 FrodoKEM’s parameter sets are given in Table XXXX.
 
 We emphasize that it is important to perform this sampling in constant time to
 avoid exposing timing side-channels, which is why the for-loop of the algorithm
-does a complete loop through the entire table T_X. Similarly, the comparison in
+does a complete loop through the entire table _T_X_. Similarly, the comparison in
 the if-loop needs to be implemented in a constant-time manner.
 
 ## Matrix sampling from the error distribution
 
-We define the function SampleMatrix which samples an n1 * n2 matrix using the
-function Sample.
+We define the function `SampleMatrix` which samples an _n1 * n2_ matrix using the
+function `Sample`.
 
-Given (n1 * n2) 16-bit random strings r^(i) and the dimension values n1 and n2,
-SampleMatrix((r^(0), ..., r^(n1 * n2 - 1)), n1, n2) generates an n1 * n2 matrix
-E row-by-row from E[0,0] to E[n1-1,n2-1] by successively calling the function
-Sample n1 * n2 times, as follows:
+Given _(n1 * n2)_ 16-bit random strings _r^(i)_ and the dimension values _n1_ and _n2_,
+`SampleMatrix((r^(0), ..., r^(n1 * n2 - 1)), n1, n2)` generates an 
+_n1 * n2_ matrix E row-by-row from E[0,0] to E[n1-1,n2-1] by successively calling the function
+`Sample` _n1 * n2_ times, as follows:
 	
+
 ~~~pseudocode
 for i = 0 to n1 - 1 do
     for j = 0 to n2 - 1 do
@@ -389,10 +386,10 @@ return E
 
 ## Pseudorandom matrix generation
 
-The function Gen takes as input a seed, seedA, of length lenA=128 bits and an
-implicit dimension n that is fixed per parameter set, and outputs an n * n
-pseudorandom matrix A, where all the coefficients are in Z_q.
-There are two options for instantiating Gen: one based on AES128 and another
+The function `Gen` takes as input a seed, _seedA_, of length _lenA=128_ bits and an
+implicit dimension _n_ that is fixed per parameter set, and outputs an _n * n_
+pseudorandom matrix A, where all the coefficients are in _Z_q_.
+There are two options for instantiating `Gen`: one based on AES128 and another
 based on SHAKE128.
 In both cases, the matrix A is generated row-by-row from A[0,0] to A[n-1,n-1].
 
@@ -457,7 +454,7 @@ return A
 ## Key Generation
 
 The key generation algorithm accepts no input, requires randomness, and
-outputs the keypair (pk, sk) = (seedA || b, s || seedA || b || S^T || pkh).
+outputs the keypair _(pk, sk) = (seedA || b, s || seedA || b || S^T || pkh)_.
 
 ~~~pseudocode
 Choose uniformly random seeds s, seedSE, and z of bitlengths lensec, lenSE, and lenA (resp.)
@@ -477,7 +474,7 @@ return pk, sk  # Return public key and secret key
 
 Here, the matrix ST = S^T is encoded row-by-row from ST[0,0] to ST[nHat−1,n−1],
 where each matrix coefficient ST[i,j] is a signed integer encoded
-as a 16-bit string (s[0], s[1], ..., s[15]) in the little-endian byte order, i.e.
+as a 16-bit string _(s[0], s[1], ..., s[15])_ in the little-endian byte order, i.e.
 
 ~~~
 ST[i,j] = −s[15] * 2^15 + (s[0] + s[1] * 2 + s[2] * 2^2 + ... + s[14] * 2^14).
@@ -485,8 +482,8 @@ ST[i,j] = −s[15] * 2^15 + (s[0] + s[1] * 2 + s[2] * 2^2 + ... + s[14] * 2^14).
 
 ## Encapsulation
 
-The encapsulation algorithm takes as input a public key pk = (seedA || b), requires randomness, and
-outputs a ciphertext c = (c1 || c2 || salt) and a shared secret ss.
+The encapsulation algorithm takes as input a public key _pk = (seedA || b)_, requires randomness, and
+outputs a ciphertext _c = (c1 || c2 || salt)_ and a shared secret _ss_.
 
 ~~~pseudocode
 Choose uniformly random values u and salt of lengths lensec and lensalt
@@ -510,8 +507,8 @@ return (c1 || c2 || salt), ss  # Return ciphertext and shared secret
 
 ## Decapsulation
 
-The decapsulation algorithm takes as input a ciphertext c = (c1 || c2 || salt) and
-a secret key sk = (s || seedA || b || S^T || pkh), and outputs a shared secret ss.
+The decapsulation algorithm takes as input a ciphertext _c = (c1 || c2 || salt)_ and
+a secret key _sk = (s || seedA || b || S^T || pkh)_, and outputs a shared secret _ss_.
 
 ~~~pseudocode
 B' = Unpack(c1, nHat, n)
@@ -601,7 +598,7 @@ their corresponding ephemeral variants).
 |   lenSE |       128       |       192       |       256        | Bitlength of seedSE in eFrodoKEM               |
 | lensalt |        0        |        0        |        0         | No salt in eFrodoKEM                           |
 
-                        Table 2: Additional parameters for FrodoKEM depending on variant.
+    Table 2: Additional parameters for FrodoKEM depending on variant.
 
 |     Name     |  sigma |    0  |  +-1  |  +-2 |  +-3 |  +-4 |  +-5 | +-6 | +-7 | +-8 | +-9 |+-10|+-11|+-12| order |   divergence  |
 |-------------:|:------:|------:|------:|-----:|-----:|-----:|-----:|----:|----:|----:|----:|---:|---:|---:|:-----:|:-------------:|
@@ -609,8 +606,7 @@ their corresponding ephemeral variants).
 |  X_Frodo-976 |   2.3  | 11278 | 10277 | 7774 | 4882 | 2545 | 1101 | 396 | 118 |  29 |   6 |  1 |    |    |  500  | 0.140 x 10^-4 |
 | X_Frodo-1344 |   1.4  | 18286 | 14320 | 6876 | 2023 |  364 |   40 |   2 |     |     |     |    |    |    | 1000  | 0.264 x 10^-4 |
 
-                     Table 3: Error distributions. Probabilities are shown for each integer value from 0 up to +-12.
-                                    The last two columns correspond to Renyi's order and divergence.
+    Table 3: Error distributions. Probabilities are shown for each integer value from 0 up to +-12. The last two columns correspond to Renyi's order and divergence.
 
 | Table entries |  FrodoKEM-640  |  FrodoKEM-976  |  FrodoKEM-1344  |
 |--------------:|:--------------:|:--------------:|:---------------:|
@@ -628,8 +624,7 @@ their corresponding ephemeral variants).
 |       T_X(11) |     32,766     |                |                 |
 |       T_X(12) |     32,767     |                |                 |
 
-            Table 4: The distribution table entries T_X(i),
-                  for 0 <= i <= d, for sampling.
+    Table 4: The distribution table entries T_X(i), for 0 <= i <= d, for sampling.
 
 |                |  secret key sk  |  public key pk  |  ciphertext ct  | shared secret ss |
 |---------------:|:---------------:|:---------------:|:---------------:|:----------------:|
@@ -640,7 +635,7 @@ their corresponding ephemeral variants).
 |  FrodoKEM-1344 |      43,088     |      21,520     |      21,696     |        32        |
 | eFrodoKEM-1344 |      43,088     |      21,520     |      21,632     |        32        |
 
-                        Table 5: Sizes (in bits) of inputs and outputs.
+    Table 5: Sizes (in bits) of inputs and outputs.
 
 # Security Considerations
 
