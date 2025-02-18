@@ -185,7 +185,7 @@ following:
    based on the cumulative distribution function for X.
 
    The values for these parameters corresponding to each parameter set are
-   given in #summary-of-parameters.
+   given in [Section 9.1](#summary-of-parameters).
 
 # Supporting Functions
 
@@ -567,7 +567,7 @@ their corresponding ephemeral variants). The second FrodoKEM variant consists of
 parameter sets FrodoKEM-640-SHAKE, FrodoKEM-976-SHAKE and FrodoKEM-1344-SHAKE (and
 their corresponding ephemeral variants).
 
-# Summary of Parameters
+## Summary of Parameters
 
 The parameter values characterizing the FrodoKEM parameter sets are listed below.
 
