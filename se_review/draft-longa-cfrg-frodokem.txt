@@ -62,28 +62,28 @@ Table of Contents
    1.  Introduction
    2.  Conventions and Definitions
    3.  Overview
-     3.1.  Chosen-ciphertext security
+     3.1.  Chosen-Ciphertext Security
    4.  Notation
    5.  Parameters
-   6.  Supporting functions
-     6.1.  Octet encoding of bit strings
-     6.2.  Matrix encoding of bit strings
-     6.3.  Packing matrices modulo q
-     6.4.  Sampling from the error distribution
-     6.5.  Matrix sampling from the error distribution
-     6.6.  Pseudorandom matrix generation
-       6.6.1.  Matrix A generation with AES128
-       6.6.2.  Matrix A generation with SHAKE128
+   6.  Supporting Functions
+     6.1.  Octet Encoding of Bit Strings
+     6.2.  Matrix Encoding of Bit Strings
+     6.3.  Packing Matrices Modulo q
+     6.4.  Sampling from the Error Distribution
+     6.5.  Matrix Sampling from the Error Distribution
+     6.6.  Pseudorandom Matrix Generation
+       6.6.1.  Matrix A Generation with AES128
+       6.6.2.  Matrix A Generation with SHAKE128
    7.  FrodoKEM
      7.1.  Key Generation
      7.2.  Encapsulation
      7.3.  Decapsulation
-   8.  FrodoKEM variants
+   8.  FrodoKEM Variants
    9.  Parameter Sets
-     9.1.  Parameters
-   10. Security Considerations
-   11. IANA Considerations
-   12. Normative References
+   10. Summary of Parameters
+   11. Security Considerations
+   12. IANA Considerations
+   13. Normative References
    Appendix A.  Acknowledgments
    Appendix B.  References
      B.1.  Normative References
@@ -159,7 +159,7 @@ Table of Contents
    A from a small seed, more balanced key and ciphertext sizes, and new
    LWE parameters.
 
-3.1.  Chosen-ciphertext security
+3.1.  Chosen-Ciphertext Security
 
    FrodoKEM achieves IND-CCA security by way of a transformation of the
    IND-CPA-secure FrodoPKE.  In work published in 1999, Fujisaki and
@@ -250,11 +250,11 @@ Table of Contents
       integers based on the cumulative distribution function for X.
 
       The values for these parameters corresponding to each parameter
-      set are given in Section 9.1 (Section 5).
+      set are given in #summary-of-parameters.
 
-6.  Supporting functions
+6.  Supporting Functions
 
-6.1.  Octet encoding of bit strings
+6.1.  Octet Encoding of Bit Strings
 
    This document follows the little-endian formatting for octet encoding
    of bit strings.
@@ -275,7 +275,7 @@ g = b[15] * 2^7 + b[14] * 2^6 + b[13] * 2^5 + b[12] * 2^4 + b[11] * 2^3 + b[10] 
    For FrodoKEM, it is always the case that |b| is a multiple of 8 when
    performing octet encoding of bit strings.
 
-6.2.  Matrix encoding of bit strings
+6.2.  Matrix Encoding of Bit Strings
 
    We define how bit strings are encoded as mod-q integer matrices.
 
@@ -327,7 +327,7 @@ g = b[15] * 2^7 + b[14] * 2^6 + b[13] * 2^5 + b[12] * 2^4 + b[11] * 2^3 + b[10] 
 
    return (b[0], ..., b[l-1])
 
-6.3.  Packing matrices modulo q
+6.3.  Packing Matrices Modulo q
 
    We define packing and unpacking functions to transform matrices with
    entries in Z_q to bit strings and vice versa.
@@ -369,7 +369,7 @@ g = b[15] * 2^7 + b[14] * 2^6 + b[13] * 2^5 + b[12] * 2^4 + b[11] * 2^3 + b[10] 
 
    return C
 
-6.4.  Sampling from the error distribution
+6.4.  Sampling from the Error Distribution
 
    The error distribution X used in FrodoKEM is a discrete, symmetric
    distribution on Z, centered at zero and with small support, which
@@ -414,7 +414,7 @@ g = b[15] * 2^7 + b[14] * 2^6 + b[13] * 2^5 + b[12] * 2^4 + b[11] * 2^3 + b[10] 
    table T_X.  Similarly, the comparison in the if-loop needs to be
    implemented in a constant-time manner.
 
-6.5.  Matrix sampling from the error distribution
+6.5.  Matrix Sampling from the Error Distribution
 
    We define the function SampleMatrix which samples an n1 * n2 matrix
    using the function Sample.
@@ -433,7 +433,7 @@ g = b[15] * 2^7 + b[14] * 2^6 + b[13] * 2^5 + b[12] * 2^4 + b[11] * 2^3 + b[10] 
 
    return E
 
-6.6.  Pseudorandom matrix generation
+6.6.  Pseudorandom Matrix Generation
 
    The function Gen takes as input a seed, seedA, of length lenA=128
    bits and an implicit dimension n that is fixed per parameter set, and
@@ -442,7 +442,7 @@ g = b[15] * 2^7 + b[14] * 2^6 + b[13] * 2^5 + b[12] * 2^4 + b[11] * 2^3 + b[10] 
    on AES128 and another based on SHAKE128.  In both cases, the matrix A
    is generated row-by-row from A[0,0] to A[n-1,n-1].
 
-6.6.1.  Matrix A generation with AES128
+6.6.1.  Matrix A Generation with AES128
 
    The algorithm for the case using AES128 is shown below.  Each call to
    AES128 generates 8 coefficients.
@@ -469,7 +469,7 @@ g = b[15] * 2^7 + b[14] * 2^6 + b[13] * 2^5 + b[12] * 2^4 + b[11] * 2^3 + b[10] 
 
    return A
 
-6.6.2.  Matrix A generation with SHAKE128
+6.6.2.  Matrix A Generation with SHAKE128
 
    The algorithm for the case using SHAKE128 is shown below.  Each call
    to SHAKE128 generates n coefficients (i.e., a full matrix row).
@@ -594,7 +594,7 @@ ST[i,j] = −s[15] * 2^15 + (s[0] + s[1] * 2 + s[2] * 2^2 + ... + s[14] * 2^14).
 
    return ss  # Return shared secret ss
 
-8.  FrodoKEM variants
+8.  FrodoKEM Variants
 
    FrodoKEM is parameterized by the pseudorandom generator (PRG) that is
    used for the generation of the matrix A.  As explained in
@@ -638,7 +638,10 @@ ST[i,j] = −s[15] * 2^15 + (s[0] + s[1] * 2 + s[2] * 2^2 + ... + s[14] * 2^14).
    consists of the parameter sets FrodoKEM-640-SHAKE, FrodoKEM-976-SHAKE
    and FrodoKEM-1344-SHAKE (and their corresponding ephemeral variants).
 
-9.1.  Parameters
+10.  Summary of Parameters
+
+   The parameter values characterizing the FrodoKEM parameter sets are
+   listed below.
 
    +======+==============+==============+==============+==============+
    |  Name| (e)FrodoKEM- | (e)FrodoKEM- | (e)FrodoKEM- | Description  |
@@ -792,7 +795,7 @@ ST[i,j] = −s[15] * 2^15 + (s[0] + s[1] * 2 + s[2] * 2^2 + ... + s[14] * 2^14).
 
                        Table 5: Sizes (in bits) of inputs and outputs.
 
-10.  Security Considerations
+11.  Security Considerations
 
    FrodoKEM-640, FrodoKEM-976 and FrodoKEM-1344 are designed to be post-
    quantum IND-CCA2 secure KEMs at the security levels of AES-128,
@@ -810,11 +813,11 @@ ST[i,j] = −s[15] * 2^15 + (s[0] + s[1] * 2 + s[2] * 2^2 + ... + s[14] * 2^14).
    while our confidence in the security of lattice schemes increases
    over time.
 
-11.  IANA Considerations
+12.  IANA Considerations
 
    This document has no IANA actions.
 
-12.  Normative References
+13.  Normative References
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
