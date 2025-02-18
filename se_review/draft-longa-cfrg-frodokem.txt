@@ -80,10 +80,10 @@ Table of Contents
      7.3.  Decapsulation
    8.  FrodoKEM Variants
    9.  Parameter Sets
-   10. Summary of Parameters
-   11. Security Considerations
-   12. IANA Considerations
-   13. Normative References
+     9.1.  Summary of Parameters
+   10. Security Considerations
+   11. IANA Considerations
+   12. Normative References
    Appendix A.  Acknowledgments
    Appendix B.  References
      B.1.  Normative References
@@ -250,7 +250,7 @@ Table of Contents
       integers based on the cumulative distribution function for X.
 
       The values for these parameters corresponding to each parameter
-      set are given in #summary-of-parameters.
+      set are given in Section 9.1 (Section 9.1).
 
 6.  Supporting Functions
 
@@ -638,7 +638,7 @@ ST[i,j] = −s[15] * 2^15 + (s[0] + s[1] * 2 + s[2] * 2^2 + ... + s[14] * 2^14).
    consists of the parameter sets FrodoKEM-640-SHAKE, FrodoKEM-976-SHAKE
    and FrodoKEM-1344-SHAKE (and their corresponding ephemeral variants).
 
-10.  Summary of Parameters
+9.1.  Summary of Parameters
 
    The parameter values characterizing the FrodoKEM parameter sets are
    listed below.
@@ -795,7 +795,7 @@ ST[i,j] = −s[15] * 2^15 + (s[0] + s[1] * 2 + s[2] * 2^2 + ... + s[14] * 2^14).
 
                        Table 5: Sizes (in bits) of inputs and outputs.
 
-11.  Security Considerations
+10.  Security Considerations
 
    FrodoKEM-640, FrodoKEM-976 and FrodoKEM-1344 are designed to be post-
    quantum IND-CCA2 secure KEMs at the security levels of AES-128,
@@ -813,11 +813,11 @@ ST[i,j] = −s[15] * 2^15 + (s[0] + s[1] * 2 + s[2] * 2^2 + ... + s[14] * 2^14).
    while our confidence in the security of lattice schemes increases
    over time.
 
-12.  IANA Considerations
+11.  IANA Considerations
 
    This document has no IANA actions.
 
-13.  Normative References
+12.  Normative References
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
