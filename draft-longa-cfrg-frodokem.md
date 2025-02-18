@@ -185,7 +185,7 @@ following:
    based on the cumulative distribution function for X.
 
    The values for these parameters corresponding to each parameter set are
-   given in Section XXXX.
+   given in [Section 9.1](#parameters).
 
 # Supporting functions
 
@@ -549,7 +549,7 @@ certain multi-ciphertext attacks [Annex]. Specifically, standard FrodoKEM double
 length of the seedSE value and incorporates a public random salt value into
 encapsulation (see Table 2).
 
-# Parameter Sets
+# Parameter Sets {#parameter-sets}
 
 This document specifies the following twelve parameter sets:
 
@@ -567,7 +567,7 @@ their corresponding ephemeral variants). The second FrodoKEM variant consists of
 parameter sets FrodoKEM-640-SHAKE, FrodoKEM-976-SHAKE and FrodoKEM-1344-SHAKE (and
 their corresponding ephemeral variants).
 
-## Parameters
+## Parameters {#parameters}
 
 |   Name  | (e)FrodoKEM-640 | (e)FrodoKEM-976 | (e)FrodoKEM-1344 | Description                                    |
 |--------:|:---------------:|:---------------:|:----------------:|:-----------------------------------------------|
