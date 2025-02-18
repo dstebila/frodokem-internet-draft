@@ -250,7 +250,7 @@ Table of Contents
       integers based on the cumulative distribution function for X.
 
       The values for these parameters corresponding to each parameter
-      set are given in Section XXXX.
+      set are given in Section 9.1 (Section 5).
 
 6.  Supporting functions
 
