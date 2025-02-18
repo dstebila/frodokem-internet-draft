@@ -104,7 +104,7 @@ implementation of the Lindner–Peikert scheme [LP11] with some modifications,
 such as: pseudorandom generation of the public matrix A from a small seed,
 more balanced key and ciphertext sizes, and new LWE parameters.
 
-## Chosen-ciphertext security
+## Chosen-Ciphertext Security
 
 FrodoKEM achieves IND-CCA security by way of a transformation of the
 IND-CPA-secure FrodoPKE. In work published in 1999, Fujisaki and Okamoto
@@ -185,11 +185,11 @@ following:
    based on the cumulative distribution function for X.
 
    The values for these parameters corresponding to each parameter set are
-   given in [Section 9.1](#parameters).
+   given in #summary-of-parameters.
 
-# Supporting functions
+# Supporting Functions
 
-## Octet encoding of bit strings
+## Octet Encoding of Bit Strings
 
 This document follows the little-endian formatting for octet encoding of
 bit strings.
@@ -212,7 +212,7 @@ process.
 For FrodoKEM, it is always the case that |b| is a multiple of 8 when
 performing octet encoding of bit strings.
 
-## Matrix encoding of bit strings
+## Matrix Encoding of Bit Strings
 
 We define how bit strings are encoded as mod-q integer matrices.
 
@@ -269,7 +269,7 @@ end for
 return (b[0], ..., b[l-1])
 ~~~
 
-## Packing matrices modulo q
+## Packing Matrices Modulo q
 
 We define packing and unpacking functions to transform matrices with entries
 in Z_q to bit strings and vice versa.
@@ -314,7 +314,7 @@ end for
 return C
 ~~~
 
-## Sampling from the error distribution
+## Sampling from the Error Distribution
 
 The error distribution X used in FrodoKEM is a discrete, symmetric distribution on
 Z, centered at zero and with small support, which approximates a rounded continuous
@@ -359,7 +359,7 @@ avoid exposing timing side-channels, which is why the for-loop of the algorithm
 does a complete loop through the entire table T_X. Similarly, the comparison in
 the if-loop needs to be implemented in a constant-time manner.
 
-## Matrix sampling from the error distribution
+## Matrix Sampling from the Error Distribution
 
 We define the function SampleMatrix which samples an n1 * n2 matrix using the
 function Sample.
@@ -379,7 +379,7 @@ end for
 return E
 ~~~
 
-## Pseudorandom matrix generation
+## Pseudorandom Matrix Generation
 
 The function Gen takes as input a seed, seedA, of length lenA=128 bits and an
 implicit dimension n that is fixed per parameter set, and outputs an n * n
@@ -388,7 +388,7 @@ There are two options for instantiating Gen: one based on AES128 and another
 based on SHAKE128.
 In both cases, the matrix A is generated row-by-row from A[0,0] to A[n-1,n-1].
 
-### Matrix A generation with AES128
+### Matrix A Generation with AES128
 
 The algorithm for the case using AES128 is shown below. Each call to AES128
 generates 8 coefficients.
@@ -417,7 +417,7 @@ end for
 return A
 ~~~
 
-### Matrix A generation with SHAKE128
+### Matrix A Generation with SHAKE128
 
 The algorithm for the case using SHAKE128 is shown below. Each call to SHAKE128
 generates n coefficients (i.e., a full matrix row).
@@ -529,7 +529,7 @@ ss = SHAKE(c1 || c2 || salt || kHat, lensec)  # Compute shared secret ss
 return ss  # Return shared secret ss
 ~~~
 
-# FrodoKEM variants
+# FrodoKEM Variants
 
 FrodoKEM is parameterized by the pseudorandom generator (PRG) that is used for
 the generation of the matrix A. As explained in Section XXXX there are two options
@@ -567,7 +567,9 @@ their corresponding ephemeral variants). The second FrodoKEM variant consists of
 parameter sets FrodoKEM-640-SHAKE, FrodoKEM-976-SHAKE and FrodoKEM-1344-SHAKE (and
 their corresponding ephemeral variants).
 
-## Parameters
+# Summary of Parameters
+
+The parameter values characterizing the FrodoKEM parameter sets are listed below.
 
 |   Name  | (e)FrodoKEM-640 | (e)FrodoKEM-976 | (e)FrodoKEM-1344 | Description                                    |
 |--------:|:---------------:|:---------------:|:----------------:|:-----------------------------------------------|
