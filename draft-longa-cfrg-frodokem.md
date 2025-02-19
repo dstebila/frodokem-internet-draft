@@ -486,7 +486,7 @@ Given (n1 * n2) 16-bit random strings r^(i) and the dimension values n1 and n2,
 SampleMatrix((r^(0), ..., r^(n1 * n2 - 1)), n1, n2) generates an n1 * n2 matrix
 E row-by-row from E[0,0] to E[n1-1,n2-1] by successively calling the function
 Sample n1 * n2 times, as follows:
-	
+    
 ~~~pseudocode
 for i = 0 to n1 - 1 do
     for j = 0 to n2 - 1 do
