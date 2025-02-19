@@ -8,6 +8,8 @@ Intended status: Informational                                D. Stebila
 Expires: 11 August 2025                           University of Waterloo
                                                                 S. Ehlen
                            Federal Office for Information Security (BSI)
+                                                               J. W. Bos
+                                                      NXP Semiconductors
                                                          7 February 2025
 
 
@@ -192,9 +194,10 @@ Table of Contents
    *  ⌊ x ⌉ is the rounding of x to the nearest integer.  If x = y + 1/2
       for some y in Z, then ⌊ x ⌉ = y + 1.
 
-   *  A 16-bit bit string is represented by r^(i).  And a sequence of t
-      16-bit bit strings r^(i) is represented by (r^(0), r^(1), ...,
-      r^(t-1)).
+   *  r^(i) is a 16-bit bit string.
+
+   *  (r^(0), r^(1), ..., r^(t-1)) is a sequence of t 16-bit bit strings
+      r^(i).
 
    *  AES128(k, a) denotes the 128-bit AES128 output under key k for a
       128-bit input a.
@@ -278,9 +281,9 @@ g = b[15] * 2^7 + b[14] * 2^6 + b[13] * 2^5 + b[12] * 2^4 + b[11] * 2^3 + b[10] 
 
    We define how bit strings are encoded as mod-q integer matrices.
 
-   Recall that 2^B <= q.  The encoding function ec() encodes an integer
-   0 <= val < 2^B as an element in Z_q by multiplying it by q/2^B =
-   2^(D-B):
+   From the FrodoKEM parameters one has that 2^B <= q.  The encoding
+   function ec() encodes an integer 0 <= val < 2^B as an element in Z_q
+   by multiplying it by q/2^B = 2^(D-B):
 
    ec(val) = val * q / 2^B.
 
@@ -296,7 +299,7 @@ g = b[15] * 2^7 + b[14] * 2^6 + b[13] * 2^5 + b[12] * 2^4 + b[11] * 2^3 + b[10] 
          for k = 0 to B - 1 do
             val = val + b[(i * nHat + j)B + k] * 2^k
          end for
-         set C[i,j] = val * q / 2^B
+         C[i,j] = val * q / 2^B
       end for
    end for
 
@@ -375,19 +378,19 @@ g = b[15] * 2^7 + b[14] * 2^6 + b[13] * 2^5 + b[12] * 2^4 + b[11] * 2^3 + b[10] 
    approximates a rounded continuous Gaussian distribution.
 
    The support of X is S_X = {−d, −d+1, ..., −1, 0, 1, ..., d−1, d} for
-   a positive integer d.  The probabilities X(z) = X(−z) for z in S_X
-   are given by a discrete probability density function, which is
-   described by a table
+   a positive integer d specified by the FrodoKEM parameter set.  The
+   probabilities X(z) = X(−z) for z in S_X are given by a discrete
+   probability density function, which is described by a table
 
    T_X = (T_X(0), T_X(1), ..., T_X(d))
 
    of d+1 positive integers related to the cumulative distribution
    function.
 
-   Given a random bit string r = (r[0], r[1], ..., r[15]), the function
-   Sample(r) returns a sample e from FrodoKEM’s error distribution X via
-   inversion sampling using a table T_X, as follows (note that T_X(d) is
-   never accessed):
+   Given a random 16-bit string r = (r[0], r[1], ..., r[15]), the
+   function Sample(r) returns a sample e from FrodoKEM’s error
+   distribution X via inversion sampling using a table T_X, as follows
+   (note that T_X(d) is never accessed):
 
    t = r[1] * 2^0 + r[2] * 2^1 + ... + r[15] * 2^14
 
@@ -894,3 +897,8 @@ Authors' Addresses
    Stephan Ehlen
    Federal Office for Information Security (BSI)
    Email: stephan.ehlen@bsi.bund.de
+
+
+   Joppe W. Bos
+   NXP Semiconductors
+   Email: joppe.bos@nxp.com
