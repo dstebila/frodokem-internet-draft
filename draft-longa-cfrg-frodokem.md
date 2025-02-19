@@ -486,7 +486,7 @@ Given (n1 * n2) 16-bit random strings r^(i) and the dimension values n1 and n2,
 SampleMatrix((r^(0), ..., r^(n1 * n2 - 1)), n1, n2) generates an n1 * n2 matrix
 E row-by-row from E[0,0] to E[n1-1,n2-1] by successively calling the function
 Sample n1 * n2 times, as follows:
-    
+
 ~~~pseudocode
 for i = 0 to n1 - 1 do
     for j = 0 to n2 - 1 do
@@ -595,7 +595,7 @@ ST[i,j] = −s[15] * 2^15 + (s[0] + s[1] * 2 + s[2] * 2^2 + ... + s[14] * 2^14).
 
 ## Encapsulation
 
-The encapsulation algorithm takes as input a public key pk = (seedA || b), requires randomness, and
+The encapsulation algorithm takes as input a public key pk = (seedA &#124;&#124; b), requires randomness, and
 outputs a ciphertext c = (c1 || c2 || salt) and a shared secret ss.
 
 ~~~pseudocode
@@ -620,7 +620,7 @@ return (c1 || c2 || salt), ss  # Return ciphertext and shared secret
 
 ## Decapsulation
 
-The decapsulation algorithm takes as input a ciphertext c = (c1 || c2 || salt) and
+The decapsulation algorithm takes as input a ciphertext c = (c1 &#124;&#124; c2 &#124;&#124; salt) and
 a secret key sk = (s || seedA || b || S^T || pkh), and outputs a shared secret ss.
 
 ~~~pseudocode
