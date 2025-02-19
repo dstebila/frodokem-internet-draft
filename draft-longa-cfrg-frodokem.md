@@ -35,8 +35,127 @@ author:
 
 normative:
 
-informative:
+  FIPS197:
+    title: Advanced Encryption Standard (AES), FIPS 197
+    author:
+    - name: National Institute of Standards and Technology (NIST)
+    date: 2001-11
+    target: https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.197-upd1.pdf
 
+  FIPS202:
+    title: "SHA-3 Standard: Permutation-Based Hash and Extendable-Output Functions, FIPS 202"
+    author:
+    - name: National Institute of Standards and Technology (NIST)
+    date: 2015-08
+    target: https://nvlpubs.nist.gov/nistpubs/fips/nist.fips.202.pdf
+
+informative:
+  Frodo17:
+    title: "FrodoKEM: Learning With Errors Key Encapsulation"
+    author:
+    - name: E. Alkim
+    - name: J. W. Bos
+    - name: L. Ducas
+    - name: P. Longa
+    - name: I. Mironov
+    - name: M. Naehrig
+    - name: V. Nikolaenko
+    - name: C. Peikert
+    - name: A. Raghunathan
+    - name: D. Stebila
+    date: 2017
+    target: https://frodokem.org
+  Annex:
+    title: Annex on FrodoKEM updates
+    author:
+    - name: E. Alkim
+    - name: J. W. Bos
+    - name: L. Ducas
+    - name: P. Longa
+    - name: I. Mironov
+    - name: M. Naehrig
+    - name: V. Nikolaenko
+    - name: C. Peikert
+    - name: A. Raghunathan
+    - name: D. Stebila
+    date: 2023-04
+    target: https://frodokem.org/files/FrodoKEM-annex-20230418.pdf
+  Mic10:
+    title: Cryptographic functions from worst-case complexity assumptions
+    author:
+    - name: D. Micciancio
+    date: 2010
+    seriesinfo: Information Security and Cryptography, pages 427–452
+  Reg10:
+    title: The learning with errors problem (invited survey)
+    author:
+    - name: O. Regev
+    date: 2010
+    seriesinfo: IEEE Conference on Computational Complexity, pages 191–204
+  Pei16:
+    title: A decade of lattice cryptography
+    author:
+    - name: C. Peikert
+    date: 2016
+    seriesinfo: Foundations and Trends in Theoretical Computer Science, 10(4):283–424.
+  Ajt96:
+    title: Generating hard instances of lattice problems (extended abstract)
+    author:
+    - name: M. Ajtai
+    date: 1996
+    seriesinfo: 28th Annual ACM Symposium on Theory of Computing, pages 99–108
+  AD97:
+    title: A public-key cryptosystem with worst-case/average-case equivalence
+    author:
+    - name: M. Ajtai
+    - name: C. Dwork
+    date: 1997
+    seriesinfo: 29th Annual ACM Symposium on Theory of Computing, pages 284–293
+  Reg09:
+    title: On lattices, learning with errors, random linear codes, and cryptography
+    author:
+    - name: O. Regev
+    date: 2009
+    seriesinfo: Journal of the ACM, 56(6):34, 2009. Preliminary version in STOC 2005
+  LP11:
+    title: Better key sizes (and attacks) for LWE-based encryption
+    author:
+    - name: R. Lindner
+    - name: C. Peikert
+    date: 2011
+    seriesinfo: Topics in Cryptology – CT-RSA 2011, volume 6558 of Lecture Notes in Computer Science, pages 319–339
+  FO99:
+    title: Secure integration of asymmetric and symmetric encryption schemes
+    author:
+    - name: E. Fujisaki
+    - name: T. Okamoto
+    date: 1999
+    seriesinfo: Advances in Cryptology – CRYPTO’99, volume 1666 of Lecture Notes in Computer Science, pages 537–554
+  TU16:
+    title: Post-quantum security of the Fujisaki-Okamoto and OAEP transforms
+    author:
+    - name: E. E. Targhi
+    - name: D. Unruh
+    date: 2016
+    seriesinfo: 14th Theory of Cryptography Conference (TCC 2016-B), Part II, volume 9986 of Lecture Notes in Computer Science, pages 192–216
+  HHK17:
+    title: A modular analysis of the Fujisaki-Okamoto transformation
+    author:
+    - name: D. Hofheinz
+    - name: K. Hovelmanns
+    - name: E. Kiltz
+    date : 2017
+    seriesinfo: 15th Theory of Cryptography Conference (TCC 2017), Part I, volume 10677 of Lecture Notes in Computer Science, pages 341–371
+  JZC+18:
+    title: IND-CCA-secure key encapsulation mechanism in the quantum random oracle model, revisited
+    author:
+    - name: H. Jiang
+    - name: Z. Zhang
+    - name: L. Chen
+    - name: H. Wang
+    - name: Z. Ma
+    date: 2018
+    seriesinfo: Advances in Cryptology – CRYPTO 2018, Part III, volume 10993 of Lecture Notes in Computer Science, pages 96–125
 
 --- abstract
 
@@ -82,7 +201,7 @@ a secure communication channel using a symmetric-key algorithm.
 The core of FrodoKEM is a public-key encryption scheme called FrodoPKE,
 whose IND-CPA security is tightly related to the hardness of a corresponding
 learning with errors problem. Here we briefly recall the scientific lineage
-of these systems. See the surveys [Mic10, Reg10, Pei16] for further details.
+of these systems. See the surveys [Mic10], [Reg10] and [Pei16] for further details.
 The seminal works of Ajtai [Ajt96] (published in 1996) and Ajtai–Dwork [AD97]
 (published in 1997) gave the first cryptographic constructions whose
 security properties followed from the conjectured worst-case hardness of
@@ -185,11 +304,11 @@ following:
    based on the cumulative distribution function for X.
 
    The values for these parameters corresponding to each parameter set are
-   given in [Section 9.1](#summary-of-parameters).
+   given in {{SummaryParams}}.
 
 # Supporting Functions
 
-## Octet Encoding of Bit Strings
+## Octet Encoding of Bit Strings {#OctetEncoding}
 
 This document follows the little-endian formatting for octet encoding of
 bit strings.
@@ -289,7 +408,7 @@ for i = 0 to n1 - 1 do
 end for
 
 return the octet string corresponding to the bit string
-b = (b[0], b[1], ..., b[D * n1 * n2 - 1]), as per XXXX.
+b = (b[0], b[1], ..., b[D * n1 * n2 - 1]), as per Section 6.1.
 ~~~
 
 The function Unpack does the reverse of this process to transform an octet string o
@@ -300,7 +419,7 @@ The function Unpack(o, n1, n2) is defined as follows:
 
 ~~~pseudocode
 Convert the input octet string o to a bit string
-b = (b[0], b[1], ..., b[D * n1 * n2 - 1]), as per XXXX.
+b = (b[0], b[1], ..., b[D * n1 * n2 - 1]), as per Section 6.1.
 
 for i = 0 to n1 - 1 do
     for j = 0 to n2 - 1 do
@@ -352,7 +471,7 @@ return e
 
 The output of the algorithm is a small integer in the range
 {-d, -d+1, ..., -1, 0, 1, ..., d-1, d}. The tables T_X corresponding to each of
-FrodoKEM’s parameter sets are given in Table XXXX.
+FrodoKEM’s parameter sets are given in {{tbl-TX}}.
 
 We emphasize that it is important to perform this sampling in constant time to
 avoid exposing timing side-channels, which is why the for-loop of the algorithm
@@ -379,7 +498,7 @@ end for
 return E
 ~~~
 
-## Pseudorandom Matrix Generation
+## Pseudorandom Matrix Generation {#GenA}
 
 The function Gen takes as input a seed, seedA, of length lenA=128 bits and an
 implicit dimension n that is fixed per parameter set, and outputs an n * n
@@ -477,7 +596,7 @@ ST[i,j] = −s[15] * 2^15 + (s[0] + s[1] * 2 + s[2] * 2^2 + ... + s[14] * 2^14).
 
 ## Encapsulation
 
-The encapsulation algorithm takes as input a public key pk = (seedA || b), requires randomness, and
+The encapsulation algorithm takes as input a public key pk = (seedA &#124;&#124; b), requires randomness, and
 outputs a ciphertext c = (c1 || c2 || salt) and a shared secret ss.
 
 ~~~pseudocode
@@ -502,7 +621,7 @@ return (c1 || c2 || salt), ss  # Return ciphertext and shared secret
 
 ## Decapsulation
 
-The decapsulation algorithm takes as input a ciphertext c = (c1 || c2 || salt) and
+The decapsulation algorithm takes as input a ciphertext c = (c1 &#124;&#124; c2 &#124;&#124; salt) and
 a secret key sk = (s || seedA || b || S^T || pkh), and outputs a shared secret ss.
 
 ~~~pseudocode
@@ -532,7 +651,7 @@ return ss  # Return shared secret ss
 # FrodoKEM Variants
 
 FrodoKEM is parameterized by the pseudorandom generator (PRG) that is used for
-the generation of the matrix A. As explained in Section XXXX there are two options
+the generation of the matrix A. As explained in {{GenA}} there are two options
 for PRG: AES128 and SHAKE128.
 
 In addition, FrodoKEM consists of two main variants: a "standard" variant that does
@@ -567,7 +686,7 @@ their corresponding ephemeral variants). The second FrodoKEM variant consists of
 parameter sets FrodoKEM-640-SHAKE, FrodoKEM-976-SHAKE and FrodoKEM-1344-SHAKE (and
 their corresponding ephemeral variants).
 
-## Summary of Parameters
+## Summary of Parameters {#SummaryParams}
 
 The parameter values characterizing the FrodoKEM parameter sets are listed below.
 
@@ -582,29 +701,26 @@ The parameter values characterizing the FrodoKEM parameter sets are listed below
 |    lenA |       128       |       128       |        128       | Bitlength of seeds for generation of matrix A  |
 |  lensec |       128       |       192       |        256       | Number of bits matching the bit-security level |
 |   SHAKE |    SHAKE128     |     SHAKE256    |     SHAKE256     | SHAKE variant used for hashing                 |
-
-                                       Table 1: Parameters for FrodoKEM.
+{: title="Parameters for FrodoKEM."}
 
 |   Name  |   FrodoKEM-640  |  FrodoKEM-976   |   FrodoKEM-1344  | Description                                    |
 |--------:|:---------------:|:---------------:|:----------------:|:-----------------------------------------------|
 |   lenSE |       256       |       384       |       512        | Bitlength of seedSE in FrodoKEM                |
 | lensalt |       256       |       384       |       512        | Bitlength of salt in FrodoKEM                  |
+{: title="Additional parameters for FrodoKEM variant."}
 
 |   Name  |  eFrodoKEM-640  |  eFrodoKEM-976  |  eFrodoKEM-1344  | Description                                    |
 |--------:|:---------------:|:---------------:|:----------------:|:-----------------------------------------------|
 |   lenSE |       128       |       192       |       256        | Bitlength of seedSE in eFrodoKEM               |
 | lensalt |        0        |        0        |        0         | No salt in eFrodoKEM                           |
-
-                        Table 2: Additional parameters for FrodoKEM depending on variant.
+{: title="Additional parameters for eFrodoKEM variant."}
 
 |     Name     |  sigma |    0  |  +-1  |  +-2 |  +-3 |  +-4 |  +-5 | +-6 | +-7 | +-8 | +-9 |+-10|+-11|+-12| order |   divergence  |
 |-------------:|:------:|------:|------:|-----:|-----:|-----:|-----:|----:|----:|----:|----:|---:|---:|---:|:-----:|:-------------:|
 |  X_Frodo-640 |   2.8  |  9288 |  8720 | 7216 | 5264 | 3384 | 1918 | 958 | 422 | 164 |  56 | 17 |  4 |  1 |  200  | 0.324 x 10^-4 |
 |  X_Frodo-976 |   2.3  | 11278 | 10277 | 7774 | 4882 | 2545 | 1101 | 396 | 118 |  29 |   6 |  1 |    |    |  500  | 0.140 x 10^-4 |
 | X_Frodo-1344 |   1.4  | 18286 | 14320 | 6876 | 2023 |  364 |   40 |   2 |     |     |     |    |    |    | 1000  | 0.264 x 10^-4 |
-
-                     Table 3: Error distributions. Probabilities are shown for each integer value from 0 up to +-12.
-                                    The last two columns correspond to Renyi's order and divergence.
+{: title="Error distributions. Probabilities are shown for each integer value from 0 up to +-12. The last two columns correspond to Renyi's order and divergence."}
 
 | Table entries |  FrodoKEM-640  |  FrodoKEM-976  |  FrodoKEM-1344  |
 |--------------:|:--------------:|:--------------:|:---------------:|
@@ -621,9 +737,7 @@ The parameter values characterizing the FrodoKEM parameter sets are listed below
 |       T_X(10) |     32,762     |     32,767     |                 |
 |       T_X(11) |     32,766     |                |                 |
 |       T_X(12) |     32,767     |                |                 |
-
-            Table 4: The distribution table entries T_X(i),
-                  for 0 <= i <= d, for sampling.
+{: #tbl-TX title="The distribution table entries T_X(i), for 0 <= i <= d, for sampling."}
 
 |                |  secret key sk  |  public key pk  |  ciphertext ct  | shared secret ss |
 |---------------:|:---------------:|:---------------:|:---------------:|:----------------:|
@@ -633,8 +747,7 @@ The parameter values characterizing the FrodoKEM parameter sets are listed below
 |  eFrodoKEM-976 |      31,296     |      15,632     |      15,744     |        24        |
 |  FrodoKEM-1344 |      43,088     |      21,520     |      21,696     |        32        |
 | eFrodoKEM-1344 |      43,088     |      21,520     |      21,632     |        32        |
-
-                        Table 5: Sizes (in bits) of inputs and outputs.
+{: title="Sizes (in bits) of inputs and outputs."}
 
 # Security Considerations
 
@@ -663,57 +776,3 @@ This document has no IANA actions.
 <!-- {:numbered="false"} -->
 
 TODO acknowledge.
-
-# References
-
-## Normative References
-
-[FIPS197]   NIST, FIPS 197, "Advanced Encryption Standard (AES)",
-            November 2001.
-            https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.197-upd1.pdf
-
-[FIPS202]   NIST, FIPS 202, "SHA-3 Standard: Permutation-Based Hash and Extendable-Output Functions",
-            August 2015.
-            https://nvlpubs.nist.gov/nistpubs/fips/nist.fips.202.pdf
-
-## Informative References
-
-[Frodo17]   E. Alkim, J. W. Bos, L. Ducas, K. Easterbrook, P. Longa, B. LaMacchia, I. Mironov, M. Naehrig, V. Nikolaenko, C. Peikert, A. Raghunathan, and D. Stebila.
-            FrodoKEM: Learning With Errors Key Encapsulation, 2017.
-            NIST's Round 3 algorithm specification and supporting documentatation available at https://frodokem.org/files/FrodoKEM-specification-20210604.pdf (2021)
-
-[Annex]     FrodoKEM Team. Annex on FrodoKEM updates, April 2023.
-            https://frodokem.org/files/FrodoKEM-annex-20230418.pdf
-
-[Mic10]     D. Micciancio. Cryptographic functions from worst-case complexity assumptions.
-            Information Security and Cryptography, pages 427–452, 2010.
-
-[Reg10]     O. Regev. The learning with errors problem (invited survey).
-            In IEEE Conference on Computational Complexity, pages 191–204, 2010.
-
-[Pei16]     C. Peikert. A decade of lattice cryptography.
-            Foundations and Trends in Theoretical Computer Science, 10(4):283–424, 2016.
-
-[Ajt96]     M. Ajtai. Generating hard instances of lattice problems (extended abstract).
-            In 28th Annual ACM Symposium on Theory of Computing, pages 99–108, 1996.
-
-[AD97]      M. Ajtai and C. Dwork. A public-key cryptosystem with worst-case/average-case equivalence.
-            In 29th Annual ACM Symposium on Theory of Computing, pages 284–293, 1997.
-
-[Reg09]     O. Regev. On lattices, learning with errors, random linear codes, and cryptography.
-            Journal of the ACM, 56(6):34, 2009. Preliminary version in STOC 2005.
-
-[LP11]      R. Lindner and C. Peikert. Better key sizes (and attacks) for LWE-based encryption.
-            In Topics in Cryptology – CT-RSA 2011, volume 6558 of Lecture Notes in Computer Science, pages 319–339, 2011.
-
-[FO99]      E. Fujisaki and T. Okamoto. Secure integration of asymmetric and symmetric encryption schemes.
-            In Advances in Cryptology – CRYPTO’99, volume 1666 of Lecture Notes in Computer Science, pages 537–554, 1999.
-
-[TU16]      E. E. Targhi and D. Unruh. Post-quantum security of the Fujisaki-Okamoto and OAEP transforms.
-            In TCC 2016-B: 14th Theory of Cryptography Conference, Part II, volume 9986 of Lecture Notes in Computer Science, pages 192–216, 2016.
-
-[HHK17]     D. Hofheinz, K. Hovelmanns, and E. Kiltz. A modular analysis of the Fujisaki-Okamoto transformation.
-            In TCC 2017: 15th Theory of Cryptography Conference, Part I, volume 10677 of Lecture Notes in Computer Science, pages 341–371, 2017.
-
-[JZC+18]    H. Jiang, Z. Zhang, L. Chen, H. Wang, and Z. Ma. IND-CCA-secure key encapsulation mechanism in the quantum random oracle model, revisited.
-            In Advances in Cryptology – CRYPTO 2018, Part III, volume 10993 of Lecture Notes in Computer Science, pages 96–125, 2018.
