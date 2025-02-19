@@ -185,7 +185,7 @@ following:
    based on the cumulative distribution function for X.
 
    The values for these parameters corresponding to each parameter set are
-   given in [Section 9.1].
+   given in [Section 9.1](#summary-of-parameters).
 
 # Supporting Functions
 
