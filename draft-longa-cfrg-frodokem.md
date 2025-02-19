@@ -31,6 +31,10 @@ author:
     fullname: Stephan Ehlen
     organization: Federal Office for Information Security (BSI)
     email: stephan.ehlen@bsi.bund.de
+ -
+    fullname: Joppe W. Bos
+    organization: NXP Semiconductors
+    email: joppe.bos@nxp.com
 
 
 normative:
@@ -253,8 +257,9 @@ We describe the symbols and abbreviations used throughout this document.
 -  ⌊ x ⌉ is	the rounding of x to the nearest integer. If
    x = y + 1/2 for some y in Z, then ⌊ x ⌉ = y + 1.
 
--  A 16-bit bit string is represented by r^(i). And a sequence of t 16-bit
-   bit strings r^(i) is represented by (r^(0), r^(1), ..., r^(t-1)).
+-  r^(i) is a 16-bit bit string.
+
+-  (r^(0), r^(1), ..., r^(t-1)) is a sequence of t 16-bit bit strings r^(i).
 
 -  AES128(k, a) denotes the 128-bit AES128 output under key k for a 128-bit
    input a.
@@ -334,10 +339,13 @@ performing octet encoding of bit strings.
 
 We define how bit strings are encoded as mod-q integer matrices.
 
-Recall that 2^B <= q. The encoding function ec() encodes an integer
-0 <= val < 2^B as an element in Z_q by multiplying it by q/2^B = 2^(D-B):
+From the FrodoKEM parameters one has that 2^B <= q. The encoding function
+ec() encodes an integer 0 <= val < 2^B as an element in Z_q by multiplying
+it by q/2^B = 2^(D-B):
 
+~~~
 ec(val) = val * q / 2^B.
+~~~
 
 Using this function, the function Encode(b) encodes a given bit string
 b = (b[0], ..., b[l-1]) of length l = B * nHat^2 as an nHat * nHat
@@ -345,14 +353,14 @@ matrix C with coefficients C[i,j] in Z_q by applying ec(·) to B-bit
 sub-strings sequentially and filling the matrix row by row entry-wise.
 The function Encode(b) is defined as follows.
 
-~~~
+~~~pseudocode
 for i = 0 to nHat - 1 do
    for j = 0 to nHat - 1 do
       val = 0
       for k = 0 to B - 1 do
          val = val + b[(i * nHat + j)B + k] * 2^k
       end for
-      set C[i,j] = val * q / 2^B
+      C[i,j] = val * q / 2^B
    end for
 end for
 
@@ -439,8 +447,9 @@ Z, centered at zero and with small support, which approximates a rounded continu
 Gaussian distribution.
 
 The support of X is S_X = {−d, −d+1, ..., −1, 0, 1, ..., d−1, d} for a positive
-integer d. The probabilities X(z) = X(−z) for z in S_X are given by a discrete
-probability density function, which is described by a table
+integer d specified by the FrodoKEM parameter set. The probabilities X(z) = X(−z)
+for z in S_X are given by a discrete probability density function, which is described
+by a table
 
 ~~~
 T_X = (T_X(0), T_X(1), ..., T_X(d))
@@ -448,9 +457,9 @@ T_X = (T_X(0), T_X(1), ..., T_X(d))
 
 of d+1 positive integers related to the cumulative distribution function.
 
-Given a random bit string r = (r[0], r[1], ..., r[15]), the function Sample(r) returns
-a sample e from FrodoKEM’s error distribution X via inversion sampling using a
-table T_X, as follows (note that T_X(d) is never accessed):
+Given a random 16-bit string r = (r[0], r[1], ..., r[15]), the function Sample(r)
+returns a sample e from FrodoKEM’s error distribution X via inversion sampling
+using a table T_X, as follows (note that T_X(d) is never accessed):
 
 ~~~pseudocode
 t = r[1] * 2^0 + r[2] * 2^1 + ... + r[15] * 2^14
