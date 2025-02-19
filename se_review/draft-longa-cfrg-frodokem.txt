@@ -83,11 +83,10 @@ Table of Contents
      9.1.  Summary of Parameters
    10. Security Considerations
    11. IANA Considerations
-   12. Normative References
+   12. References
+     12.1.  Normative References
+     12.2.  Informative References
    Appendix A.  Acknowledgments
-   Appendix B.  References
-     B.1.  Normative References
-     B.2.  Informative References
    Authors' Addresses
 
 1.  Introduction
@@ -135,11 +134,11 @@ Table of Contents
    FrodoPKE, whose IND-CPA security is tightly related to the hardness
    of a corresponding learning with errors problem.  Here we briefly
    recall the scientific lineage of these systems.  See the surveys
-   [Mic10, Reg10, Pei16] for further details.  The seminal works of
-   Ajtai [Ajt96] (published in 1996) and Ajtai–Dwork [AD97] (published
-   in 1997) gave the first cryptographic constructions whose security
-   properties followed from the conjectured worst-case hardness of
-   various problems on point lattices in R^n.  In subsequent years,
+   [Mic10], [Reg10] and [Pei16] for further details.  The seminal works
+   of Ajtai [Ajt96] (published in 1996) and Ajtai–Dwork [AD97]
+   (published in 1997) gave the first cryptographic constructions whose
+   security properties followed from the conjectured worst-case hardness
+   of various problems on point lattices in R^n.  In subsequent years,
    these works were substantially refined and improved.  Notably, in
    work published in 2005, Regev [Reg09] defined the learning with
    errors (LWE) problem, proved the hardness of (certain
@@ -175,7 +174,7 @@ Table of Contents
    Targhi–Unruh transforms that in particular convert an IND-CPA-secure
    PKE into an IND-CCA-secure KEM, and analyzed them in both the
    classical and quantum random-oracle models, even for PKEs with non-
-   zero decryption error.  Jiang et al.  [JZC+18] show how to prove
+   zero decryption error.  Jiang et al.  [JZC_18] show how to prove
    security of one of these variant FO transforms in the QROM without
    requiring the extra hash from Targhi–Unruh.  FrodoKEM is constructed
    from FrodoPKE using a slight variant of Jiang et al.'s transform that
@@ -250,7 +249,7 @@ Table of Contents
       integers based on the cumulative distribution function for X.
 
       The values for these parameters corresponding to each parameter
-      set are given in Section 9.1 (Section 9.1).
+      set are given in Section 9.1.
 
 6.  Supporting Functions
 
@@ -346,7 +345,7 @@ g = b[15] * 2^7 + b[14] * 2^6 + b[13] * 2^5 + b[12] * 2^4 + b[11] * 2^3 + b[10] 
    end for
 
    return the octet string corresponding to the bit string
-   b = (b[0], b[1], ..., b[D * n1 * n2 - 1]), as per XXXX.
+   b = (b[0], b[1], ..., b[D * n1 * n2 - 1]), as per Section 6.1.
 
    The function Unpack does the reverse of this process to transform an
    octet string o to an n1 * n2 matrix C with entries C[i,j] in Z_q,
@@ -356,7 +355,7 @@ g = b[15] * 2^7 + b[14] * 2^6 + b[13] * 2^5 + b[12] * 2^4 + b[11] * 2^3 + b[10] 
    function Unpack(o, n1, n2) is defined as follows:
 
    Convert the input octet string o to a bit string
-   b = (b[0], b[1], ..., b[D * n1 * n2 - 1]), as per XXXX.
+   b = (b[0], b[1], ..., b[D * n1 * n2 - 1]), as per Section 6.1.
 
    for i = 0 to n1 - 1 do
        for j = 0 to n2 - 1 do
@@ -406,7 +405,7 @@ g = b[15] * 2^7 + b[14] * 2^6 + b[13] * 2^5 + b[12] * 2^4 + b[11] * 2^3 + b[10] 
 
    The output of the algorithm is a small integer in the range {-d,
    -d+1, ..., -1, 0, 1, ..., d-1, d}. The tables T_X corresponding to
-   each of FrodoKEM’s parameter sets are given in Table XXXX.
+   each of FrodoKEM’s parameter sets are given in Table 5.
 
    We emphasize that it is important to perform this sampling in
    constant time to avoid exposing timing side-channels, which is why
@@ -525,17 +524,9 @@ ST[i,j] = −s[15] * 2^15 + (s[0] + s[1] * 2 + s[2] * 2^2 + ... + s[14] * 2^14).
 
 7.2.  Encapsulation
 
-      +==========================+==+==============+==+============+
-      | The encapsulation        |  | b), requires |  |            |
-      | algorithm takes as input |  | randomness,  |  |            |
-      | a public key pk = (seedA |  | and          |  |            |
-      +==========================+==+==============+==+============+
-      | outputs a ciphertext c = |  | c2           |  | salt) and  |
-      | (c1                      |  |              |  | a shared   |
-      |                          |  |              |  | secret ss. |
-      +--------------------------+--+--------------+--+------------+
-
-                                 Table 1
+   The encapsulation algorithm takes as input a public key pk =
+   (seedA || b), requires randomness, and outputs a ciphertext c =
+   (c1 || c2 || salt) and a shared secret ss.
 
    Choose uniformly random values u and salt of lengths lensec and lensalt
    pkh = SHAKE(pk, lensec)  # Compute pkh
@@ -557,20 +548,9 @@ ST[i,j] = −s[15] * 2^15 + (s[0] + s[1] * 2 + s[2] * 2^2 + ... + s[14] * 2^14).
 
 7.3.  Decapsulation
 
-   +====================+==+=======+==+=======+==+=====+==+============+
-   | The decapsulation  |  | c2    |  | salt) |  |     |  |            |
-   | algorithm takes as |  |       |  | and   |  |     |  |            |
-   | input a ciphertext |  |       |  |       |  |     |  |            |
-   | c = (c1            |  |       |  |       |  |     |  |            |
-   +====================+==+=======+==+=======+==+=====+==+============+
-   | a secret key sk =  |  | seedA |  | b     |  | S^T |  | pkh), and  |
-   | (s                 |  |       |  |       |  |     |  | outputs a  |
-   |                    |  |       |  |       |  |     |  | shared     |
-   |                    |  |       |  |       |  |     |  | secret     |
-   |                    |  |       |  |       |  |     |  | ss.        |
-   +--------------------+--+-------+--+-------+--+-----+--+------------+
-
-                                  Table 2
+   The decapsulation algorithm takes as input a ciphertext c = (c1 ||
+   c2 || salt) and a secret key sk = (s || seedA || b || S^T || pkh),
+   and outputs a shared secret ss.
 
    B' = Unpack(c1, nHat, n)
    C = Unpack(c2, nHat, nHat)
@@ -597,8 +577,8 @@ ST[i,j] = −s[15] * 2^15 + (s[0] + s[1] * 2 + s[2] * 2^2 + ... + s[14] * 2^14).
 8.  FrodoKEM Variants
 
    FrodoKEM is parameterized by the pseudorandom generator (PRG) that is
-   used for the generation of the matrix A.  As explained in
-   Section XXXX there are two options for PRG: AES128 and SHAKE128.
+   used for the generation of the matrix A.  As explained in Section 6.6
+   there are two options for PRG: AES128 and SHAKE128.
 
    In addition, FrodoKEM consists of two main variants: a "standard"
    variant that does not impose any restriction on the reuse of key
@@ -687,9 +667,7 @@ ST[i,j] = −s[15] * 2^15 + (s[0] + s[1] * 2 + s[2] * 2^2 + ... + s[14] * 2^14).
    |      |              |              |              | for hashing  |
    +------+--------------+--------------+--------------+--------------+
 
-                                 Table 3
-
-                                      Table 1: Parameters for FrodoKEM.
+                    Table 1: Parameters for FrodoKEM.
 
     +=======+==============+==============+===============+===========+
     |   Name| FrodoKEM-640 | FrodoKEM-976 | FrodoKEM-1344 |Description|
@@ -703,7 +681,7 @@ ST[i,j] = −s[15] * 2^15 + (s[0] + s[1] * 2 + s[2] * 2^2 + ... + s[14] * 2^14).
     |       |              |              |               |FrodoKEM   |
     +-------+--------------+--------------+---------------+-----------+
 
-                                  Table 4
+            Table 2: Additional parameters for FrodoKEM variant.
 
    +=======+=============+===============+================+============+
    |   Name|eFrodoKEM-640| eFrodoKEM-976 | eFrodoKEM-1344 |Description |
@@ -717,9 +695,7 @@ ST[i,j] = −s[15] * 2^15 + (s[0] + s[1] * 2 + s[2] * 2^2 + ... + s[14] * 2^14).
    |       |             |               |                |eFrodoKEM   |
    +-------+-------------+---------------+----------------+------------+
 
-                                  Table 5
-
-                    Table 2: Additional parameters for FrodoKEM depending on variant.
+           Table 3: Additional parameters for eFrodoKEM variant.
 
    +========+=====+=====+=====+====+====+====+====+===+===+===+===+====+====+====+=====+==========+
    |    Name|sigma|    0|  +-1| +-2| +-3| +-4| +-5|+-6|+-7|+-8|+-9|+-10|+-11|+-12|order|divergence|
@@ -734,10 +710,9 @@ ST[i,j] = −s[15] * 2^15 + (s[0] + s[1] * 2 + s[2] * 2^2 + ... + s[14] * 2^14).
    |    1344|     |     |     |    |    |    |    |   |   |   |   |    |    |    |     |  10^-4   |
    +--------+-----+-----+-----+----+----+----+----+---+---+---+---+----+----+----+-----+----------+
 
-                                  Table 6
-
-                 Table 3: Error distributions. Probabilities are shown for each integer value from 0 up to +-12.
-                                The last two columns correspond to Renyi's order and divergence.
+      Table 4: Error distributions.  Probabilities are shown for each
+     integer value from 0 up to +-12.  The last two columns correspond
+                      to Renyi's order and divergence.
 
       +===============+==============+==============+===============+
       | Table entries | FrodoKEM-640 | FrodoKEM-976 | FrodoKEM-1344 |
@@ -769,10 +744,8 @@ ST[i,j] = −s[15] * 2^15 + (s[0] + s[1] * 2 + s[2] * 2^2 + ... + s[14] * 2^14).
       |       T_X(12) |    32,767    |              |               |
       +---------------+--------------+--------------+---------------+
 
-                                  Table 7
-
-           Table 4: The distribution table entries T_X(i),
-                 for 0 <= i <= d, for sampling.
+         Table 5: The distribution table entries T_X(i), for 0 <= i
+                            <= d, for sampling.
 
    +================+===============+========+============+===========+
    |                | secret key sk | public | ciphertext |   shared  |
@@ -791,9 +764,7 @@ ST[i,j] = −s[15] * 2^15 + (s[0] + s[1] * 2 + s[2] * 2^2 + ... + s[14] * 2^14).
    | eFrodoKEM-1344 |     43,088    | 21,520 |   21,632   |     32    |
    +----------------+---------------+--------+------------+-----------+
 
-                                 Table 8
-
-                       Table 5: Sizes (in bits) of inputs and outputs.
+             Table 6: Sizes (in bits) of inputs and outputs.
 
 10.  Security Considerations
 
@@ -817,7 +788,19 @@ ST[i,j] = −s[15] * 2^15 + (s[0] + s[1] * 2 + s[2] * 2^2 + ... + s[14] * 2^14).
 
    This document has no IANA actions.
 
-12.  Normative References
+12.  References
+
+12.1.  Normative References
+
+   [FIPS197]  (NIST), N. I. of S. and T., "Advanced Encryption Standard
+              (AES), FIPS 197", November 2001,
+              <https://nvlpubs.nist.gov/nistpubs/FIPS/
+              NIST.FIPS.197-upd1.pdf>.
+
+   [FIPS202]  (NIST), N. I. of S. and T., "SHA-3 Standard: Permutation-
+              Based Hash and Extendable-Output Functions, FIPS 202",
+              August 2015, <https://nvlpubs.nist.gov/nistpubs/fips/
+              nist.fips.202.pdf>.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
@@ -828,82 +811,73 @@ ST[i,j] = −s[15] * 2^15 + (s[0] + s[1] * 2 + s[2] * 2^2 + ... + s[14] * 2^14).
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
               May 2017, <https://www.rfc-editor.org/rfc/rfc8174>.
 
+12.2.  Informative References
+
+   [AD97]     Ajtai, M. and C. Dwork, "A public-key cryptosystem with
+              worst-case/average-case equivalence", 29th Annual ACM
+              Symposium on Theory of Computing, pages 284–293 , 1997.
+
+   [Ajt96]    Ajtai, M., "Generating hard instances of lattice problems
+              (extended abstract)", 28th Annual ACM Symposium on Theory
+              of Computing, pages 99–108 , 1996.
+
+   [Annex]    Alkim, E., Bos, J. W., Ducas, L., Longa, P., Mironov, I.,
+              Naehrig, M., Nikolaenko, V., Peikert, C., Raghunathan, A.,
+              and D. Stebila, "Annex on FrodoKEM updates", April 2023,
+              <https://frodokem.org/files/FrodoKEM-annex-20230418.pdf>.
+
+   [FO99]     Fujisaki, E. and T. Okamoto, "Secure integration of
+              asymmetric and symmetric encryption schemes", Advances in
+              Cryptology – CRYPTO’99, volume 1666 of Lecture Notes in
+              Computer Science, pages 537–554 , 1999.
+
+   [Frodo17]  Alkim, E., Bos, J. W., Ducas, L., Longa, P., Mironov, I.,
+              Naehrig, M., Nikolaenko, V., Peikert, C., Raghunathan, A.,
+              and D. Stebila, "FrodoKEM: Learning With Errors Key
+              Encapsulation", 2017, <https://frodokem.org>.
+
+   [HHK17]    Hofheinz, D., Hovelmanns, K., and E. Kiltz, "A modular
+              analysis of the Fujisaki-Okamoto transformation", 15th
+              Theory of Cryptography Conference (TCC 2017), Part I,
+              volume 10677 of Lecture Notes in Computer Science, pages
+              341–371 , 2017.
+
+   [JZC_18]   Jiang, H., Zhang, Z., Chen, L., Wang, H., and Z. Ma, "IND-
+              CCA-secure key encapsulation mechanism in the quantum
+              random oracle model, revisited", Advances in Cryptology –
+              CRYPTO 2018, Part III, volume 10993 of Lecture Notes in
+              Computer Science, pages 96–125 , 2018.
+
+   [LP11]     Lindner, R. and C. Peikert, "Better key sizes (and
+              attacks) for LWE-based encryption", Topics in Cryptology –
+              CT-RSA 2011, volume 6558 of Lecture Notes in Computer
+              Science, pages 319–339 , 2011.
+
+   [Mic10]    Micciancio, D., "Cryptographic functions from worst-case
+              complexity assumptions", Information Security and
+              Cryptography, pages 427–452 , 2010.
+
+   [Pei16]    Peikert, C., "A decade of lattice cryptography",
+              Foundations and Trends in Theoretical Computer Science,
+              10(4):283–424. , 2016.
+
+   [Reg09]    Regev, O., "On lattices, learning with errors, random
+              linear codes, and cryptography", Journal of the ACM,
+              56(6):34, 2009. Preliminary version in STOC 2005 , 2009.
+
+   [Reg10]    Regev, O., "The learning with errors problem (invited
+              survey)", IEEE Conference on Computational Complexity,
+              pages 191–204 , 2010.
+
+   [TU16]     Targhi, E. E. and D. Unruh, "Post-quantum security of the
+              Fujisaki-Okamoto and OAEP transforms", 14th Theory of
+              Cryptography Conference (TCC 2016-B), Part II, volume 9986
+              of Lecture Notes in Computer Science, pages 192–216 ,
+              2016.
+
 Appendix A.  Acknowledgments
 
    TODO acknowledge.
-
-Appendix B.  References
-
-B.1.  Normative References
-
-   [FIPS197] NIST, FIPS 197, "Advanced Encryption Standard (AES)",
-   November 2001.  https://nvlpubs.nist.gov/nistpubs/FIPS/
-   NIST.FIPS.197-upd1.pdf
-
-   [FIPS202] NIST, FIPS 202, "SHA-3 Standard: Permutation-Based Hash and
-   Extendable-Output Functions", August 2015.
-   https://nvlpubs.nist.gov/nistpubs/fips/nist.fips.202.pdf
-
-B.2.  Informative References
-
-   [Frodo17] E.  Alkim, J.  W.  Bos, L.  Ducas, K.  Easterbrook, P.
-   Longa, B.  LaMacchia, I.  Mironov, M.  Naehrig, V.  Nikolaenko, C.
-   Peikert, A.  Raghunathan, and D.  Stebila.  FrodoKEM: Learning With
-   Errors Key Encapsulation, 2017.  NIST's Round 3 algorithm
-   specification and supporting documentatation available at
-   https://frodokem.org/files/FrodoKEM-specification-20210604.pdf (2021)
-
-   [Annex] FrodoKEM Team.  Annex on FrodoKEM updates, April 2023.
-   https://frodokem.org/files/FrodoKEM-annex-20230418.pdf
-
-   [Mic10] D.  Micciancio.  Cryptographic functions from worst-case
-   complexity assumptions.  Information Security and Cryptography, pages
-   427–452, 2010.
-
-   [Reg10] O.  Regev.  The learning with errors problem (invited
-   survey).  In IEEE Conference on Computational Complexity, pages
-   191–204, 2010.
-
-   [Pei16] C.  Peikert.  A decade of lattice cryptography.  Foundations
-   and Trends in Theoretical Computer Science, 10(4):283–424, 2016.
-
-   [Ajt96] M.  Ajtai.  Generating hard instances of lattice problems
-   (extended abstract).  In 28th Annual ACM Symposium on Theory of
-   Computing, pages 99–108, 1996.
-
-   [AD97] M.  Ajtai and C.  Dwork.  A public-key cryptosystem with
-   worst-case/average-case equivalence.  In 29th Annual ACM Symposium on
-   Theory of Computing, pages 284–293, 1997.
-
-   [Reg09] O.  Regev.  On lattices, learning with errors, random linear
-   codes, and cryptography.  Journal of the ACM, 56(6):34, 2009.
-   Preliminary version in STOC 2005.
-
-   [LP11] R.  Lindner and C.  Peikert.  Better key sizes (and attacks)
-   for LWE-based encryption.  In Topics in Cryptology – CT-RSA 2011,
-   volume 6558 of Lecture Notes in Computer Science, pages 319–339,
-   2011.
-
-   [FO99] E.  Fujisaki and T.  Okamoto.  Secure integration of
-   asymmetric and symmetric encryption schemes.  In Advances in
-   Cryptology – CRYPTO’99, volume 1666 of Lecture Notes in Computer
-   Science, pages 537–554, 1999.
-
-   [TU16] E.  E.  Targhi and D.  Unruh.  Post-quantum security of the
-   Fujisaki-Okamoto and OAEP transforms.  In TCC 2016-B: 14th Theory of
-   Cryptography Conference, Part II, volume 9986 of Lecture Notes in
-   Computer Science, pages 192–216, 2016.
-
-   [HHK17] D.  Hofheinz, K.  Hovelmanns, and E.  Kiltz.  A modular
-   analysis of the Fujisaki-Okamoto transformation.  In TCC 2017: 15th
-   Theory of Cryptography Conference, Part I, volume 10677 of Lecture
-   Notes in Computer Science, pages 341–371, 2017.
-
-   [JZC+18] H.  Jiang, Z.  Zhang, L.  Chen, H.  Wang, and Z.  Ma.  IND-
-   CCA-secure key encapsulation mechanism in the quantum random oracle
-   model, revisited.  In Advances in Cryptology – CRYPTO 2018, Part III,
-   volume 10993 of Lecture Notes in Computer Science, pages 96–125,
-   2018.
 
 Authors' Addresses
 

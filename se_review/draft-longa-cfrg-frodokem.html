@@ -1230,24 +1230,21 @@ svg :is([fill="white"], [fill^="#fff"]) {
             <p id="section-toc.1-1.11.1"><a href="#section-11" class="auto internal xref">11</a>. <a href="#name-iana-considerations" class="internal xref">IANA Considerations</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12">
-            <p id="section-toc.1-1.12.1"><a href="#section-12" class="auto internal xref">12</a>. <a href="#name-normative-references" class="internal xref">Normative References</a></p>
+            <p id="section-toc.1-1.12.1"><a href="#section-12" class="auto internal xref">12</a>. <a href="#name-references" class="internal xref">References</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12.2.1">
+                <p id="section-toc.1-1.12.2.1.1"><a href="#section-12.1" class="auto internal xref">12.1</a>.  <a href="#name-normative-references" class="internal xref">Normative References</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12.2.2">
+                <p id="section-toc.1-1.12.2.2.1"><a href="#section-12.2" class="auto internal xref">12.2</a>.  <a href="#name-informative-references" class="internal xref">Informative References</a></p>
+</li>
+            </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13">
             <p id="section-toc.1-1.13.1"><a href="#appendix-A" class="auto internal xref">Appendix A</a>.  <a href="#name-acknowledgments" class="internal xref">Acknowledgments</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.14">
-            <p id="section-toc.1-1.14.1"><a href="#appendix-B" class="auto internal xref">Appendix B</a>.  <a href="#name-references" class="internal xref">References</a></p>
-<ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.14.2.1">
-                <p id="section-toc.1-1.14.2.1.1"><a href="#appendix-B.1" class="auto internal xref">B.1</a>.  <a href="#name-normative-references-2" class="internal xref">Normative References</a></p>
-</li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.14.2.2">
-                <p id="section-toc.1-1.14.2.2.1"><a href="#appendix-B.2" class="auto internal xref">B.2</a>.  <a href="#name-informative-references" class="internal xref">Informative References</a></p>
-</li>
-            </ul>
-</li>
-          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.15">
-            <p id="section-toc.1-1.15.1"><a href="#appendix-C" class="auto internal xref"></a><a href="#name-authors-addresses" class="internal xref">Authors' Addresses</a></p>
+            <p id="section-toc.1-1.14.1"><a href="#appendix-B" class="auto internal xref"></a><a href="#name-authors-addresses" class="internal xref">Authors' Addresses</a></p>
 </li>
         </ul>
 </nav>
@@ -1258,7 +1255,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
       <h2 id="name-introduction">
 <a href="#section-1" class="section-number selfRef">1. </a><a href="#name-introduction" class="section-name selfRef">Introduction</a>
       </h2>
-<p id="section-1-1">FrodoKEM [Frodo17] is a conservative yet practical post-quantum key encapsulation
+<p id="section-1-1">FrodoKEM <span>[<a href="#Frodo17" class="cite xref">Frodo17</a>]</span> is a conservative yet practical post-quantum key encapsulation
 mechanism (KEM) whose security derives from cautious parameterizations of the
 well-studied learning with errors problem, which in turn has close
 connections to conjectured-hard problems on generic, "algebraically
@@ -1310,23 +1307,23 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
 <p id="section-3-1">The core of FrodoKEM is a public-key encryption scheme called FrodoPKE,
 whose IND-CPA security is tightly related to the hardness of a corresponding
 learning with errors problem. Here we briefly recall the scientific lineage
-of these systems. See the surveys [Mic10, Reg10, Pei16] for further details.
-The seminal works of Ajtai [Ajt96] (published in 1996) and Ajtai–Dwork [AD97]
+of these systems. See the surveys <span>[<a href="#Mic10" class="cite xref">Mic10</a>]</span>, <span>[<a href="#Reg10" class="cite xref">Reg10</a>]</span> and <span>[<a href="#Pei16" class="cite xref">Pei16</a>]</span> for further details.
+The seminal works of Ajtai <span>[<a href="#Ajt96" class="cite xref">Ajt96</a>]</span> (published in 1996) and Ajtai–Dwork <span>[<a href="#AD97" class="cite xref">AD97</a>]</span>
 (published in 1997) gave the first cryptographic constructions whose
 security properties followed from the conjectured worst-case hardness of
 various problems on point lattices in R^n. In subsequent years, these works
 were substantially refined and improved. Notably, in work published in 2005,
-Regev [Reg09] defined the learning with errors (LWE) problem, proved the
+Regev <span>[<a href="#Reg09" class="cite xref">Reg09</a>]</span> defined the learning with errors (LWE) problem, proved the
 hardness of (certain parameterizations of) LWE assuming the hardness of
 various worst-case lattice problems against quantum algorithms, and defined
 a public-key encryption scheme whose IND-CPA security is tightly related to
 the hardness of LWE.<a href="#section-3-1" class="pilcrow">¶</a></p>
-<p id="section-3-2">Later on, in work published in 2011, Lindner and Peikert [LP11] gave a more
+<p id="section-3-2">Later on, in work published in 2011, Lindner and Peikert <span>[<a href="#LP11" class="cite xref">LP11</a>]</span> gave a more
 efficient LWE-based public-key encryption scheme that uses a square public
 matrix A of dimension n with integer coefficients modulo q, instead of an
 oblong rectangular one.<a href="#section-3-2" class="pilcrow">¶</a></p>
 <p id="section-3-3">The FrodoPKE scheme described in this document is an instantiation and
-implementation of the Lindner–Peikert scheme [LP11] with some modifications,
+implementation of the Lindner–Peikert scheme <span>[<a href="#LP11" class="cite xref">LP11</a>]</span> with some modifications,
 such as: pseudorandom generation of the public matrix A from a small seed,
 more balanced key and ciphertext sizes, and new LWE parameters.<a href="#section-3-3" class="pilcrow">¶</a></p>
 <div id="chosen-ciphertext-security">
@@ -1336,18 +1333,18 @@ more balanced key and ciphertext sizes, and new LWE parameters.<a href="#section
         </h3>
 <p id="section-3.1-1">FrodoKEM achieves IND-CCA security by way of a transformation of the
 IND-CPA-secure FrodoPKE. In work published in 1999, Fujisaki and Okamoto
-[FO99] gave a generic transform from an IND-CPA PKE to an IND-CCA PKE, in
+<span>[<a href="#FO99" class="cite xref">FO99</a>]</span> gave a generic transform from an IND-CPA PKE to an IND-CCA PKE, in
 the random-oracle model. At a high level, the Fujisaki–Okamoto (FO) transform
 derives encryption coins pseudorandomly, and decryption regenerates these
 coins to re-encrypt and check that the ciphertext is well-formed. In 2016,
-Targhi and Unruh [TU16] gave a modification of the Fujisaki–Okamoto transform
+Targhi and Unruh <span>[<a href="#TU16" class="cite xref">TU16</a>]</span> gave a modification of the Fujisaki–Okamoto transform
 that achieves IND-CCA security in the quantum random-oracle model (QROM) by
 adding an extra hash.
-In 2017, Hofheinz, Hovelmanns, and Kiltz [HHK17] gave several variants of the
+In 2017, Hofheinz, Hovelmanns, and Kiltz <span>[<a href="#HHK17" class="cite xref">HHK17</a>]</span> gave several variants of the
 Fujisaki–Okamoto and Targhi–Unruh transforms that in particular convert an
 IND-CPA-secure PKE into an IND-CCA-secure KEM, and analyzed them in both the
 classical and quantum random-oracle models, even for PKEs with non-zero
-decryption error. Jiang et al. [JZC+18] show how to prove security of one of
+decryption error. Jiang et al. <span>[<a href="#JZC_18" class="cite xref">JZC_18</a>]</span> show how to prove security of one of
 these variant FO transforms in the QROM without requiring the extra hash from
 Targhi–Unruh. FrodoKEM is constructed from FrodoPKE using a slight variant
 of Jiang et al.'s transform that includes additional values in hash
@@ -1390,7 +1387,7 @@ ith row and jth column) is denoted by C[i,j], where 0 &lt;= i &lt; n1 and
 0 &lt;= j &lt; n2. The transpose of matrix C is denoted by C^T.<a href="#section-4-2.6.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-4-2.7">
-          <p id="section-4-2.7.1">AES128 and SHAKE are specified in [FIPS197] and [FIPS202], respectively.<a href="#section-4-2.7.1" class="pilcrow">¶</a></p>
+          <p id="section-4-2.7.1">AES128 and SHAKE are specified in <span>[<a href="#FIPS197" class="cite xref">FIPS197</a>]</span> and <span>[<a href="#FIPS202" class="cite xref">FIPS202</a>]</span>, respectively.<a href="#section-4-2.7.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 </section>
@@ -1441,7 +1438,7 @@ S_X = {−d, −d+1, ..., −1, 0, 1, ..., d−1, d} for a small integer d.<a hr
 based on the cumulative distribution function for X.<a href="#section-5-2.9.1" class="pilcrow">¶</a></p>
 <p id="section-5-2.9.2">
 The values for these parameters corresponding to each parameter set are
-given in <span><a href="#summary-of-parameters" class="internal xref">Section 9.1</a> (<a href="#summary-of-parameters" class="auto internal xref">Section 9.1</a>)</span>.<a href="#section-5-2.9.2" class="pilcrow">¶</a></p>
+given in <a href="#SummaryParams" class="auto internal xref">Section 9.1</a>.<a href="#section-5-2.9.2" class="pilcrow">¶</a></p>
 </li>
       </ul>
 </section>
@@ -1451,7 +1448,7 @@ given in <span><a href="#summary-of-parameters" class="internal xref">Section 9.
       <h2 id="name-supporting-functions">
 <a href="#section-6" class="section-number selfRef">6. </a><a href="#name-supporting-functions" class="section-name selfRef">Supporting Functions</a>
       </h2>
-<div id="octet-encoding-of-bit-strings">
+<div id="OctetEncoding">
 <section id="section-6.1">
         <h3 id="name-octet-encoding-of-bit-strin">
 <a href="#section-6.1" class="section-number selfRef">6.1. </a><a href="#name-octet-encoding-of-bit-strin" class="section-name selfRef">Octet Encoding of Bit Strings</a>
@@ -1557,7 +1554,7 @@ for i = 0 to n1 - 1 do
 end for
 
 return the octet string corresponding to the bit string
-b = (b[0], b[1], ..., b[D * n1 * n2 - 1]), as per XXXX.
+b = (b[0], b[1], ..., b[D * n1 * n2 - 1]), as per Section 6.1.
 </pre><a href="#section-6.3-3" class="pilcrow">¶</a>
 </div>
 <p id="section-6.3-4">The function Unpack does the reverse of this process to transform an octet string o
@@ -1568,7 +1565,7 @@ The function Unpack(o, n1, n2) is defined as follows:<a href="#section-6.3-4" cl
 <div class="lang-pseudocode sourcecode" id="section-6.3-5">
 <pre>
 Convert the input octet string o to a bit string
-b = (b[0], b[1], ..., b[D * n1 * n2 - 1]), as per XXXX.
+b = (b[0], b[1], ..., b[D * n1 * n2 - 1]), as per Section 6.1.
 
 for i = 0 to n1 - 1 do
     for j = 0 to n2 - 1 do
@@ -1623,7 +1620,7 @@ return e
 </div>
 <p id="section-6.4-7">The output of the algorithm is a small integer in the range
 {-d, -d+1, ..., -1, 0, 1, ..., d-1, d}. The tables T_X corresponding to each of
-FrodoKEM’s parameter sets are given in Table XXXX.<a href="#section-6.4-7" class="pilcrow">¶</a></p>
+FrodoKEM’s parameter sets are given in <a href="#tbl-TX" class="auto internal xref">Table 5</a>.<a href="#section-6.4-7" class="pilcrow">¶</a></p>
 <p id="section-6.4-8">We emphasize that it is important to perform this sampling in constant time to
 avoid exposing timing side-channels, which is why the for-loop of the algorithm
 does a complete loop through the entire table T_X. Similarly, the comparison in
@@ -1654,7 +1651,7 @@ return E
 </div>
 </section>
 </div>
-<div id="pseudorandom-matrix-generation">
+<div id="GenA">
 <section id="section-6.6">
         <h3 id="name-pseudorandom-matrix-generat">
 <a href="#section-6.6" class="section-number selfRef">6.6. </a><a href="#name-pseudorandom-matrix-generat" class="section-name selfRef">Pseudorandom Matrix Generation</a>
@@ -1779,27 +1776,8 @@ ST[i,j] = −s[15] * 2^15 + (s[0] + s[1] * 2 + s[2] * 2^2 + ... + s[14] * 2^14).
         <h3 id="name-encapsulation">
 <a href="#section-7.2" class="section-number selfRef">7.2. </a><a href="#name-encapsulation" class="section-name selfRef">Encapsulation</a>
         </h3>
-<table class="center" id="table-1">
-          <caption><a href="#table-1" class="selfRef">Table 1</a></caption>
-<thead>
-            <tr>
-              <th class="text-left" rowspan="1" colspan="1">The encapsulation algorithm takes as input a public key pk = (seedA</th>
-              <th class="text-left" rowspan="1" colspan="1"> </th>
-              <th class="text-left" rowspan="1" colspan="1">b), requires randomness, and</th>
-              <th class="text-left" rowspan="1" colspan="1"> </th>
-              <th class="text-left" rowspan="1" colspan="1"> </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="text-left" rowspan="1" colspan="1">outputs a ciphertext c = (c1</td>
-              <td class="text-left" rowspan="1" colspan="1"> </td>
-              <td class="text-left" rowspan="1" colspan="1">c2</td>
-              <td class="text-left" rowspan="1" colspan="1"> </td>
-              <td class="text-left" rowspan="1" colspan="1">salt) and a shared secret ss.</td>
-            </tr>
-          </tbody>
-        </table>
+<p id="section-7.2-1">The encapsulation algorithm takes as input a public key pk = (seedA || b), requires randomness, and
+outputs a ciphertext c = (c1 || c2 || salt) and a shared secret ss.<a href="#section-7.2-1" class="pilcrow">¶</a></p>
 <div class="lang-pseudocode sourcecode" id="section-7.2-2">
 <pre>
 Choose uniformly random values u and salt of lengths lensec and lensalt
@@ -1828,35 +1806,8 @@ return (c1 || c2 || salt), ss  # Return ciphertext and shared secret
         <h3 id="name-decapsulation">
 <a href="#section-7.3" class="section-number selfRef">7.3. </a><a href="#name-decapsulation" class="section-name selfRef">Decapsulation</a>
         </h3>
-<table class="center" id="table-2">
-          <caption><a href="#table-2" class="selfRef">Table 2</a></caption>
-<thead>
-            <tr>
-              <th class="text-left" rowspan="1" colspan="1">The decapsulation algorithm takes as input a ciphertext c = (c1</th>
-              <th class="text-left" rowspan="1" colspan="1"> </th>
-              <th class="text-left" rowspan="1" colspan="1">c2</th>
-              <th class="text-left" rowspan="1" colspan="1"> </th>
-              <th class="text-left" rowspan="1" colspan="1">salt) and</th>
-              <th class="text-left" rowspan="1" colspan="1"> </th>
-              <th class="text-left" rowspan="1" colspan="1"> </th>
-              <th class="text-left" rowspan="1" colspan="1"> </th>
-              <th class="text-left" rowspan="1" colspan="1"> </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="text-left" rowspan="1" colspan="1">a secret key sk = (s</td>
-              <td class="text-left" rowspan="1" colspan="1"> </td>
-              <td class="text-left" rowspan="1" colspan="1">seedA</td>
-              <td class="text-left" rowspan="1" colspan="1"> </td>
-              <td class="text-left" rowspan="1" colspan="1">b</td>
-              <td class="text-left" rowspan="1" colspan="1"> </td>
-              <td class="text-left" rowspan="1" colspan="1">S^T</td>
-              <td class="text-left" rowspan="1" colspan="1"> </td>
-              <td class="text-left" rowspan="1" colspan="1">pkh), and outputs a shared secret ss.</td>
-            </tr>
-          </tbody>
-        </table>
+<p id="section-7.3-1">The decapsulation algorithm takes as input a ciphertext c = (c1 || c2 || salt) and
+a secret key sk = (s || seedA || b || S^T || pkh), and outputs a shared secret ss.<a href="#section-7.3-1" class="pilcrow">¶</a></p>
 <div class="lang-pseudocode sourcecode" id="section-7.3-2">
 <pre>
 B' = Unpack(c1, nHat, n)
@@ -1892,7 +1843,7 @@ return ss  # Return shared secret ss
 <a href="#section-8" class="section-number selfRef">8. </a><a href="#name-frodokem-variants" class="section-name selfRef">FrodoKEM Variants</a>
       </h2>
 <p id="section-8-1">FrodoKEM is parameterized by the pseudorandom generator (PRG) that is used for
-the generation of the matrix A. As explained in Section XXXX there are two options
+the generation of the matrix A. As explained in <a href="#GenA" class="auto internal xref">Section 6.6</a> there are two options
 for PRG: AES128 and SHAKE128.<a href="#section-8-1" class="pilcrow">¶</a></p>
 <p id="section-8-2">In addition, FrodoKEM consists of two main variants: a "standard" variant that does
 not impose any restriction on the reuse of key pairs, and an "ephemeral" variant
@@ -1903,7 +1854,7 @@ produced for a single public key is expected to be equal or greater than 2^8.
 Ephemeral FrodoKEM <span class="bcp14">MUST</span> be used for applications in which that same figure is
 expected to be smaller than 2^8.<a href="#section-8-2" class="pilcrow">¶</a></p>
 <p id="section-8-3">In contrast to ephemeral FrodoKEM, standard FrodoKEM incorporates some changes to address
-certain multi-ciphertext attacks [Annex]. Specifically, standard FrodoKEM doubles the
+certain multi-ciphertext attacks <span>[<a href="#Annex" class="cite xref">Annex</a>]</span>. Specifically, standard FrodoKEM doubles the
 length of the seedSE value and incorporates a public random salt value into
 encapsulation (see Table 2).<a href="#section-8-3" class="pilcrow">¶</a></p>
 </section>
@@ -1932,14 +1883,17 @@ of the parameter sets FrodoKEM-640-AES, FrodoKEM-976-AES and FrodoKEM-1344-AES (
 their corresponding ephemeral variants). The second FrodoKEM variant consists of the
 parameter sets FrodoKEM-640-SHAKE, FrodoKEM-976-SHAKE and FrodoKEM-1344-SHAKE (and
 their corresponding ephemeral variants).<a href="#section-9-3" class="pilcrow">¶</a></p>
-<div id="summary-of-parameters">
+<div id="SummaryParams">
 <section id="section-9.1">
         <h3 id="name-summary-of-parameters">
 <a href="#section-9.1" class="section-number selfRef">9.1. </a><a href="#name-summary-of-parameters" class="section-name selfRef">Summary of Parameters</a>
         </h3>
 <p id="section-9.1-1">The parameter values characterizing the FrodoKEM parameter sets are listed below.<a href="#section-9.1-1" class="pilcrow">¶</a></p>
-<table class="center" id="table-3">
-          <caption><a href="#table-3" class="selfRef">Table 3</a></caption>
+<span id="name-parameters-for-frodokem"></span><table class="center" id="table-1">
+          <caption>
+<a href="#table-1" class="selfRef">Table 1</a>:
+<a href="#name-parameters-for-frodokem" class="selfRef">Parameters for FrodoKEM.</a>
+          </caption>
 <thead>
             <tr>
               <th class="text-right" rowspan="1" colspan="1">Name</th>
@@ -2015,13 +1969,11 @@ their corresponding ephemeral variants).<a href="#section-9-3" class="pilcrow">�
             </tr>
           </tbody>
         </table>
-<div class="alignLeft art-text artwork" id="section-9.1-3">
-<pre>
-                                   Table 1: Parameters for FrodoKEM.
-</pre><a href="#section-9.1-3" class="pilcrow">¶</a>
-</div>
-<table class="center" id="table-4">
-          <caption><a href="#table-4" class="selfRef">Table 4</a></caption>
+<span id="name-additional-parameters-for-f"></span><table class="center" id="table-2">
+          <caption>
+<a href="#table-2" class="selfRef">Table 2</a>:
+<a href="#name-additional-parameters-for-f" class="selfRef">Additional parameters for FrodoKEM variant.</a>
+          </caption>
 <thead>
             <tr>
               <th class="text-right" rowspan="1" colspan="1">Name</th>
@@ -2048,8 +2000,11 @@ their corresponding ephemeral variants).<a href="#section-9-3" class="pilcrow">�
             </tr>
           </tbody>
         </table>
-<table class="center" id="table-5">
-          <caption><a href="#table-5" class="selfRef">Table 5</a></caption>
+<span id="name-additional-parameters-for-e"></span><table class="center" id="table-3">
+          <caption>
+<a href="#table-3" class="selfRef">Table 3</a>:
+<a href="#name-additional-parameters-for-e" class="selfRef">Additional parameters for eFrodoKEM variant.</a>
+          </caption>
 <thead>
             <tr>
               <th class="text-right" rowspan="1" colspan="1">Name</th>
@@ -2076,13 +2031,11 @@ their corresponding ephemeral variants).<a href="#section-9-3" class="pilcrow">�
             </tr>
           </tbody>
         </table>
-<div class="alignLeft art-text artwork" id="section-9.1-6">
-<pre>
-                    Table 2: Additional parameters for FrodoKEM depending on variant.
-</pre><a href="#section-9.1-6" class="pilcrow">¶</a>
-</div>
-<table class="center" id="table-6">
-          <caption><a href="#table-6" class="selfRef">Table 6</a></caption>
+<span id="name-error-distributions-probabi"></span><table class="center" id="table-4">
+          <caption>
+<a href="#table-4" class="selfRef">Table 4</a>:
+<a href="#name-error-distributions-probabi" class="selfRef">Error distributions. Probabilities are shown for each integer value from 0 up to +-12. The last two columns correspond to Renyi's order and divergence.</a>
+          </caption>
 <thead>
             <tr>
               <th class="text-right" rowspan="1" colspan="1">Name</th>
@@ -2164,14 +2117,12 @@ their corresponding ephemeral variants).<a href="#section-9-3" class="pilcrow">�
             </tr>
           </tbody>
         </table>
-<div class="alignLeft art-text artwork" id="section-9.1-8">
-<pre>
-                 Table 3: Error distributions. Probabilities are shown for each integer value from 0 up to +-12.
-                                The last two columns correspond to Renyi's order and divergence.
-</pre><a href="#section-9.1-8" class="pilcrow">¶</a>
-</div>
-<table class="center" id="table-7">
-          <caption><a href="#table-7" class="selfRef">Table 7</a></caption>
+<span id="name-the-distribution-table-entr"></span><div id="tbl-TX">
+<table class="center" id="table-5">
+          <caption>
+<a href="#table-5" class="selfRef">Table 5</a>:
+<a href="#name-the-distribution-table-entr" class="selfRef">The distribution table entries T_X(i), for 0 &lt;= i &lt;= d, for sampling.</a>
+          </caption>
 <thead>
             <tr>
               <th class="text-right" rowspan="1" colspan="1">Table entries</th>
@@ -2261,14 +2212,12 @@ their corresponding ephemeral variants).<a href="#section-9-3" class="pilcrow">�
             </tr>
           </tbody>
         </table>
-<div class="alignLeft art-text artwork" id="section-9.1-10">
-<pre>
-        Table 4: The distribution table entries T_X(i),
-              for 0 &lt;= i &lt;= d, for sampling.
-</pre><a href="#section-9.1-10" class="pilcrow">¶</a>
 </div>
-<table class="center" id="table-8">
-          <caption><a href="#table-8" class="selfRef">Table 8</a></caption>
+<span id="name-sizes-in-bits-of-inputs-and"></span><table class="center" id="table-6">
+          <caption>
+<a href="#table-6" class="selfRef">Table 6</a>:
+<a href="#name-sizes-in-bits-of-inputs-and" class="selfRef">Sizes (in bits) of inputs and outputs.</a>
+          </caption>
 <thead>
             <tr>
               <th class="text-right" rowspan="1" colspan="1"> </th>
@@ -2323,11 +2272,6 @@ their corresponding ephemeral variants).<a href="#section-9-3" class="pilcrow">�
             </tr>
           </tbody>
         </table>
-<div class="alignLeft art-text artwork" id="section-9.1-12">
-<pre>
-                    Table 5: Sizes (in bits) of inputs and outputs.
-</pre><a href="#section-9.1-12" class="pilcrow">¶</a>
-</div>
 </section>
 </div>
 </section>
@@ -2359,21 +2303,97 @@ in the security of lattice schemes increases over time.<a href="#section-10-3" c
 <p id="section-11-1">This document has no IANA actions.<a href="#section-11-1" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="sec-normative-references">
+<div id="sec-combined-references">
 <section id="section-12">
-      <h2 id="name-normative-references">
-<a href="#section-12" class="section-number selfRef">12. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
+      <h2 id="name-references">
+<a href="#section-12" class="section-number selfRef">12. </a><a href="#name-references" class="section-name selfRef">References</a>
       </h2>
+<div id="sec-normative-references">
+<section id="section-12.1">
+        <h3 id="name-normative-references">
+<a href="#section-12.1" class="section-number selfRef">12.1. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
+        </h3>
 <dl class="references">
+<dt id="FIPS197">[FIPS197]</dt>
+        <dd>
+<span class="refAuthor">(NIST), N. I. of S. and T.</span>, <span class="refTitle">"Advanced Encryption Standard (AES), FIPS 197"</span>, <time datetime="2001-11" class="refDate">November 2001</time>, <span>&lt;<a href="https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.197-upd1.pdf">https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.197-upd1.pdf</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="FIPS202">[FIPS202]</dt>
+        <dd>
+<span class="refAuthor">(NIST), N. I. of S. and T.</span>, <span class="refTitle">"SHA-3 Standard: Permutation-Based Hash and Extendable-Output Functions, FIPS 202"</span>, <time datetime="2015-08" class="refDate">August 2015</time>, <span>&lt;<a href="https://nvlpubs.nist.gov/nistpubs/fips/nist.fips.202.pdf">https://nvlpubs.nist.gov/nistpubs/fips/nist.fips.202.pdf</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="RFC2119">[RFC2119]</dt>
-      <dd>
+        <dd>
 <span class="refAuthor">Bradner, S.</span>, <span class="refTitle">"Key words for use in RFCs to Indicate Requirement Levels"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 2119</span>, <span class="seriesInfo">DOI 10.17487/RFC2119</span>, <time datetime="1997-03" class="refDate">March 1997</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc2119">https://www.rfc-editor.org/rfc/rfc2119</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC8174">[RFC8174]</dt>
-    <dd>
+      <dd>
 <span class="refAuthor">Leiba, B.</span>, <span class="refTitle">"Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 8174</span>, <span class="seriesInfo">DOI 10.17487/RFC8174</span>, <time datetime="2017-05" class="refDate">May 2017</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8174">https://www.rfc-editor.org/rfc/rfc8174</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 </dl>
+</section>
+</div>
+<div id="sec-informative-references">
+<section id="section-12.2">
+        <h3 id="name-informative-references">
+<a href="#section-12.2" class="section-number selfRef">12.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
+        </h3>
+<dl class="references">
+<dt id="AD97">[AD97]</dt>
+        <dd>
+<span class="refAuthor">Ajtai, M.</span> and <span class="refAuthor">C. Dwork</span>, <span class="refTitle">"A public-key cryptosystem with worst-case/average-case equivalence"</span>, <span class="seriesInfo">29th Annual ACM Symposium on Theory of Computing, pages 284–293 </span>, <time datetime="1997" class="refDate">1997</time>. </dd>
+<dd class="break"></dd>
+<dt id="Ajt96">[Ajt96]</dt>
+        <dd>
+<span class="refAuthor">Ajtai, M.</span>, <span class="refTitle">"Generating hard instances of lattice problems (extended abstract)"</span>, <span class="seriesInfo">28th Annual ACM Symposium on Theory of Computing, pages 99–108 </span>, <time datetime="1996" class="refDate">1996</time>. </dd>
+<dd class="break"></dd>
+<dt id="Annex">[Annex]</dt>
+        <dd>
+<span class="refAuthor">Alkim, E.</span>, <span class="refAuthor">Bos, J. W.</span>, <span class="refAuthor">Ducas, L.</span>, <span class="refAuthor">Longa, P.</span>, <span class="refAuthor">Mironov, I.</span>, <span class="refAuthor">Naehrig, M.</span>, <span class="refAuthor">Nikolaenko, V.</span>, <span class="refAuthor">Peikert, C.</span>, <span class="refAuthor">Raghunathan, A.</span>, and <span class="refAuthor">D. Stebila</span>, <span class="refTitle">"Annex on FrodoKEM updates"</span>, <time datetime="2023-04" class="refDate">April 2023</time>, <span>&lt;<a href="https://frodokem.org/files/FrodoKEM-annex-20230418.pdf">https://frodokem.org/files/FrodoKEM-annex-20230418.pdf</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="FO99">[FO99]</dt>
+        <dd>
+<span class="refAuthor">Fujisaki, E.</span> and <span class="refAuthor">T. Okamoto</span>, <span class="refTitle">"Secure integration of asymmetric and symmetric encryption schemes"</span>, <span class="seriesInfo">Advances in Cryptology – CRYPTO’99, volume 1666 of Lecture Notes in Computer Science, pages 537–554 </span>, <time datetime="1999" class="refDate">1999</time>. </dd>
+<dd class="break"></dd>
+<dt id="Frodo17">[Frodo17]</dt>
+        <dd>
+<span class="refAuthor">Alkim, E.</span>, <span class="refAuthor">Bos, J. W.</span>, <span class="refAuthor">Ducas, L.</span>, <span class="refAuthor">Longa, P.</span>, <span class="refAuthor">Mironov, I.</span>, <span class="refAuthor">Naehrig, M.</span>, <span class="refAuthor">Nikolaenko, V.</span>, <span class="refAuthor">Peikert, C.</span>, <span class="refAuthor">Raghunathan, A.</span>, and <span class="refAuthor">D. Stebila</span>, <span class="refTitle">"FrodoKEM: Learning With Errors Key Encapsulation"</span>, <time datetime="2017" class="refDate">2017</time>, <span>&lt;<a href="https://frodokem.org">https://frodokem.org</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="HHK17">[HHK17]</dt>
+        <dd>
+<span class="refAuthor">Hofheinz, D.</span>, <span class="refAuthor">Hovelmanns, K.</span>, and <span class="refAuthor">E. Kiltz</span>, <span class="refTitle">"A modular analysis of the Fujisaki-Okamoto transformation"</span>, <span class="seriesInfo">15th Theory of Cryptography Conference (TCC 2017), Part I, volume 10677 of Lecture Notes in Computer Science, pages 341–371 </span>, <time datetime="2017" class="refDate">2017</time>. </dd>
+<dd class="break"></dd>
+<dt id="JZC_18">[JZC_18]</dt>
+        <dd>
+<span class="refAuthor">Jiang, H.</span>, <span class="refAuthor">Zhang, Z.</span>, <span class="refAuthor">Chen, L.</span>, <span class="refAuthor">Wang, H.</span>, and <span class="refAuthor">Z. Ma</span>, <span class="refTitle">"IND-CCA-secure key encapsulation mechanism in the quantum random oracle model, revisited"</span>, <span class="seriesInfo">Advances in Cryptology – CRYPTO 2018, Part III, volume 10993 of Lecture Notes in Computer Science, pages 96–125 </span>, <time datetime="2018" class="refDate">2018</time>. </dd>
+<dd class="break"></dd>
+<dt id="LP11">[LP11]</dt>
+        <dd>
+<span class="refAuthor">Lindner, R.</span> and <span class="refAuthor">C. Peikert</span>, <span class="refTitle">"Better key sizes (and attacks) for LWE-based encryption"</span>, <span class="seriesInfo">Topics in Cryptology – CT-RSA 2011, volume 6558 of Lecture Notes in Computer Science, pages 319–339 </span>, <time datetime="2011" class="refDate">2011</time>. </dd>
+<dd class="break"></dd>
+<dt id="Mic10">[Mic10]</dt>
+        <dd>
+<span class="refAuthor">Micciancio, D.</span>, <span class="refTitle">"Cryptographic functions from worst-case complexity assumptions"</span>, <span class="seriesInfo">Information Security and Cryptography, pages 427–452 </span>, <time datetime="2010" class="refDate">2010</time>. </dd>
+<dd class="break"></dd>
+<dt id="Pei16">[Pei16]</dt>
+        <dd>
+<span class="refAuthor">Peikert, C.</span>, <span class="refTitle">"A decade of lattice cryptography"</span>, <span class="seriesInfo">Foundations and Trends in Theoretical Computer Science, 10(4):283–424. </span>, <time datetime="2016" class="refDate">2016</time>. </dd>
+<dd class="break"></dd>
+<dt id="Reg09">[Reg09]</dt>
+        <dd>
+<span class="refAuthor">Regev, O.</span>, <span class="refTitle">"On lattices, learning with errors, random linear codes, and cryptography"</span>, <span class="seriesInfo">Journal of the ACM, 56(6):34, 2009. Preliminary version in STOC 2005 </span>, <time datetime="2009" class="refDate">2009</time>. </dd>
+<dd class="break"></dd>
+<dt id="Reg10">[Reg10]</dt>
+        <dd>
+<span class="refAuthor">Regev, O.</span>, <span class="refTitle">"The learning with errors problem (invited survey)"</span>, <span class="seriesInfo">IEEE Conference on Computational Complexity, pages 191–204 </span>, <time datetime="2010" class="refDate">2010</time>. </dd>
+<dd class="break"></dd>
+<dt id="TU16">[TU16]</dt>
+      <dd>
+<span class="refAuthor">Targhi, E. E.</span> and <span class="refAuthor">D. Unruh</span>, <span class="refTitle">"Post-quantum security of the Fujisaki-Okamoto and OAEP transforms"</span>, <span class="seriesInfo">14th Theory of Cryptography Conference (TCC 2016-B), Part II, volume 9986 of Lecture Notes in Computer Science, pages 192–216 </span>, <time datetime="2016" class="refDate">2016</time>. </dd>
+<dd class="break"></dd>
+</dl>
+</section>
+</div>
 </section>
 </div>
 <div id="acknowledgments">
@@ -2384,62 +2404,8 @@ in the security of lattice schemes increases over time.<a href="#section-10-3" c
 <p id="appendix-A-1">TODO acknowledge.<a href="#appendix-A-1" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="references">
-<section id="appendix-B">
-      <h2 id="name-references">
-<a href="#appendix-B" class="section-number selfRef">Appendix B. </a><a href="#name-references" class="section-name selfRef">References</a>
-      </h2>
-<div id="normative-references">
-<section id="appendix-B.1">
-        <h3 id="name-normative-references-2">
-<a href="#appendix-B.1" class="section-number selfRef">B.1. </a><a href="#name-normative-references-2" class="section-name selfRef">Normative References</a>
-        </h3>
-<p id="appendix-B.1-1">[FIPS197]   NIST, FIPS 197, "Advanced Encryption Standard (AES)",
-            November 2001.
-            https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.197-upd1.pdf<a href="#appendix-B.1-1" class="pilcrow">¶</a></p>
-<p id="appendix-B.1-2">[FIPS202]   NIST, FIPS 202, "SHA-3 Standard: Permutation-Based Hash and Extendable-Output Functions",
-            August 2015.
-            https://nvlpubs.nist.gov/nistpubs/fips/nist.fips.202.pdf<a href="#appendix-B.1-2" class="pilcrow">¶</a></p>
-</section>
-</div>
-<div id="informative-references">
-<section id="appendix-B.2">
-        <h3 id="name-informative-references">
-<a href="#appendix-B.2" class="section-number selfRef">B.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
-        </h3>
-<p id="appendix-B.2-1">[Frodo17]   E. Alkim, J. W. Bos, L. Ducas, K. Easterbrook, P. Longa, B. LaMacchia, I. Mironov, M. Naehrig, V. Nikolaenko, C. Peikert, A. Raghunathan, and D. Stebila.
-            FrodoKEM: Learning With Errors Key Encapsulation, 2017.
-            NIST's Round 3 algorithm specification and supporting documentatation available at https://frodokem.org/files/FrodoKEM-specification-20210604.pdf (2021)<a href="#appendix-B.2-1" class="pilcrow">¶</a></p>
-<p id="appendix-B.2-2">[Annex]     FrodoKEM Team. Annex on FrodoKEM updates, April 2023.
-            https://frodokem.org/files/FrodoKEM-annex-20230418.pdf<a href="#appendix-B.2-2" class="pilcrow">¶</a></p>
-<p id="appendix-B.2-3">[Mic10]     D. Micciancio. Cryptographic functions from worst-case complexity assumptions.
-            Information Security and Cryptography, pages 427–452, 2010.<a href="#appendix-B.2-3" class="pilcrow">¶</a></p>
-<p id="appendix-B.2-4">[Reg10]     O. Regev. The learning with errors problem (invited survey).
-            In IEEE Conference on Computational Complexity, pages 191–204, 2010.<a href="#appendix-B.2-4" class="pilcrow">¶</a></p>
-<p id="appendix-B.2-5">[Pei16]     C. Peikert. A decade of lattice cryptography.
-            Foundations and Trends in Theoretical Computer Science, 10(4):283–424, 2016.<a href="#appendix-B.2-5" class="pilcrow">¶</a></p>
-<p id="appendix-B.2-6">[Ajt96]     M. Ajtai. Generating hard instances of lattice problems (extended abstract).
-            In 28th Annual ACM Symposium on Theory of Computing, pages 99–108, 1996.<a href="#appendix-B.2-6" class="pilcrow">¶</a></p>
-<p id="appendix-B.2-7">[AD97]      M. Ajtai and C. Dwork. A public-key cryptosystem with worst-case/average-case equivalence.
-            In 29th Annual ACM Symposium on Theory of Computing, pages 284–293, 1997.<a href="#appendix-B.2-7" class="pilcrow">¶</a></p>
-<p id="appendix-B.2-8">[Reg09]     O. Regev. On lattices, learning with errors, random linear codes, and cryptography.
-            Journal of the ACM, 56(6):34, 2009. Preliminary version in STOC 2005.<a href="#appendix-B.2-8" class="pilcrow">¶</a></p>
-<p id="appendix-B.2-9">[LP11]      R. Lindner and C. Peikert. Better key sizes (and attacks) for LWE-based encryption.
-            In Topics in Cryptology – CT-RSA 2011, volume 6558 of Lecture Notes in Computer Science, pages 319–339, 2011.<a href="#appendix-B.2-9" class="pilcrow">¶</a></p>
-<p id="appendix-B.2-10">[FO99]      E. Fujisaki and T. Okamoto. Secure integration of asymmetric and symmetric encryption schemes.
-            In Advances in Cryptology – CRYPTO’99, volume 1666 of Lecture Notes in Computer Science, pages 537–554, 1999.<a href="#appendix-B.2-10" class="pilcrow">¶</a></p>
-<p id="appendix-B.2-11">[TU16]      E. E. Targhi and D. Unruh. Post-quantum security of the Fujisaki-Okamoto and OAEP transforms.
-            In TCC 2016-B: 14th Theory of Cryptography Conference, Part II, volume 9986 of Lecture Notes in Computer Science, pages 192–216, 2016.<a href="#appendix-B.2-11" class="pilcrow">¶</a></p>
-<p id="appendix-B.2-12">[HHK17]     D. Hofheinz, K. Hovelmanns, and E. Kiltz. A modular analysis of the Fujisaki-Okamoto transformation.
-            In TCC 2017: 15th Theory of Cryptography Conference, Part I, volume 10677 of Lecture Notes in Computer Science, pages 341–371, 2017.<a href="#appendix-B.2-12" class="pilcrow">¶</a></p>
-<p id="appendix-B.2-13">[JZC+18]    H. Jiang, Z. Zhang, L. Chen, H. Wang, and Z. Ma. IND-CCA-secure key encapsulation mechanism in the quantum random oracle model, revisited.
-            In Advances in Cryptology – CRYPTO 2018, Part III, volume 10993 of Lecture Notes in Computer Science, pages 96–125, 2018.<a href="#appendix-B.2-13" class="pilcrow">¶</a></p>
-</section>
-</div>
-</section>
-</div>
 <div id="authors-addresses">
-<section id="appendix-C">
+<section id="appendix-B">
       <h2 id="name-authors-addresses">
 <a href="#name-authors-addresses" class="section-name selfRef">Authors' Addresses</a>
       </h2>
