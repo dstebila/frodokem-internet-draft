@@ -283,7 +283,7 @@ following:
 -  A positive integer D <= 16 that defines the modulus parameter q = 2^D.
 
 -  Positive integers n, nHat specifying matrix dimensions. It holds that n,
-   nHat \equiv 0 mod 8.
+   nHat ≡ 0 mod 8.
 
 -  A positive integer B <= D specifying the number of bits encoded in each
    matrix entry.
@@ -463,7 +463,6 @@ using a table T_X, as follows (note that T_X(d) is never accessed):
 
 ~~~pseudocode
 t = r[1] * 2^0 + r[2] * 2^1 + ... + r[15] * 2^14
-
 e = 0
 
 for i = 0 to d - 1 do
@@ -526,7 +525,7 @@ for i = 0 to n - 1 do
         b = i || j || 0 || 0 || 0 || 0 || 0 || 0
         # Each concatenated element is encoded as a 16-bit string
         # represented in little-endian byte order, such that:
-        # (i[0], i[1], ..., i[15]) ≡ i[0] * 2^0 + i[1] * 2^1 + ... + i[15] * 2^15
+        # (i[0], i[1], ..., i[15]) ≡ i[0] * 2^0 + ... + i[15] * 2^15
         # and |b| = 128
 
         C[i,j] || C[i,j+1] || ... || C[i,j+7] = AES128(seedA, b)
@@ -580,11 +579,16 @@ outputs the keypair (pk, sk) = (seedA || b, s || seedA || b || S^T || pkh).
 
 ~~~pseudocode
 Choose uniformly random seeds s, seedSE, and z of bitlengths lensec, lenSE, and lenA (resp.)
-seedA = SHAKE(z, lenA) # Generate pseudorandom seed
-A = Gen(seedA) # Generate the matrix A
-(r^(0), r^(1), ..., r^(2 * n * nHat - 1)) = SHAKE(0x5F || seedSE, 32 * n * nHat) # Generate pseudorandom bit string
-S^T = SampleMatrix((r^(0), r^(1), ..., r^(n * nHat − 1)), nHat, n) # Sample matrix S transposed
-E = SampleMatrix((r^(n * nHat), r^(n * nHat + 1), ..., r^(2 * n * nHat − 1)), n, nHat) # Sample error matrix
+# Generate pseudorandom seed:
+seedA = SHAKE(z, lenA)
+# Generate the matrix A:
+A = Gen(seedA)
+# Generate pseudorandom bit string:
+(r^(0), r^(1), ..., r^(2 * n * nHat - 1)) = SHAKE(0x5F || seedSE, 32 * n * nHat)
+# Sample matrix S transposed:
+S^T = SampleMatrix((r^(0), r^(1), ..., r^(n * nHat − 1)), nHat, n)
+# Sample error matrix E:
+E = SampleMatrix((r^(n * nHat), r^(n * nHat + 1), ..., r^(2 * n * nHat − 1)), n, nHat)
 B = A * S + E
 b = Pack(B)
 pkh = SHAKE(seedA || b, lensec)
@@ -609,20 +613,25 @@ outputs a ciphertext c = (c1 || c2 || salt) and a shared secret ss.
 
 ~~~pseudocode
 Choose uniformly random values u and salt of lengths lensec and lensalt
-pkh = SHAKE(pk, lensec)  # Compute pkh
-seedSE || k = SHAKE(pkh || u || salt, lenSE + lensec)  # Generate pseudorandom values
-r = SHAKE(0x96 || seedSE, 16 * (2 * nHat * n + nHat^2))  # Generate pseudorandom bit string
-S' = SampleMatrix((r^(0), r^(1), ..., r^(nHat * n - 1)), nHat, n)  # Sample error matrix S'
-E' = SampleMatrix((r^(nHat * n), r^(nHat * n + 1), ..., r^(2 * nHat * n - 1)), nHat, n)  # Sample error matrix E'
-A = Gen(seedA)  # Generate the matrix A
+pkh = SHAKE(pk, lensec)
+# Generate pseudorandom values:
+seedSE || k = SHAKE(pkh || u || salt, lenSE + lensec)
+# Generate pseudorandom bit string:
+r = SHAKE(0x96 || seedSE, 16 * (2 * nHat * n + nHat^2))
+# Sample error matrices S' and E':
+S' = SampleMatrix((r^(0), r^(1), ..., r^(nHat * n - 1)), nHat, n)
+E' = SampleMatrix((r^(nHat * n), r^(nHat * n + 1), ..., r^(2 * nHat * n - 1)), nHat, n)
+# Generate the matrix A:
+A = Gen(seedA)
 B' = S' * A + E'
 c1 = Pack(B')
-E" = SampleMatrix((r^(2 * nHat * n), r^(2 * nHat * n + 1), ..., r^(2 * nHat * n + nHat^2 - 1)), nHat, nHat)  # Sample error matrix E"
+# Sample error matrix E":
+E" = SampleMatrix((r^(2 * nHat * n), r^(2 * nHat * n + 1), ..., r^(2 * nHat * n + nHat^2 - 1)), nHat, nHat)
 B = Unpack(b, n, nHat)
 V = S' * B + E"
 C = V + Encode(u)
 c2 = Pack(C)
-ss = SHAKE(c1 || c2 || salt || k, lensec)  # Compute shared secret ss
+ss = SHAKE(c1 || c2 || salt || k, lensec)
 
 return (c1 || c2 || salt), ss  # Return ciphertext and shared secret
 ~~~
@@ -637,21 +646,23 @@ B' = Unpack(c1, nHat, n)
 C = Unpack(c2, nHat, nHat)
 M = C - B' * S
 u' = Decode(M)
+# Generate pseudorandom values:
 seedSE' || k' = SHAKE(pkh || u' || salt, lenSE + lensec)
+# Generate pseudorandom bit string:
 r = SHAKE(0x96 || seedSE', 16 * (2 * nHat * n + nHat^2))
-
-S' = SampleMatrix((r^(0), r^(1), ..., r^(nHat * n - 1)), nHat, n)  # Sample error matrix S'
-E' = SampleMatrix((r^(nHat * n), r^(nHat * n + 1), ..., r^(2 * nHat * n - 1)), nHat, n)  # Sample error matrix E'
-
-A = Gen(seedA)  # Generate the matrix A
-
+# Sample error matrices S' and E':
+S' = SampleMatrix((r^(0), r^(1), ..., r^(nHat * n - 1)), nHat, n)
+E' = SampleMatrix((r^(nHat * n), r^(nHat * n + 1), ..., r^(2 * nHat * n - 1)), nHat, n)
+# Generate the matrix A:
+A = Gen(seedA)
 B" = S' * A + E'
-E" = SampleMatrix((r^(2 * nHat * n), r^(2 * nHat * n + 1), ..., r^(2 * nHat * n + nHat^2 - 1)), nHat, nHat)  # Sample error matrix E"
+# Sample error matrix E":
+E" = SampleMatrix((r^(2 * nHat * n), r^(2 * nHat * n + 1), ..., r^(2 * nHat * n + nHat^2 - 1)), nHat, nHat)
 B = Unpack(b, n, nHat)
 V = S' * B + E"
 C' = V + Encode(u')
 kHat = k' if B' == B" and C == C' else kHat = s
-ss = SHAKE(c1 || c2 || salt || kHat, lensec)  # Compute shared secret ss
+ss = SHAKE(c1 || c2 || salt || kHat, lensec)
 
 return ss  # Return shared secret ss
 ~~~
@@ -723,12 +734,25 @@ The parameter values characterizing the FrodoKEM parameter sets are listed below
 | lensalt |        0        |        0        |        0         | No salt in eFrodoKEM                           |
 {: title="Additional parameters for eFrodoKEM variant."}
 
-|     Name     |  sigma |    0  |  +-1  |  +-2 |  +-3 |  +-4 |  +-5 | +-6 | +-7 | +-8 | +-9 |+-10|+-11|+-12| order |   divergence  |
-|-------------:|:------:|------:|------:|-----:|-----:|-----:|-----:|----:|----:|----:|----:|---:|---:|---:|:-----:|:-------------:|
-|  X_Frodo-640 |   2.8  |  9288 |  8720 | 7216 | 5264 | 3384 | 1918 | 958 | 422 | 164 |  56 | 17 |  4 |  1 |  200  | 0.324 x 10^-4 |
-|  X_Frodo-976 |   2.3  | 11278 | 10277 | 7774 | 4882 | 2545 | 1101 | 396 | 118 |  29 |   6 |  1 |    |    |  500  | 0.140 x 10^-4 |
-| X_Frodo-1344 |   1.4  | 18286 | 14320 | 6876 | 2023 |  364 |   40 |   2 |     |     |     |    |    |    | 1000  | 0.264 x 10^-4 |
-{: title="Error distributions. Probabilities are shown for each integer value from 0 up to +-12. The last two columns correspond to Renyi's order and divergence."}
+|    Name    |  X_Frodo-640  |  X_Frodo-976  |  X_Frodo-1344 |
+|-----------:|:-------------:|:-------------:|:-------------:|
+|      sigma |       2.8     |       2.3     |       1.4     |
+|          0 |      9288     |     11278     |     18286     |
+|        +-1 |      8720     |     10277     |     14320     |
+|        +-2 |      7216     |      7774     |      6876     |
+|        +-3 |      5264     |      4882     |      2023     |
+|        +-4 |      3384     |      2545     |       364     |
+|        +-5 |      1918     |      1101     |        40     |
+|        +-6 |       958     |       396     |         2     |
+|        +-7 |       422     |       118     |               |
+|        +-8 |       164     |        29     |               |
+|        +-9 |        56     |         6     |               |
+|       +-10 |        17     |         1     |               |
+|       +-11 |         4     |               |               |
+|       +-12 |         1     |               |               |
+|      order |       200     |       500     |      1000     |
+| divergence | 0.324 x 10^-4 | 0.140 x 10^-4 | 0.264 x 10^-4 |
+{: title="Error distributions. Probabilities are shown for each integer value from 0 up to +-12. The last two rows correspond to Renyi's order and divergence."}
 
 | Table entries |  FrodoKEM-640  |  FrodoKEM-976  |  FrodoKEM-1344  |
 |--------------:|:--------------:|:--------------:|:---------------:|
@@ -747,7 +771,7 @@ The parameter values characterizing the FrodoKEM parameter sets are listed below
 |       T_X(12) |     32,767     |                |                 |
 {: #tbl-TX title="The distribution table entries T_X(i), for 0 <= i <= d, for sampling."}
 
-|                |  secret key sk  |  public key pk  |  ciphertext ct  | shared secret ss |
+|     Scheme     |  secret key sk  |  public key pk  |  ciphertext ct  | shared secret ss |
 |---------------:|:---------------:|:---------------:|:---------------:|:----------------:|
 |   FrodoKEM-640 |      19,888     |       9,616     |       9,752     |        16        |
 |  eFrodoKEM-640 |      19,888     |       9,616     |       9,720     |        16        |
