@@ -83,10 +83,10 @@ Table of Contents
      9.1.  Summary of Parameters
    10. Security Considerations
    11. IANA Considerations
-   12. References
-     12.1.  Normative References
-     12.2.  Informative References
-   Appendix A.  Acknowledgments
+   12. Acknowledgments
+   13. References
+     13.1.  Normative References
+     13.2.  Informative References
    Authors' Addresses
 
 1.  Introduction
@@ -788,9 +788,13 @@ ST[i,j] = −s[15] * 2^15 + (s[0] + s[1] * 2 + s[2] * 2^2 + ... + s[14] * 2^14).
 
    This document has no IANA actions.
 
-12.  References
+12.  Acknowledgments
 
-12.1.  Normative References
+   TODO acknowledge.
+
+13.  References
+
+13.1.  Normative References
 
    [FIPS197]  (NIST), N. I. of S. and T., "Advanced Encryption Standard
               (AES), FIPS 197", November 2001,
@@ -811,7 +815,7 @@ ST[i,j] = −s[15] * 2^15 + (s[0] + s[1] * 2 + s[2] * 2^2 + ... + s[14] * 2^14).
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
               May 2017, <https://www.rfc-editor.org/rfc/rfc8174>.
 
-12.2.  Informative References
+13.2.  Informative References
 
    [AD97]     Ajtai, M. and C. Dwork, "A public-key cryptosystem with
               worst-case/average-case equivalence", 29th Annual ACM
@@ -874,10 +878,6 @@ ST[i,j] = −s[15] * 2^15 + (s[0] + s[1] * 2 + s[2] * 2^2 + ... + s[14] * 2^14).
               Cryptography Conference (TCC 2016-B), Part II, volume 9986
               of Lecture Notes in Computer Science, pages 192–216 ,
               2016.
-
-Appendix A.  Acknowledgments
-
-   TODO acknowledge.
 
 Authors' Addresses
 
