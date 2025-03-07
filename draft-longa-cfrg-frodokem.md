@@ -272,7 +272,7 @@ We describe the symbols and abbreviations used throughout this document.
    ith row and jth column) is denoted by C[i,j], where 0 <= i < n1 and
    0 <= j < n2. The transpose of matrix C is denoted by C^T.
 
--  AES128 and SHAKE are specified in [FIPS197] and [FIPS202], respectively.
+AES128 and SHAKE are specified in [FIPS197] and [FIPS202], respectively.
 
 # Parameters
 
