@@ -307,8 +307,8 @@ following:
 -  A table T_X = (T_X(0), T_X(1), ..., T_X(d)) with (d+1) positive integers
    based on the cumulative distribution function for X.
 
-   The values for these parameters corresponding to each parameter set are
-   given in {{SummaryParams}}.
+The values for these parameters corresponding to each parameter set are
+given in {{SummaryParams}}.
 
 # Supporting Functions
 
