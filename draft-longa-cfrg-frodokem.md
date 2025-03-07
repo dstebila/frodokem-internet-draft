@@ -618,7 +618,7 @@ pkh = SHAKE(pk, lensec)
 seedSE || k = SHAKE(pkh || u || salt, lenSE + lensec)
 # Generate pseudorandom bit string:
 r = SHAKE(0x96 || seedSE, 16 * (2 * nHat * n + nHat^2))
-# Sample error matrices S' and E':
+# Sample matrices S' and E':
 S' = SampleMatrix((r^(0), r^(1), ..., r^(nHat * n - 1)), nHat, n)
 E' = SampleMatrix((r^(nHat * n), r^(nHat * n + 1), ..., r^(2 * nHat * n - 1)), nHat, n)
 # Generate the matrix A:
@@ -650,7 +650,7 @@ u' = Decode(M)
 seedSE' || k' = SHAKE(pkh || u' || salt, lenSE + lensec)
 # Generate pseudorandom bit string:
 r = SHAKE(0x96 || seedSE', 16 * (2 * nHat * n + nHat^2))
-# Sample error matrices S' and E':
+# Sample matrices S' and E':
 S' = SampleMatrix((r^(0), r^(1), ..., r^(nHat * n - 1)), nHat, n)
 E' = SampleMatrix((r^(nHat * n), r^(nHat * n + 1), ..., r^(2 * nHat * n - 1)), nHat, n)
 # Generate the matrix A:
@@ -802,9 +802,9 @@ in the security of lattice schemes increases over time.
 
 This document has no IANA actions.
 
-# Acknowledgments
+<!-- # Acknowledgments -->
 <!-- {:numbered="false"} -->
 
-TODO acknowledge.
+<!-- TODO acknowledge. -->
 
 --- back
