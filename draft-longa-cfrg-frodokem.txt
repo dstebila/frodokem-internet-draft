@@ -2,10 +2,15 @@
 
 
 
-CFRG                                                          Y. N. Here
-Internet-Draft                                    Your Organization Here
-Intended status: Informational                             23 April 2024
-Expires: 25 October 2024
+CFRG                                                            P. Longa
+Internet-Draft                                                 Microsoft
+Intended status: Informational                                D. Stebila
+Expires: 11 August 2025                           University of Waterloo
+                                                                S. Ehlen
+                           Federal Office for Information Security (BSI)
+                                                               J. W. Bos
+                                                      NXP Semiconductors
+                                                         7 February 2025
 
 
          FrodoKEM: key encapsulation from learning with errors
@@ -13,24 +18,18 @@ Expires: 25 October 2024
 
 Abstract
 
-   This memo specifies FrodoKEM, an IND-CCA2 secure Key Encapsulation
-   Mechanism (KEM).
+   This internet draft specifies FrodoKEM, an IND-CCA2 secure Key
+   Encapsulation Mechanism (KEM).
 
 About This Document
 
    This note is to be removed before publishing as an RFC.
 
-   The latest revision of this draft can be found at
-   https://example.com/LATEST.  Status information for this document may
-   be found at https://datatracker.ietf.org/doc/draft-longa-cfrg-
-   frodokem/.
-
-   Discussion of this document takes place on the WG Working Group
-   mailing list (mailto:WG@example.com), which is archived at
-   https://example.com/WG.
+   Status information for this document may be found at
+   https://datatracker.ietf.org/doc/draft-longa-cfrg-frodokem/.
 
    Source for this draft and an issue tracker can be found at
-   https://github.com/USER/REPO.
+   github.com/dstebila/frodokem-internet-draft.
 
 Status of This Memo
 
@@ -47,11 +46,11 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 25 October 2024.
+   This Internet-Draft will expire on 11 August 2025.
 
 Copyright Notice
 
-   Copyright (c) 2024 IETF Trust and the persons identified as the
+   Copyright (c) 2025 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -63,36 +62,33 @@ Copyright Notice
 Table of Contents
 
    1.  Introduction
-   2.  Overview
-     2.1.  Chosen-ciphertext security
-   3.  Conventions and Definitions
-   4.  Overview
-   5.  Notation
-   6.  Parameters
-   7.  Supporting functions
-     7.1.  Octet encoding of bit strings
-     7.2.  Matrix encoding of bit strings
-     7.3.  Packing matrices modulo q
-     7.4.  Sampling from the error distribution
-     7.5.  Matrix sampling from the error distribution
-     7.6.  Pseudorandom matrix generation
-       7.6.1.  Matrix A generation with AES128
-       7.6.2.  Matrix A generation with SHAKE128
-   8.  FrodoKEM
-     8.1.  Key Generation
-     8.2.  Encapsulation
-     8.3.  Decapsulation
-   9.  FrodoKEM variants
-   10. Parameter Sets
-     10.1.  Parameters
-   11. Security Considerations
-   12. IANA Considerations
-   13. Normative References
-   Appendix A.  Acknowledgments
-   Appendix B.  References
-     B.1.  Normative References
-     B.2.  Informative References
-   Author's Address
+   2.  Conventions and Definitions
+   3.  Overview
+     3.1.  Chosen-Ciphertext Security
+   4.  Notation
+   5.  Parameters
+   6.  Supporting Functions
+     6.1.  Octet Encoding of Bit Strings
+     6.2.  Matrix Encoding of Bit Strings
+     6.3.  Packing Matrices Modulo q
+     6.4.  Sampling from the Error Distribution
+     6.5.  Matrix Sampling from the Error Distribution
+     6.6.  Pseudorandom Matrix Generation
+       6.6.1.  Matrix A Generation with AES128
+       6.6.2.  Matrix A Generation with SHAKE128
+   7.  FrodoKEM
+     7.1.  Key Generation
+     7.2.  Encapsulation
+     7.3.  Decapsulation
+   8.  FrodoKEM Variants
+   9.  Parameter Sets
+     9.1.  Summary of Parameters
+   10. Security Considerations
+   11. IANA Considerations
+   12. References
+     12.1.  Normative References
+     12.2.  Informative References
+   Authors' Addresses
 
 1.  Introduction
 
@@ -125,17 +121,25 @@ Table of Contents
    produced by this protocol can then be used to establish a secure
    communication channel using a symmetric-key algorithm.
 
-2.  Overview
+2.  Conventions and Definitions
+
+   The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+   "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
+   "OPTIONAL" in this document are to be interpreted as described in
+   BCP 14 [RFC2119] [RFC8174] when, and only when, they appear in all
+   capitals, as shown here.
+
+3.  Overview
 
    The core of FrodoKEM is a public-key encryption scheme called
    FrodoPKE, whose IND-CPA security is tightly related to the hardness
    of a corresponding learning with errors problem.  Here we briefly
    recall the scientific lineage of these systems.  See the surveys
-   [Mic10, Reg10, Pei16] for further details.  The seminal works of
-   Ajtai [Ajt96] (published in 1996) and Ajtai–Dwork [AD97] (published
-   in 1997) gave the first cryptographic constructions whose security
-   properties followed from the conjectured worst-case hardness of
-   various problems on point lattices in R^n.  In subsequent years,
+   [Mic10], [Reg10] and [Pei16] for further details.  The seminal works
+   of Ajtai [Ajt96] (published in 1996) and Ajtai–Dwork [AD97]
+   (published in 1997) gave the first cryptographic constructions whose
+   security properties followed from the conjectured worst-case hardness
+   of various problems on point lattices in R^n.  In subsequent years,
    these works were substantially refined and improved.  Notably, in
    work published in 2005, Regev [Reg09] defined the learning with
    errors (LWE) problem, proved the hardness of (certain
@@ -155,7 +159,7 @@ Table of Contents
    A from a small seed, more balanced key and ciphertext sizes, and new
    LWE parameters.
 
-2.1.  Chosen-ciphertext security
+3.1.  Chosen-Ciphertext Security
 
    FrodoKEM achieves IND-CCA security by way of a transformation of the
    IND-CPA-secure FrodoPKE.  In work published in 1999, Fujisaki and
@@ -171,108 +175,100 @@ Table of Contents
    Targhi–Unruh transforms that in particular convert an IND-CPA-secure
    PKE into an IND-CCA-secure KEM, and analyzed them in both the
    classical and quantum random-oracle models, even for PKEs with non-
-   zero decryption error.  Jiang et al.  [JZC+18] show how to prove
+   zero decryption error.  Jiang et al.  [JZC_18] show how to prove
    security of one of these variant FO transforms in the QROM without
    requiring the extra hash from Targhi–Unruh.  FrodoKEM is constructed
    from FrodoPKE using a slight variant of Jiang et al.'s transform that
    includes additional values in hash computations to reduce the risk of
    multi-target attacks.
 
-3.  Conventions and Definitions
-
-   The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
-   "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
-   "OPTIONAL" in this document are to be interpreted as described in
-   BCP 14 [RFC2119] [RFC8174] when, and only when, they appear in all
-   capitals, as shown here.
-
-4.  Overview
-
-5.  Notation
+4.  Notation
 
    We describe the symbols and abbreviations used throughout this
    document.
 
-   Z represents the set of integers and Z_q represents the set of
-   integers modulo q.
+   *  Z represents the set of integers and Z_q represents the set of
+      integers modulo q.
 
-   $\lfloor$ x $\rceil$ is the rounding of x to the nearest integer.  If
-   x = y + 1/2 for some y in Z, then $\lfloor$ x $\rceil$ = y + 1.
+   *  ⌊ x ⌉ is the rounding of x to the nearest integer.  If x = y + 1/2
+      for some y in Z, then ⌊ x ⌉ = y + 1.
 
-   A 16-bit bit string is represented by r^(i).  And a sequence of t
-   16-bit bit strings r^(i) is represented by (r^(0), r^(1), ...,
-   r^(t-1)).
+   *  r^(i) is a 16-bit bit string.
 
-   AES128(k, a) denotes the 128-bit AES128 output under key k for a
-   128-bit input a.
+   *  (r^(0), r^(1), ..., r^(t-1)) is a sequence of t 16-bit bit strings
+      r^(i).
 
-   SHAKE128(x, y) and SHAKE256(x, y) denote the y first bits of SHAKE128
-   and SHAKE256 (resp.) output for input x.
+   *  AES128(k, a) denotes the 128-bit AES128 output under key k for a
+      128-bit input a.
 
-   Matrices are represented in capitals with no italics (e.g., A and C).
-   For an n1 * n2 matrix C, its (i,j)th coefficient (i.e., the entry in
-   the ith row and jth column) is denoted by C_(i,j), where 0 <= i < n1
-   and 0 <= j < n2.  The transpose of matrix C is denoted by C^T.
+   *  SHAKE128(x, y) and SHAKE256(x, y) denote the y first bits of
+      SHAKE128 and SHAKE256 (resp.) output for input x.
+
+   *  Matrices are represented in capitals with no italics (e.g., A and
+      C).  For an n1 * n2 matrix C, its (i,j)th coefficient (i.e., the
+      entry in the ith row and jth column) is denoted by C[i,j], where 0
+      <= i < n1 and 0 <= j < n2.  The transpose of matrix C is denoted
+      by C^T.
 
    AES128 and SHAKE are specified in [FIPS197] and [FIPS202],
    respectively.
 
-6.  Parameters
+5.  Parameters
 
    The FrodoKEM parameters are implicit inputs to the FrodoKEM
    algorithms defined in the next sections.  A FrodoKEM parameter set
    specifies the following:
 
-   A positive integer D <= 16 that defines the modulus parameter q =
-   2^D.
+   *  A positive integer D <= 16 that defines the modulus parameter q =
+      2^D.
 
-   Positive integers n, nHat specifying matrix dimensions.  It holds
-   that n, nHat \equiv 0 mod 8.
+   *  Positive integers n, nHat specifying matrix dimensions.  It holds
+      that n, nHat ≡ 0 mod 8.
 
-   A positive integer B <= D specifying the number of bits encoded in
-   each matrix entry.
+   *  A positive integer B <= D specifying the number of bits encoded in
+      each matrix entry.
 
-   A positive integer lenA specifying the bitlength of seeds for the
-   generation of the matrix A.
+   *  A positive integer lenA specifying the bitlength of seeds for the
+      generation of the matrix A.
 
-   A positive integer lensec specifying the number of bits that match
-   the bit-security level.  Valid values are 128, 192 and 256.  This is
-   used to determine the bitlength of seeds (not associated to the
-   matrix A), of hash value outputs and of values associated to the
-   generation of the shared secrets.
+   *  A positive integer lensec specifying the number of bits that match
+      the bit-security level.  Valid values are 128, 192 and 256.  This
+      is used to determine the bitlength of seeds (not associated to the
+      matrix A), of hash value outputs and of values associated to the
+      generation of the shared secrets.
 
-   A positive integer lenSE specifying the bitlength of the seed value
-   seedSE.
+   *  A positive integer lenSE specifying the bitlength of the seed
+      value seedSE.
 
-   A positive integer lensalt specifying the bitlength of the value
-   salt.
+   *  A positive integer lensalt specifying the bitlength of the value
+      salt.
 
-   A discrete, symmetric error distribution X on Z with support given by
-   S_X = {−d, −d+1, ..., −1, 0, 1, ..., d−1, d} for a small integer d.
+   *  A discrete, symmetric error distribution X on Z with support given
+      by S_X = {−d, −d+1, ..., −1, 0, 1, ..., d−1, d} for a small
+      integer d.
 
-   A table T_X = (T_X(0), T_X(1), ..., T_X(d)) with (d+1) positive
-   integers based on the cumulative distribution function for X.
+   *  A table T_X = (T_X(0), T_X(1), ..., T_X(d)) with (d+1) positive
+      integers based on the cumulative distribution function for X.
 
    The values for these parameters corresponding to each parameter set
-   are given in Section XXXX.
+   are given in Section 9.1.
 
-7.  Supporting functions
+6.  Supporting Functions
 
-7.1.  Octet encoding of bit strings
+6.1.  Octet Encoding of Bit Strings
 
    This document follows the little-endian formatting for octet encoding
    of bit strings.
 
-   A bit string b = (b_0, b_1, ..., b_(|b|-1)) is converted to an octet
+   A bit string b = (b[0], b[1], ..., b[|b|-1]) is converted to an octet
    string by taking bits from left to right, packing those from the
    least significant bit of each octet to the most significant bit, and
    moving to the next octet when each octet fills up.  For example, the
-   16-bit bit string (b_0, b_1, ..., b_15) is converted into two octets
-   f and g (in this order) as
+   16-bit bit string (b[0], b[1], ..., b[15]) is converted into two
+   octets f and g (in this order) as
 
-   f = b_7 * 2^7 + b_6 * 2^6 + b_5 * 2^5 + b_4 * 2^4 + b_3 * 2^3 + b_2 *
-   2^2 + b_1 * 2 + b_0 g = b_15 * 2^7 + b_14 * 2^6 + b_13 * 2^5 + b_12 *
-   2^4 + b_11 * 2^3 + b_10 * 2^2 + b_9 * 2 + b_8
+f = b[7] * 2^7 + b[6] * 2^6 + b[5] * 2^5 + b[4] * 2^4 + b[3] * 2^3 + b[2] * 2^2 + b[1] * 2 + b[0]
+g = b[15] * 2^7 + b[14] * 2^6 + b[13] * 2^5 + b[12] * 2^4 + b[11] * 2^3 + b[10] * 2^2 + b[9] * 2 + b[8]
 
    The conversion from octet string to bit string is the reverse of this
    process.
@@ -280,173 +276,137 @@ Table of Contents
    For FrodoKEM, it is always the case that |b| is a multiple of 8 when
    performing octet encoding of bit strings.
 
-7.2.  Matrix encoding of bit strings
+6.2.  Matrix Encoding of Bit Strings
 
    We define how bit strings are encoded as mod-q integer matrices.
 
-   Recall that 2^B <= q.  The encoding function ec() encodes an integer
-   0 <= val < 2^B as an element in Z_q by multiplying it by q/2^B =
-   2^(D-B):
+   From the FrodoKEM parameters one has that 2^B <= q.  The encoding
+   function ec() encodes an integer 0 <= val < 2^B as an element in Z_q
+   by multiplying it by q/2^B = 2^(D-B):
 
-   ec(val) = val * q/2^B.
+   ec(val) = val * q / 2^B.
 
    Using this function, the function Encode(b) encodes a given bit
-   string b = (b_0, ..., b_(l-1)) of length l = B * nHat^2 as an nHat *
-   nHat matrix C with coefficients C_(i,j) in Z_q by applying ec(\cdot)
-   to B-bit sub-strings sequentially and filling the matrix row by row
+   string b = (b[0], ..., b[l-1]) of length l = B * nHat^2 as an nHat *
+   nHat matrix C with coefficients C[i,j] in Z_q by applying ec(·) to
+   B-bit sub-strings sequentially and filling the matrix row by row
    entry-wise.  The function Encode(b) is defined as follows.
 
-   1.  For i = 0 to nHat - 1 do
+   for i = 0 to nHat - 1 do
+      for j = 0 to nHat - 1 do
+         val = 0
+         for k = 0 to B - 1 do
+            val = val + b[(i * nHat + j)B + k] * 2^k
+         end for
+         C[i,j] = val * q / 2^B
+      end for
+   end for
 
-       1.  For j = 0 to nHat - 1 do
-
-           1.  val = 0
-
-           2.  For k = 0 to B - 1 do
-
-               1.  val = val + b_((i*nHat + j)B + k) * 2^k
-
-           3.  End for
-
-           4.  Set C_(i,j) = val * q/2^B
-
-       2.  End for
-
-   2.  End for
-
-   3.  Return C
+   return C
 
    The corresponding decoding function Decode(C) decodes an nHat * nHat
    matrix C into a bit string of length l = B * nHat^2.  It extracts B
    bits from each entry by applying the function dc():
 
-   dc(c) = $\lfloor$ c * 2^B/q $\rceil$ mod 2^B.
+   dc(c) = ⌊ c * 2^B / q ⌉ mod 2^B.
 
    That is, the Z_q-entry is interpreted as an integer, then divided by
    q/2^B and rounded.  This amounts to rounding to the B most
    significant bits of each entry.  With these definitions, it is the
-   case that dc(ec(val)) = val for all 0 ≤ val < 2^B.  The function
+   case that dc(ec(val)) = val for all 0 <= val < 2^B.  The function
    Decode(C) is defined as follows.
 
-   1.  For i = 0 to nHat - 1 do
+   for i = 0 to nHat - 1 do
+       for j = 0 to nHat - 1 do
+           c = ⌊ C[i,j] * 2^B / q ⌉ mod 2^B
+           Set c = c[0] * 2^0 + c[1] * 2^1 + ... + c[B-1] * 2^{B-1}
+           for k = 0 to B - 1 do
+               b[(i * nHat + j)B + k] = c[k]
+           end for
+       end for
+   end for
 
-       1.  For j = 0 to nHat - 1 do
+   return (b[0], ..., b[l-1])
 
-           1.  c = $\lfloor$ C_(i,j) * 2^B/q $\rceil$ mod 2^B
-
-           2.  Set c = c_0 * 2^0 + c_1 * 2^1 + ... + c_(B-1) * 2^(B-1)
-
-           3.  For k = 0 to B - 1 do
-
-               1.  b_((i*nHat + j)B + k) = c_k
-
-           4.  End for
-
-       2.  End for
-
-   2.  End for
-
-   3.  Return (b_0, ..., b_(l-1)).
-
-7.3.  Packing matrices modulo q
+6.3.  Packing Matrices Modulo q
 
    We define packing and unpacking functions to transform matrices with
    entries in Z_q to bit strings and vice versa.
 
-   The function Pack packs an n1 * n2 matrix C with entries C_(i,j) in
+   The function Pack packs an n1 * n2 matrix C with entries C[i,j] in
    Z_q to an octet string by concatenating the D-bit matrix
    coefficients.  The function Pack(C) is defined as follows.
 
-   1.  For i = 0 to n1 - 1 do
+   for i = 0 to n1 - 1 do
+       for j = 0 to n2 - 1 do
+           Set C[i,j] = c[0] * 2^0 + c[1] * 2^1 + ... + c[D-1] * 2^{D-1}
+           for k = 0 to D - 1 do
+               b[(i * n2 + j)D + k] = c[D-1-k]
+           end for
+       end for
+   end for
 
-       1.  For j = 0 to n2 - 1 do
-
-           1.  Set C_(i,j) = c_0 * 2^0 + c_1 * 2^1 + ... + c_(D-1) *
-               2^(D-1)
-
-           2.  For k = 0 to D - 1 do
-
-               1.  b_((i*n2 + j)D + k) = c_(D-1-k)
-
-           3.  End for
-
-       2.  End for
-
-   2.  End for
-
-   3.  Output the octet string corresponding to the bit string b = (b_0,
-       b_1, ..., b_(D*n1*n2 - 1)), as per XXXX.
+   return the octet string corresponding to the bit string
+   b = (b[0], b[1], ..., b[D * n1 * n2 - 1]), as per Section 6.1.
 
    The function Unpack does the reverse of this process to transform an
-   octet string o to an n1 * n2 matrix C with entries C_(i,j) in Z_q,
+   octet string o to an n1 * n2 matrix C with entries C[i,j] in Z_q,
    converting the input to a bit string, and then extracting D-bit
-   strings and storing each as matrix coefficients C_(i,j) for 0 <= i <
-   n1 and 0 <= j < n2 (row-by-row from C_(0,0) to C_(n1-1,n2-1)).  The
+   strings and storing each as matrix coefficients C[i,j] for 0 <= i <
+   n1 and 0 <= j < n2 (row-by-row from C[0,0] to C[n1-1, n2-1]).  The
    function Unpack(o, n1, n2) is defined as follows:
 
-   1.  Convert the input octet string o to a bit string b = (b_0, b_1,
-       ..., b_(D*n1*n2 - 1)), as per XXXX.
+   Convert the input octet string o to a bit string
+   b = (b[0], b[1], ..., b[D * n1 * n2 - 1]), as per Section 6.1.
 
-   2.  For i = 0 to n1 - 1 do
+   for i = 0 to n1 - 1 do
+       for j = 0 to n2 - 1 do
+           C[i,j] = 0
+           for k = 0 to D - 1 do
+               C[i,j] = C[i,j] + b[(i * n2 + j)D + k] * 2^(D-1-k)
+           end for
+       end for
+   end for
 
-       1.  For j = 0 to n_2 - 1 do
+   return C
 
-           1.  C_(i,j) = 0
-
-           2.  For k = 0 to D - 1 do
-
-               1.  C_(i,j) = C(i,j) + b_((i*n2 + j)D + k) * 2^(D-1-k)
-
-           3.  End for
-
-       2.  End for
-
-   3.  End for
-
-   4.  Output C
-
-7.4.  Sampling from the error distribution
+6.4.  Sampling from the Error Distribution
 
    The error distribution X used in FrodoKEM is a discrete, symmetric
    distribution on Z, centered at zero and with small support, which
    approximates a rounded continuous Gaussian distribution.
 
    The support of X is S_X = {−d, −d+1, ..., −1, 0, 1, ..., d−1, d} for
-   a positive integer d.  The probabilities X(z) = X(−z) for z in S_X
-   are given by a discrete probability density function, which is
-   described by a table
+   a positive integer d specified by the FrodoKEM parameter set.  The
+   probabilities X(z) = X(−z) for z in S_X are given by a discrete
+   probability density function, which is described by a table
 
    T_X = (T_X(0), T_X(1), ..., T_X(d))
 
    of d+1 positive integers related to the cumulative distribution
    function.
 
-   Given a random bit string r = (r_0, r_1, ..., r_15), the function
-   Sample(r) returns a sample e from FrodoKEM’s error distribution X via
-   inversion sampling using a table T_X, as follows (note that T_X(d) is
-   never accessed):
+   Given a random 16-bit string r = (r[0], r[1], ..., r[15]), the
+   function Sample(r) returns a sample e from FrodoKEM’s error
+   distribution X via inversion sampling using a table T_X, as follows
+   (note that T_X(d) is never accessed):
 
-   1.  Set t = r_1 * 2^0 + r_2 * 2^1 + ... + r_15 * 2^14
+   t = r[1] * 2^0 + r[2] * 2^1 + ... + r[15] * 2^14
+   e = 0
 
-   2.  e = 0
+   for i = 0 to d - 1 do
+       if t > T_X(i) then
+           e = e + 1
+       end if
+   end for
 
-   3.  For i = 0 to d - 1 do
+   e = (-1)^(r[0]) * e
 
-       1.  If t > T_X(i) then
-
-           1.  e = e + 1
-
-       2.  End if
-
-   4.  End for
-
-   5.  e = (-1)^(r_0) * e
-
-   6.  Output e
+   return e
 
    The output of the algorithm is a small integer in the range {-d,
    -d+1, ..., -1, 0, 1, ..., d-1, d}. The tables T_X corresponding to
-   each of FrodoKEM’s parameter sets are given in Table XXXX.
+   each of FrodoKEM’s parameter sets are given in Table 5.
 
    We emphasize that it is important to perform this sampling in
    constant time to avoid exposing timing side-channels, which is why
@@ -454,233 +414,184 @@ Table of Contents
    table T_X.  Similarly, the comparison in the if-loop needs to be
    implemented in a constant-time manner.
 
-7.5.  Matrix sampling from the error distribution
+6.5.  Matrix Sampling from the Error Distribution
 
    We define the function SampleMatrix which samples an n1 * n2 matrix
    using the function Sample.
 
    Given (n1 * n2) 16-bit random strings r^(i) and the dimension values
-   n1 and n2, SampleMatrix((r^(0), ..., r^(n1*n2 - 1)), n1, n2)
-   generates an n1 * n2 matrix E row-by-row from E_(0,0) to
-   E_(n1-1,n2-1) by successively calling the function Sample n1 * n2
-   times, as follows:
+   n1 and n2, SampleMatrix((r^(0), ..., r^(n1 * n2 - 1)), n1, n2)
+   generates an n1 * n2 matrix E row-by-row from E[0,0] to E[n1-1,n2-1]
+   by successively calling the function Sample n1 * n2 times, as
+   follows:
 
-   1.  For i = 0 to n1 - 1 do
+   for i = 0 to n1 - 1 do
+       for j = 0 to n2 - 1 do
+           E[i,j] = Sample(r^(i * n2 + j))
+       end for
+   end for
 
-       1.  For j = 0 to n2 - 1 do
+   return E
 
-           1.  E_(i,j) = Sample(r^(i*n2 + j))
-
-       2.  End for
-
-   2.  End for
-
-   3.  Output E
-
-7.6.  Pseudorandom matrix generation
+6.6.  Pseudorandom Matrix Generation
 
    The function Gen takes as input a seed, seedA, of length lenA=128
    bits and an implicit dimension n that is fixed per parameter set, and
    outputs an n * n pseudorandom matrix A, where all the coefficients
    are in Z_q.  There are two options for instantiating Gen: one based
    on AES128 and another based on SHAKE128.  In both cases, the matrix A
-   is generated row-by-row from A_(0,0) to A_(n-1,n-1).
+   is generated row-by-row from A[0,0] to A[n-1,n-1].
 
-7.6.1.  Matrix A generation with AES128
+6.6.1.  Matrix A Generation with AES128
 
    The algorithm for the case using AES128 is shown below.  Each call to
    AES128 generates 8 coefficients.
 
-   1.  For i = 0 to n - 1 do
+   for i = 0 to n - 1 do
+       for j = 0 to n - 1 step 8 do
+           b = i || j || 0 || 0 || 0 || 0 || 0 || 0
+           # Each concatenated element is encoded as a 16-bit string
+           # represented in little-endian byte order, such that:
+           # (i[0], i[1], ..., i[15]) ≡ i[0] * 2^0 + ... + i[15] * 2^15
+           # and |b| = 128
 
-       1.  For j = 0 to n - 1 step 8 do
+           C[i,j] || C[i,j+1] || ... || C[i,j+7] = AES128(seedA, b)
+           # Each matrix coefficient C[i,j] is a 16-bit string interpreted
+           # as a non-negative integer in little-endian byte order:
+           # C[i,j] = c[0] * 2^0 + c[1] * 2^1 + ... + c[15] * 2^15
+           # corresponding to the bit string (c[0], c[1], ..., c[15])
 
-           1.  b = i||j||0||0||0||0||0||0, where each concatenated
-               element is encoded as a 16-bit string represented in the
-               little-endian byte order such that, e.g., (i_0, i_1, ...,
-               i_15) \equiv i_0 * 2^0 + i_1 * 2^1 + ... + i_15 *\ 2^15,
-               and |b| = 128
+           for k = 0 to 7 do
+               A[i,j+k] = C[i,j+k] mod q
+           end for
+       end for
+   end for
 
-           2.  C_(i,j) || C_(i,j+1) || ... || C_(i,j+7) = AES128(seed_A,
-               b), where each matrix coefficient C_(i,j) is a 16-bit
-               string interpreted as a nonnegative integer in the
-               little-endian byte order, such that C_(i,j) = c_0 * 2^0 +
-               c_1 *\ 2^1 + ... + c_15 *\ 2^15 corresponding to the bit
-               string (c_0, c_1, ...,c_15)
+   return A
 
-           3.  For k = 0 to 7 do
-
-               1.  A_(i,j+k) = C_(i,j+k) mod q
-
-           4.  End for
-
-       2.  End for
-
-   2.  End for
-
-   3.  Output A
-
-7.6.2.  Matrix A generation with SHAKE128
+6.6.2.  Matrix A Generation with SHAKE128
 
    The algorithm for the case using SHAKE128 is shown below.  Each call
    to SHAKE128 generates n coefficients (i.e., a full matrix row).
 
-   1.  For i = 0 to n - 1 do
+   for i = 0 to n - 1 do
+       b = i || seedA
+       # Element i is encoded as a 16-bit string
+       # represented in little-endian byte order, such that:
+       # (i[0], i[1], ..., i[15]) ≡ i[0] * 2^0 + i[1] * 2^1 + ... + i[15] * 2^15
+       # and |b| = lenA + 16
 
-       1.  b = i||seed_A, where i is encoded as a 16-bit string
-           represented in the little-endian byte order such that (i_0,
-           i_1 , ..., i_15) \equiv i_0 * 2^0 + i_1 * 2^1 + ... + i_15 *\
-           2^15, and hence the bitlength of b is |b| = lenA+16
+       C[i,0] || C[i,1] || ... || C[i,n-1] = SHAKE128(b, 16 * n)
+       # Each matrix coefficient C[i,j] is a 16-bit string interpreted
+       # as a non-negative integer in little-endian byte order:
+       # C[i,j] = c[0] * 2^0 + c[1] * 2^1 + ... + c[15] * 2^15
+       # corresponding to the bit string (c[0], c[1], ..., c[15])
 
-       2.  C_(i,0) || C_(i,1) || ... || C_(i,n-1) = SHAKE128(b, 16*n),
-           where each matrix coefficient C_(i,j) is a 16-bit string
-           interpreted as a nonnegative integer in the little-endian
-           byte order, such that C_(i,j) = c_0 * 2^0 + c_1 *\ 2^1 + ...
-           + c_15 *\ 2^15 corresponding to the bit string (c_0, c_1,
-           ..., c_15)
+       for j = 0 to n - 1 do
+           A[i,j] = C[i,j] mod q
+       end for
+   end for
 
-       3.  For j = 0 to n - 1 do
+   return A
 
-           1.  A_(i,j) = C_(i,j) mod q
+7.  FrodoKEM
 
-       4.  End for
-
-   2.  End for
-
-   3.  Output A
-
-8.  FrodoKEM
-
-8.1.  Key Generation
+7.1.  Key Generation
 
    The key generation algorithm accepts no input, requires randomness,
    and outputs the keypair (pk, sk) = (seedA || b, s || seedA || b ||
    S^T || pkh).
 
-   1.   Choose uniformly random seeds s, seedSE and z of bitlengths
-        lensec, lenSE and lenA (resp.)
+   Choose uniformly random seeds s, seedSE, and z of bitlengths lensec, lenSE, and lenA (resp.)
+   # Generate pseudorandom seed:
+   seedA = SHAKE(z, lenA)
+   # Generate the matrix A:
+   A = Gen(seedA)
+   # Generate pseudorandom bit string:
+   (r^(0), r^(1), ..., r^(2 * n * nHat - 1)) = SHAKE(0x5F || seedSE, 32 * n * nHat)
+   # Sample matrix S transposed:
+   S^T = SampleMatrix((r^(0), r^(1), ..., r^(n * nHat − 1)), nHat, n)
+   # Sample error matrix E:
+   E = SampleMatrix((r^(n * nHat), r^(n * nHat + 1), ..., r^(2 * n * nHat − 1)), n, nHat)
+   B = A * S + E
+   b = Pack(B)
+   pkh = SHAKE(seedA || b, lensec)
+   pk = (seedA || b)
+   sk = (s || seedA || b || S^T || pkh)
 
-   2.   Generate pseudorandom seed seedA = SHAKE(z, lenA)
+   return pk, sk  # Return public key and secret key
 
-   3.   Generate the matrix A = Gen(seedA)
+   Here, the matrix ST = S^T is encoded row-by-row from ST[0,0] to
+   ST[nHat−1,n−1], where each matrix coefficient ST[i,j] is a signed
+   integer encoded as a 16-bit string (s[0], s[1], ..., s[15]) in the
+   little-endian byte order, i.e.
 
-   4.   Generate pseudorandom bit string (r^(0), r^(1), ..., r^(2*n*nHat
-        - 1)) = SHAKE(0x5F || seedSE, 32*n*nHat)
+ST[i,j] = −s[15] * 2^15 + (s[0] + s[1] * 2 + s[2] * 2^2 + ... + s[14] * 2^14).
 
-   5.   Sample error matrix S^T = SampleMatrix((r^(0), r^(1), ...,
-        r^(n*nHat − 1)), nHat, n)
-
-   6.   Sample error matrix E = SampleMatrix((r^(n*nHat), r^(n*nHat +
-        1), ..., r^(2*n*nHat − 1)), n, nHat)
-
-   7.   Compute matrix B = A*S + E
-
-   8.   Compute b = Pack(B)
-
-   9.   Compute pkh = SHAKE(seedA || b, lensec)
-
-   10.  Return public key pk = (seedA || b) and secret key sk = (s ||
-        seedA || b || S^T || pkh).  ST = S^T is encoded row-by-row from
-        ST_(0,0) to ST_(nHat−1,n−1), where each matrix coefficient
-        ST_(i,j) is a signed integer encoded as a 16-bit string (s_0,
-        s_1, ..., s_15) in the little-endian byte order corresponding to
-        ST_(i,j) = −s_15 * 2^15 + (s_0 + s_1 * 2 + s_2 * 2^2 + ... +
-        s_14 * 2^14)
-
-8.2.  Encapsulation
+7.2.  Encapsulation
 
    The encapsulation algorithm takes as input a public key pk =
    (seedA || b), requires randomness, and outputs a ciphertext c =
    (c1 || c2 || salt) and a shared secret ss.
 
-   1.   Choose uniformly random values u and salt of bitlengths lensec
-        and lensalt (resp.)
+   Choose uniformly random values u and salt of lengths lensec and lensalt
+   pkh = SHAKE(pk, lensec)
+   # Generate pseudorandom values:
+   seedSE || k = SHAKE(pkh || u || salt, lenSE + lensec)
+   # Generate pseudorandom bit string:
+   r = SHAKE(0x96 || seedSE, 16 * (2 * nHat * n + nHat^2))
+   # Sample matrices S' and E':
+   S' = SampleMatrix((r^(0), r^(1), ..., r^(nHat * n - 1)), nHat, n)
+   E' = SampleMatrix((r^(nHat * n), r^(nHat * n + 1), ..., r^(2 * nHat * n - 1)), nHat, n)
+   # Generate the matrix A:
+   A = Gen(seedA)
+   B' = S' * A + E'
+   c1 = Pack(B')
+   # Sample error matrix E":
+   E" = SampleMatrix((r^(2 * nHat * n), r^(2 * nHat * n + 1), ..., r^(2 * nHat * n + nHat^2 - 1)), nHat, nHat)
+   B = Unpack(b, n, nHat)
+   V = S' * B + E"
+   C = V + Encode(u)
+   c2 = Pack(C)
+   ss = SHAKE(c1 || c2 || salt || k, lensec)
 
-   2.   Compute pkh = SHAKE(pk, lensec)
+   return (c1 || c2 || salt), ss  # Return ciphertext and shared secret
 
-   3.   Generate pseudorandom values seedSE || k = SHAKE(pkh || u ||
-        salt, lenSE+lensec)
-
-   4.   Generate pseudorandom bit string (r^(0), r^(1), ..., r^(2*nHat*n
-        + nHat^2 - 1)) = SHAKE(0x96 || seedSE, 16(2*nHat*n + nHat^2))
-
-   5.   Sample error matrix S' = SampleMatrix((r^(0), r^(1), ...,
-        r^(nHat*n - 1)), nHat, n)
-
-   6.   Sample error matrix E' = SampleMatrix((r^(nHat*n), r^(nHat*n +
-        1), ..., r^(2*nHat*n - 1)), nHat, n)
-
-   7.   Generate the matrix A = Gen(seedA)
-
-   8.   Compute matrix B' = S'*A + E'
-
-   9.   Compute c1 = Pack(B')
-
-   10.  Sample error matrix E" = SampleMatrix((r^(2*nHat*n), r^(2*nHat*n
-        + 1), ..., r^(2*nHat*n + nHat^2 - 1)), nHat, nHat)
-
-   11.  Compute matrix B = Unpack(b, n, nHat)
-
-   12.  Compute matrix V = S'*B + E"
-
-   13.  Compute matrix C = V + Encode(u)
-
-   14.  Compute c2 = Pack(C)
-
-   15.  Compute ss = SHAKE(c1 || c2 || salt ||k, lensec)
-
-   16.  Return ciphertext c = (c1 || c2 || salt) and shared secret ss
-
-8.3.  Decapsulation
+7.3.  Decapsulation
 
    The decapsulation algorithm takes as input a ciphertext c = (c1 ||
    c2 || salt) and a secret key sk = (s || seedA || b || S^T || pkh),
    and outputs a shared secret ss.
 
-   1.   Compute matrix B' = Unpack(c1, nHat, n)
+   B' = Unpack(c1, nHat, n)
+   C = Unpack(c2, nHat, nHat)
+   M = C - B' * S
+   u' = Decode(M)
+   # Generate pseudorandom values:
+   seedSE' || k' = SHAKE(pkh || u' || salt, lenSE + lensec)
+   # Generate pseudorandom bit string:
+   r = SHAKE(0x96 || seedSE', 16 * (2 * nHat * n + nHat^2))
+   # Sample matrices S' and E':
+   S' = SampleMatrix((r^(0), r^(1), ..., r^(nHat * n - 1)), nHat, n)
+   E' = SampleMatrix((r^(nHat * n), r^(nHat * n + 1), ..., r^(2 * nHat * n - 1)), nHat, n)
+   # Generate the matrix A:
+   A = Gen(seedA)
+   B" = S' * A + E'
+   # Sample error matrix E":
+   E" = SampleMatrix((r^(2 * nHat * n), r^(2 * nHat * n + 1), ..., r^(2 * nHat * n + nHat^2 - 1)), nHat, nHat)
+   B = Unpack(b, n, nHat)
+   V = S' * B + E"
+   C' = V + Encode(u')
+   kHat = k' if B' == B" and C == C' else kHat = s
+   ss = SHAKE(c1 || c2 || salt || kHat, lensec)
 
-   2.   Compute matrix C = Unpack(c2, nHat, nHat)
+   return ss  # Return shared secret ss
 
-   3.   Compute matrix M = C - B'*S
-
-   4.   Compute u' = Decode(M)
-
-   5.   Generate pseudorandom values seedSE' || k' = SHAKE(pkh ||
-        u' ||salt, lenSE+lensec)
-
-   6.   Generate pseudorandom bit string (r^(0), r^(1), ..., r^(2*nHat*n
-        + nHat^2 - 1)) = SHAKE(0x96 || seedSE', 16 (2*nHat*n + nHat^2))
-
-   7.   Sample error matrix S' = SampleMatrix((r^(0), r^(1), ...,
-        r^(nHat*n - 1)), nHat, n)
-
-   8.   Sample error matrix E' = SampleMatrix((r^(nHat*n), r^(nHat*n +
-        1), ..., r^(2*nHat*n - 1)), nHat, n)
-
-   9.   Generate the matrix A = Gen(seedA)
-
-   10.  Compute matrix B" = S'*A + E'
-
-   11.  Sample error matrix E" = SampleMatrix((r^(2*nHat*n), r^(2*nHat*n
-        + 1), ..., r^(2*nHat*n+ nHat^2 - 1)), nHat, nHat)
-
-   12.  Compute matrix B = Unpack(b, n, nHat)
-
-   13.  Compute matrix V = S'*B + E"
-
-   14.  Compute matrix C' = V + Encode(u')
-
-   15.  If B' = B" and C = C' then kHat = k' else kHat = s
-
-   16.  Compute ss = SHAKE(c1 || c2 || salt || kHat, lensec)
-
-   17.  Return shared secret ss
-
-9.  FrodoKEM variants
+8.  FrodoKEM Variants
 
    FrodoKEM is parameterized by the pseudorandom generator (PRG) that is
-   used for the generation of the matrix A.  As explained in
-   Section XXXX there are two options for PRG: AES128 and SHAKE128.
+   used for the generation of the matrix A.  As explained in Section 6.6
+   there are two options for PRG: AES128 and SHAKE128.
 
    In addition, FrodoKEM consists of two main variants: a "standard"
    variant that does not impose any restriction on the reuse of key
@@ -689,7 +600,7 @@ Table of Contents
    public key is small.  Concretely, the use of standard FrodoKEM is
    recommended for applications in which the number of ciphertexts
    produced for a single public key is expected to be equal or greater
-   than 2^8.  Ephemeral FrodoKEM shall be used for applications in which
+   than 2^8.  Ephemeral FrodoKEM MUST be used for applications in which
    that same figure is expected to be smaller than 2^8.
 
    In contrast to ephemeral FrodoKEM, standard FrodoKEM incorporates
@@ -698,7 +609,7 @@ Table of Contents
    value and incorporates a public random salt value into encapsulation
    (see Table 2).
 
-10.  Parameter Sets
+9.  Parameter Sets
 
    This document specifies the following twelve parameter sets:
 
@@ -720,7 +631,10 @@ Table of Contents
    consists of the parameter sets FrodoKEM-640-SHAKE, FrodoKEM-976-SHAKE
    and FrodoKEM-1344-SHAKE (and their corresponding ephemeral variants).
 
-10.1.  Parameters
+9.1.  Summary of Parameters
+
+   The parameter values characterizing the FrodoKEM parameter sets are
+   listed below.
 
    +======+==============+==============+==============+==============+
    |  Name| (e)FrodoKEM- | (e)FrodoKEM- | (e)FrodoKEM- | Description  |
@@ -766,9 +680,7 @@ Table of Contents
    |      |              |              |              | for hashing  |
    +------+--------------+--------------+--------------+--------------+
 
-                                 Table 1
-
-                                      Table 1: Parameters for FrodoKEM.
+                    Table 1: Parameters for FrodoKEM.
 
     +=======+==============+==============+===============+===========+
     |   Name| FrodoKEM-640 | FrodoKEM-976 | FrodoKEM-1344 |Description|
@@ -782,7 +694,7 @@ Table of Contents
     |       |              |              |               |FrodoKEM   |
     +-------+--------------+--------------+---------------+-----------+
 
-                                  Table 2
+            Table 2: Additional parameters for FrodoKEM variant.
 
    +=======+=============+===============+================+============+
    |   Name|eFrodoKEM-640| eFrodoKEM-976 | eFrodoKEM-1344 |Description |
@@ -796,27 +708,47 @@ Table of Contents
    |       |             |               |                |eFrodoKEM   |
    +-------+-------------+---------------+----------------+------------+
 
-                                  Table 3
+           Table 3: Additional parameters for eFrodoKEM variant.
 
-                    Table 2: Additional parameters for FrodoKEM depending on variant.
+      +============+===============+===============+===============+
+      |       Name |  X_Frodo-640  |  X_Frodo-976  |  X_Frodo-1344 |
+      +============+===============+===============+===============+
+      |      sigma |      2.8      |      2.3      |      1.4      |
+      +------------+---------------+---------------+---------------+
+      |          0 |      9288     |     11278     |     18286     |
+      +------------+---------------+---------------+---------------+
+      |        +-1 |      8720     |     10277     |     14320     |
+      +------------+---------------+---------------+---------------+
+      |        +-2 |      7216     |      7774     |      6876     |
+      +------------+---------------+---------------+---------------+
+      |        +-3 |      5264     |      4882     |      2023     |
+      +------------+---------------+---------------+---------------+
+      |        +-4 |      3384     |      2545     |      364      |
+      +------------+---------------+---------------+---------------+
+      |        +-5 |      1918     |      1101     |       40      |
+      +------------+---------------+---------------+---------------+
+      |        +-6 |      958      |      396      |       2       |
+      +------------+---------------+---------------+---------------+
+      |        +-7 |      422      |      118      |               |
+      +------------+---------------+---------------+---------------+
+      |        +-8 |      164      |       29      |               |
+      +------------+---------------+---------------+---------------+
+      |        +-9 |       56      |       6       |               |
+      +------------+---------------+---------------+---------------+
+      |       +-10 |       17      |       1       |               |
+      +------------+---------------+---------------+---------------+
+      |       +-11 |       4       |               |               |
+      +------------+---------------+---------------+---------------+
+      |       +-12 |       1       |               |               |
+      +------------+---------------+---------------+---------------+
+      |      order |      200      |      500      |      1000     |
+      +------------+---------------+---------------+---------------+
+      | divergence | 0.324 x 10^-4 | 0.140 x 10^-4 | 0.264 x 10^-4 |
+      +------------+---------------+---------------+---------------+
 
-   +========+=====+=====+=====+====+====+====+====+===+===+===+===+====+====+====+=====+==========+
-   |    Name|sigma|    0|  +-1| +-2| +-3| +-4| +-5|+-6|+-7|+-8|+-9|+-10|+-11|+-12|order|divergence|
-   +========+=====+=====+=====+====+====+====+====+===+===+===+===+====+====+====+=====+==========+
-   |X_Frodo-| 2.8 | 9288| 8720|7216|5264|3384|1918|958|422|164| 56|  17|   4|   1| 200 | 0.324 x  |
-   |     640|     |     |     |    |    |    |    |   |   |   |   |    |    |    |     |  10^-4   |
-   +--------+-----+-----+-----+----+----+----+----+---+---+---+---+----+----+----+-----+----------+
-   |X_Frodo-| 2.3 |11278|10277|7774|4882|2545|1101|396|118| 29|  6|   1|    |    | 500 | 0.140 x  |
-   |     976|     |     |     |    |    |    |    |   |   |   |   |    |    |    |     |  10^-4   |
-   +--------+-----+-----+-----+----+----+----+----+---+---+---+---+----+----+----+-----+----------+
-   |X_Frodo-| 1.4 |18286|14320|6876|2023| 364|  40|  2|   |   |   |    |    |    | 1000| 0.264 x  |
-   |    1344|     |     |     |    |    |    |    |   |   |   |   |    |    |    |     |  10^-4   |
-   +--------+-----+-----+-----+----+----+----+----+---+---+---+---+----+----+----+-----+----------+
-
-                                  Table 4
-
-                 Table 3: Error distributions. Probabilities are shown for each integer value from 0 up to +-12.
-                                The last two columns correspond to Renyi's order and divergence.
+        Table 4: Error distributions.  Probabilities are shown for
+         each integer value from 0 up to +-12.  The last two rows
+               correspond to Renyi's order and divergence.
 
       +===============+==============+==============+===============+
       | Table entries | FrodoKEM-640 | FrodoKEM-976 | FrodoKEM-1344 |
@@ -848,13 +780,11 @@ Table of Contents
       |       T_X(12) |    32,767    |              |               |
       +---------------+--------------+--------------+---------------+
 
-                                  Table 5
-
-           Table 4: The distribution table entries T_X(i),
-                 for 0 <= i <= d, for sampling.
+         Table 5: The distribution table entries T_X(i), for 0 <= i
+                            <= d, for sampling.
 
    +================+===============+========+============+===========+
-   |                | secret key sk | public | ciphertext |   shared  |
+   |         Scheme | secret key sk | public | ciphertext |   shared  |
    |                |               | key pk |     ct     | secret ss |
    +================+===============+========+============+===========+
    |   FrodoKEM-640 |     19,888    | 9,616  |   9,752    |     16    |
@@ -870,11 +800,9 @@ Table of Contents
    | eFrodoKEM-1344 |     43,088    | 21,520 |   21,632   |     32    |
    +----------------+---------------+--------+------------+-----------+
 
-                                 Table 6
+             Table 6: Sizes (in bits) of inputs and outputs.
 
-                       Table 5: Sizes (in bits) of inputs and outputs.
-
-11.  Security Considerations
+10.  Security Considerations
 
    FrodoKEM-640, FrodoKEM-976 and FrodoKEM-1344 are designed to be post-
    quantum IND-CCA2 secure KEMs at the security levels of AES-128,
@@ -892,11 +820,23 @@ Table of Contents
    while our confidence in the security of lattice schemes increases
    over time.
 
-12.  IANA Considerations
+11.  IANA Considerations
 
    This document has no IANA actions.
 
-13.  Normative References
+12.  References
+
+12.1.  Normative References
+
+   [FIPS197]  (NIST), N. I. of S. and T., "Advanced Encryption Standard
+              (AES), FIPS 197", November 2001,
+              <https://nvlpubs.nist.gov/nistpubs/FIPS/
+              NIST.FIPS.197-upd1.pdf>.
+
+   [FIPS202]  (NIST), N. I. of S. and T., "SHA-3 Standard: Permutation-
+              Based Hash and Extendable-Output Functions, FIPS 202",
+              August 2015, <https://nvlpubs.nist.gov/nistpubs/fips/
+              nist.fips.202.pdf>.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
@@ -907,85 +847,87 @@ Table of Contents
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
               May 2017, <https://www.rfc-editor.org/rfc/rfc8174>.
 
-Appendix A.  Acknowledgments
+12.2.  Informative References
 
-   TODO acknowledge.
+   [AD97]     Ajtai, M. and C. Dwork, "A public-key cryptosystem with
+              worst-case/average-case equivalence", 29th Annual ACM
+              Symposium on Theory of Computing, pages 284–293 , 1997.
 
-Appendix B.  References
+   [Ajt96]    Ajtai, M., "Generating hard instances of lattice problems
+              (extended abstract)", 28th Annual ACM Symposium on Theory
+              of Computing, pages 99–108 , 1996.
 
-B.1.  Normative References
+   [Annex]    Alkim, E., Bos, J. W., Ducas, L., Longa, P., Mironov, I.,
+              Naehrig, M., Nikolaenko, V., Peikert, C., Raghunathan, A.,
+              and D. Stebila, "Annex on FrodoKEM updates", April 2023,
+              <https://frodokem.org/files/FrodoKEM-annex-20230418.pdf>.
 
-   [FIPS197] NIST, FIPS 197, "Advanced Encryption Standard (AES)",
-   November 2001.  https://nvlpubs.nist.gov/nistpubs/FIPS/
-   NIST.FIPS.197-upd1.pdf
+   [FO99]     Fujisaki, E. and T. Okamoto, "Secure integration of
+              asymmetric and symmetric encryption schemes", Advances in
+              Cryptology – CRYPTO’99, volume 1666 of Lecture Notes in
+              Computer Science, pages 537–554 , 1999.
 
-   [FIPS202] NIST, FIPS 202, "SHA-3 Standard: Permutation-Based Hash and
-   Extendable-Output Functions", August 2015.
-   https://nvlpubs.nist.gov/nistpubs/fips/nist.fips.202.pdf
+   [Frodo17]  Alkim, E., Bos, J. W., Ducas, L., Longa, P., Mironov, I.,
+              Naehrig, M., Nikolaenko, V., Peikert, C., Raghunathan, A.,
+              and D. Stebila, "FrodoKEM: Learning With Errors Key
+              Encapsulation", 2017, <https://frodokem.org>.
 
-B.2.  Informative References
+   [HHK17]    Hofheinz, D., Hovelmanns, K., and E. Kiltz, "A modular
+              analysis of the Fujisaki-Okamoto transformation", 15th
+              Theory of Cryptography Conference (TCC 2017), Part I,
+              volume 10677 of Lecture Notes in Computer Science, pages
+              341–371 , 2017.
 
-   [Frodo17] E.  Alkim, J.  W.  Bos, L.  Ducas, K.  Easterbrook, P.
-   Longa, B.  LaMacchia, I.  Mironov, M.  Naehrig, V.  Nikolaenko, C.
-   Peikert, A.  Raghunathan, and D.  Stebila.  FrodoKEM: Learning With
-   Errors Key Encapsulation, 2017.  NIST's Round 3 algorithm
-   specification and supporting documentatation available at
-   https://frodokem.org/files/FrodoKEM-specification-20210604.pdf (2021)
+   [JZC_18]   Jiang, H., Zhang, Z., Chen, L., Wang, H., and Z. Ma, "IND-
+              CCA-secure key encapsulation mechanism in the quantum
+              random oracle model, revisited", Advances in Cryptology –
+              CRYPTO 2018, Part III, volume 10993 of Lecture Notes in
+              Computer Science, pages 96–125 , 2018.
 
-   [Annex] FrodoKEM Team.  Annex on FrodoKEM updates, April 2023.
-   https://frodokem.org/files/FrodoKEM-annex-20230418.pdf
+   [LP11]     Lindner, R. and C. Peikert, "Better key sizes (and
+              attacks) for LWE-based encryption", Topics in Cryptology –
+              CT-RSA 2011, volume 6558 of Lecture Notes in Computer
+              Science, pages 319–339 , 2011.
 
-   [Mic10] D.  Micciancio.  Cryptographic functions from worst-case
-   complexity assumptions.  Information Security and Cryptography, pages
-   427–452, 2010.
+   [Mic10]    Micciancio, D., "Cryptographic functions from worst-case
+              complexity assumptions", Information Security and
+              Cryptography, pages 427–452 , 2010.
 
-   [Reg10] O.  Regev.  The learning with errors problem (invited
-   survey).  In IEEE Conference on Computational Complexity, pages
-   191–204, 2010.
+   [Pei16]    Peikert, C., "A decade of lattice cryptography",
+              Foundations and Trends in Theoretical Computer Science,
+              10(4):283–424. , 2016.
 
-   [Pei16] C.  Peikert.  A decade of lattice cryptography.  Foundations
-   and Trends in Theoretical Computer Science, 10(4):283–424, 2016.
+   [Reg09]    Regev, O., "On lattices, learning with errors, random
+              linear codes, and cryptography", Journal of the ACM,
+              56(6):34, 2009. Preliminary version in STOC 2005 , 2009.
 
-   [Ajt96] M.  Ajtai.  Generating hard instances of lattice problems
-   (extended abstract).  In 28th Annual ACM Symposium on Theory of
-   Computing, pages 99–108, 1996.
+   [Reg10]    Regev, O., "The learning with errors problem (invited
+              survey)", IEEE Conference on Computational Complexity,
+              pages 191–204 , 2010.
 
-   [AD97] M.  Ajtai and C.  Dwork.  A public-key cryptosystem with
-   worst-case/average-case equivalence.  In 29th Annual ACM Symposium on
-   Theory of Computing, pages 284–293, 1997.
+   [TU16]     Targhi, E. E. and D. Unruh, "Post-quantum security of the
+              Fujisaki-Okamoto and OAEP transforms", 14th Theory of
+              Cryptography Conference (TCC 2016-B), Part II, volume 9986
+              of Lecture Notes in Computer Science, pages 192–216 ,
+              2016.
 
-   [Reg09] O.  Regev.  On lattices, learning with errors, random linear
-   codes, and cryptography.  Journal of the ACM, 56(6):34, 2009.
-   Preliminary version in STOC 2005.
+Authors' Addresses
 
-   [LP11] R.  Lindner and C.  Peikert.  Better key sizes (and attacks)
-   for LWE-based encryption.  In Topics in Cryptology – CT-RSA 2011,
-   volume 6558 of Lecture Notes in Computer Science, pages 319–339,
-   2011.
+   Patrick Longa
+   Microsoft
+   Email: plonga@microsoft.com
 
-   [FO99] E.  Fujisaki and T.  Okamoto.  Secure integration of
-   asymmetric and symmetric encryption schemes.  In Advances in
-   Cryptology – CRYPTO’99, volume 1666 of Lecture Notes in Computer
-   Science, pages 537–554, 1999.
 
-   [TU16] E.  E.  Targhi and D.  Unruh.  Post-quantum security of the
-   Fujisaki-Okamoto and OAEP transforms.  In TCC 2016-B: 14th Theory of
-   Cryptography Conference, Part II, volume 9986 of Lecture Notes in
-   Computer Science, pages 192–216, 2016.
+   Douglas Stebila
+   University of Waterloo
+   Email: dstebila@uwaterloo.ca
 
-   [HHK17] D.  Hofheinz, K.  Hovelmanns, and E.  Kiltz.  A modular
-   analysis of the Fujisaki-Okamoto transformation.  In TCC 2017: 15th
-   Theory of Cryptography Conference, Part I, volume 10677 of Lecture
-   Notes in Computer Science, pages 341–371, 2017.
 
-   [JZC+18] H.  Jiang, Z.  Zhang, L.  Chen, H.  Wang, and Z.  Ma.  IND-
-   CCA-secure key encapsulation mechanism in the quantum random oracle
-   model, revisited.  In Advances in Cryptology – CRYPTO 2018, Part III,
-   volume 10993 of Lecture Notes in Computer Science, pages 96–125,
-   2018.
+   Stephan Ehlen
+   Federal Office for Information Security (BSI)
+   Email: stephan.ehlen@bsi.bund.de
 
-Author's Address
 
-   Your Name Here
-   Your Organization Here
-   Email: your.email@example.com
+   Joppe W. Bos
+   NXP Semiconductors
+   Email: joppe.bos@nxp.com
