@@ -325,8 +325,10 @@ string (b[0], b[1], ..., b[15]) is converted into two octets f and g (in
 this order) as
 
 ~~~
-f = b[7] * 2^7 + b[6] * 2^6 + b[5] * 2^5 + b[4] * 2^4 + b[3] * 2^3 + b[2] * 2^2 + b[1] * 2 + b[0]
-g = b[15] * 2^7 + b[14] * 2^6 + b[13] * 2^5 + b[12] * 2^4 + b[11] * 2^3 + b[10] * 2^2 + b[9] * 2 + b[8]
+f = b[7] * 2^7 + b[6] * 2^6 + b[5] * 2^5 + b[4] * 2^4 + b[3] * 2^3 + ...
+    b[2] * 2^2 + b[1] * 2 + b[0]
+g = b[15] * 2^7 + b[14] * 2^6 + b[13] * 2^5 + b[12] * 2^4 + ...
+    b[11] * 2^3 + b[10] * 2^2 + b[9] * 2 + b[8]
 ~~~
 
 The conversion from octet string to bit string is the reverse of this
@@ -529,8 +531,9 @@ for i = 0 to n - 1 do
         # and |b| = 128
 
         C[i,j] || C[i,j+1] || ... || C[i,j+7] = AES128(seedA, b)
-        # Each matrix coefficient C[i,j] is a 16-bit string interpreted
-        # as a non-negative integer in little-endian byte order:
+        # Each matrix coefficient C[i,j] is a 16-bit string
+        # interpreted as a non-negative integer in little-endian
+        # byte order:
         # C[i,j] = c[0] * 2^0 + c[1] * 2^1 + ... + c[15] * 2^15
         # corresponding to the bit string (c[0], c[1], ..., c[15])
 
@@ -553,7 +556,7 @@ for i = 0 to n - 1 do
     b = i || seedA
     # Element i is encoded as a 16-bit string
     # represented in little-endian byte order, such that:
-    # (i[0], i[1], ..., i[15]) ≡ i[0] * 2^0 + i[1] * 2^1 + ... + i[15] * 2^15
+    # (i[0], i[1], ..., i[15]) ≡ i[0] * 2^0 + ... + i[15] * 2^15
     # and |b| = lenA + 16
 
     C[i,0] || C[i,1] || ... || C[i,n-1] = SHAKE128(b, 16 * n)
@@ -578,17 +581,20 @@ The key generation algorithm accepts no input, requires randomness, and
 outputs the keypair (pk, sk) = (seedA || b, s || seedA || b || S^T || pkh).
 
 ~~~pseudocode
-Choose uniformly random seeds s, seedSE, and z of bitlengths lensec, lenSE, and lenA (resp.)
+Choose uniformly random seed s of bitlength lensec
+Choose uniformly random seed seedSE of bitlength lenSE
+Choose uniformly random seed z of bitlength lenA
 # Generate pseudorandom seed:
 seedA = SHAKE(z, lenA)
 # Generate the matrix A:
 A = Gen(seedA)
 # Generate pseudorandom bit string:
-(r^(0), r^(1), ..., r^(2 * n * nHat - 1)) = SHAKE(0x5F || seedSE, 32 * n * nHat)
+r = SHAKE(0x5F || seedSE, 32 * n * nHat)
 # Sample matrix S transposed:
 S^T = SampleMatrix((r^(0), r^(1), ..., r^(n * nHat − 1)), nHat, n)
 # Sample error matrix E:
-E = SampleMatrix((r^(n * nHat), r^(n * nHat + 1), ..., r^(2 * n * nHat − 1)), n, nHat)
+E = SampleMatrix((r^(n * nHat), r^(n * nHat + 1), ...,
+                  r^(2 * n * nHat − 1)), n, nHat)
 B = A * S + E
 b = Pack(B)
 pkh = SHAKE(seedA || b, lensec)
@@ -612,7 +618,8 @@ The encapsulation algorithm takes as input a public key pk = (seedA &#124;&#124;
 outputs a ciphertext c = (c1 || c2 || salt) and a shared secret ss.
 
 ~~~pseudocode
-Choose uniformly random values u and salt of lengths lensec and lensalt
+Choose uniformly random value u of bitlength lensec
+Choose uniformly random value salt of bitlength lensalt
 pkh = SHAKE(pk, lensec)
 # Generate pseudorandom values:
 seedSE || k = SHAKE(pkh || u || salt, lenSE + lensec)
@@ -620,13 +627,15 @@ seedSE || k = SHAKE(pkh || u || salt, lenSE + lensec)
 r = SHAKE(0x96 || seedSE, 16 * (2 * nHat * n + nHat^2))
 # Sample matrices S' and E':
 S' = SampleMatrix((r^(0), r^(1), ..., r^(nHat * n - 1)), nHat, n)
-E' = SampleMatrix((r^(nHat * n), r^(nHat * n + 1), ..., r^(2 * nHat * n - 1)), nHat, n)
+E' = SampleMatrix((r^(nHat * n), r^(nHat * n + 1), ...,
+                   r^(2 * nHat * n - 1)), nHat, n)
 # Generate the matrix A:
 A = Gen(seedA)
 B' = S' * A + E'
 c1 = Pack(B')
 # Sample error matrix E":
-E" = SampleMatrix((r^(2 * nHat * n), r^(2 * nHat * n + 1), ..., r^(2 * nHat * n + nHat^2 - 1)), nHat, nHat)
+E" = SampleMatrix((r^(2 * nHat * n), r^(2 * nHat * n + 1), ...,
+                   r^(2 * nHat * n + nHat^2 - 1)), nHat, nHat)
 B = Unpack(b, n, nHat)
 V = S' * B + E"
 C = V + Encode(u)
@@ -652,12 +661,14 @@ seedSE' || k' = SHAKE(pkh || u' || salt, lenSE + lensec)
 r = SHAKE(0x96 || seedSE', 16 * (2 * nHat * n + nHat^2))
 # Sample matrices S' and E':
 S' = SampleMatrix((r^(0), r^(1), ..., r^(nHat * n - 1)), nHat, n)
-E' = SampleMatrix((r^(nHat * n), r^(nHat * n + 1), ..., r^(2 * nHat * n - 1)), nHat, n)
+E' = SampleMatrix((r^(nHat * n), r^(nHat * n + 1), ...,
+                   r^(2 * nHat * n - 1)), nHat, n)
 # Generate the matrix A:
 A = Gen(seedA)
 B" = S' * A + E'
 # Sample error matrix E":
-E" = SampleMatrix((r^(2 * nHat * n), r^(2 * nHat * n + 1), ..., r^(2 * nHat * n + nHat^2 - 1)), nHat, nHat)
+E" = SampleMatrix((r^(2 * nHat * n), r^(2 * nHat * n + 1), ...,
+                   r^(2 * nHat * n + nHat^2 - 1)), nHat, nHat)
 B = Unpack(b, n, nHat)
 V = S' * B + E"
 C' = V + Encode(u')
