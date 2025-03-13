@@ -3,7 +3,7 @@ title: "FrodoKEM: key encapsulation from learning with errors"
 abbrev: "FrodoKEM"
 category: info
 
-docname: draft-longa-cfrg-frodokem-00
+docname: draft-longa-cfrg-frodokem-latest
 submissiontype: IRTF
 date: 2025-03-12
 v: 3
