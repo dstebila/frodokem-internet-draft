@@ -5,12 +5,12 @@
 CFRG                                                            P. Longa
 Internet-Draft                                                 Microsoft
 Intended status: Informational                                D. Stebila
-Expires: 11 August 2025                           University of Waterloo
+Expires: 14 September 2025                        University of Waterloo
                                                                 S. Ehlen
                            Federal Office for Information Security (BSI)
                                                                J. W. Bos
                                                       NXP Semiconductors
-                                                         7 February 2025
+                                                           13 March 2025
 
 
          FrodoKEM: key encapsulation from learning with errors
@@ -46,7 +46,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 11 August 2025.
+   This Internet-Draft will expire on 14 September 2025.
 
 Copyright Notice
 
