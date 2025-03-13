@@ -356,7 +356,7 @@ g = b[15] * 2^7 + b[14] * 2^6 + b[13] * 2^5 + b[12] * 2^4 + b[11] * 2^3 + b[10] 
    n1 and 0 <= j < n2 (row-by-row from C[0,0] to C[n1-1, n2-1]).  The
    function Unpack(o, n1, n2) is defined as follows:
 
-   Convert the input octet string o to a bit string
+   Convert the input octet string _o_ to a bit string
    b = (b[0], b[1], ..., b[D * n1 * n2 - 1]), as per Section 6.1.
 
    for i = 0 to n1 - 1 do
