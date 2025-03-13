@@ -5,7 +5,7 @@ category: info
 
 docname: draft-longa-cfrg-frodokem-latest
 submissiontype: IRTF
-date: 2025-02-07
+date:
 v: 3
 ipr: trust200902
 workgroup: CFRG
@@ -14,7 +14,6 @@ keyword:
  - FrodoKEM
  - PQC
 venue:
-  group: WG
   group: Working Group
   repo: github.com/dstebila/frodokem-internet-draft
 
