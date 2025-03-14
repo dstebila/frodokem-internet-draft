@@ -24,17 +24,17 @@ author:
     organization: Microsoft
     email: plonga@microsoft.com
  -
-    fullname: Douglas Stebila
-    organization: University of Waterloo
-    email: dstebila@uwaterloo.ca
+    fullname: Joppe W. Bos
+    organization: NXP Semiconductors
+    email: joppe.bos@nxp.com
  -
     fullname: Stephan Ehlen
     organization: Federal Office for Information Security (BSI)
     email: stephan.ehlen@bsi.bund.de
  -
-    fullname: Joppe W. Bos
-    organization: NXP Semiconductors
-    email: joppe.bos@nxp.com
+    fullname: Douglas Stebila
+    organization: University of Waterloo
+    email: dstebila@uwaterloo.ca
 
 
 normative:
