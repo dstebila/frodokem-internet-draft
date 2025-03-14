@@ -4,12 +4,12 @@
 
 CFRG                                                            P. Longa
 Internet-Draft                                                 Microsoft
-Intended status: Informational                                D. Stebila
-Expires: 13 September 2025                        University of Waterloo
+Intended status: Informational                                 J. W. Bos
+Expires: 13 September 2025                            NXP Semiconductors
                                                                 S. Ehlen
                            Federal Office for Information Security (BSI)
-                                                               J. W. Bos
-                                                      NXP Semiconductors
+                                                              D. Stebila
+                                                  University of Waterloo
                                                            12 March 2025
 
 
@@ -929,9 +929,9 @@ Authors' Addresses
    Email: plonga@microsoft.com
 
 
-   Douglas Stebila
-   University of Waterloo
-   Email: dstebila@uwaterloo.ca
+   Joppe W. Bos
+   NXP Semiconductors
+   Email: joppe.bos@nxp.com
 
 
    Stephan Ehlen
@@ -939,6 +939,6 @@ Authors' Addresses
    Email: stephan.ehlen@bsi.bund.de
 
 
-   Joppe W. Bos
-   NXP Semiconductors
-   Email: joppe.bos@nxp.com
+   Douglas Stebila
+   University of Waterloo
+   Email: dstebila@uwaterloo.ca
