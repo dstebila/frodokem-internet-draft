@@ -3,9 +3,9 @@ title: "FrodoKEM: key encapsulation from learning with errors"
 abbrev: "FrodoKEM"
 category: info
 
-docname: draft-longa-cfrg-frodokem-latest
+docname: draft-longa-cfrg-frodokem-00
 submissiontype: IRTF
-date: 2025-03-12
+date: 2025-03-17
 v: 3
 ipr: trust200902
 workgroup: CFRG
@@ -14,7 +14,6 @@ keyword:
  - FrodoKEM
  - PQC
 venue:
-  group: WG
   group: Working Group
   repo: github.com/dstebila/frodokem-internet-draft
 
