@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-01-30T00:03:55.735258+00:00",
+  "timestamp": "2025-05-22T00:17:46.814751+00:00",
   "repo": "dstebila/frodokem-internet-draft",
   "labels": [
     {
@@ -50,5 +50,102 @@
     }
   ],
   "issues": [],
-  "pulls": []
+  "pulls": [
+    {
+      "number": 1,
+      "id": "PR_kwDOLyLB3M6Kbm1j",
+      "title": "1st review of draft for FrodoKEM",
+      "url": "https://github.com/dstebila/frodokem-internet-draft/pull/1",
+      "state": "MERGED",
+      "author": "sehlen-bsi",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Some improvements are still needed:\r\n\r\n- [ ] Escape variable names, like this: `len_sec`\r\n- [x] make clickable references to the bibliography and auto-references to tables, sections, etc.\r\n- [x]  In the editor's copy, there is some weirdness in the Encaps and Decaps sections where some text is displayed as tables\r\n- [x] avoid duplication of the table captions\r\n- [ ] Decide if there are more places where normative language like \"MUST\", \"MAY\" etc has to be used.\r\n- [x] The references have to be inserted in the correct way (top of the document in the correct syntax) ",
+      "createdAt": "2025-02-07T15:06:17Z",
+      "updatedAt": "2025-03-11T00:44:26Z",
+      "baseRepository": "dstebila/frodokem-internet-draft",
+      "baseRefName": "main",
+      "baseRefOid": "cd6f118d0992b65adf551833cf2adb783d7c9329",
+      "headRepository": "dstebila/frodokem-internet-draft",
+      "headRefName": "se_review",
+      "headRefOid": "c44dd964be26651c910d2a0955093f93390f841f",
+      "closedAt": "2025-03-11T00:44:26Z",
+      "mergedAt": "2025-03-11T00:44:26Z",
+      "mergedBy": "patricklonga",
+      "mergeCommit": {
+        "oid": "fc0f1e6795f9aae474d0f7f2da66f31ae2cd348e"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOLyLB3M6bfwfJ",
+          "commit": {
+            "abbreviatedOid": "fef84a7"
+          },
+          "author": "jwbos",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "It looks strange that _KeyGen_ takes no input. When one looks at the specification it is clear that _KeyGen_ depends on len_sec, len_SE, len_A: where len_A is always 128 but len_sec and len_SE depends on the parameter set used. So the parameter set should be an input to KeyGen?\r\n\r\n[Update]\r\nI now see that we write later on: \"The FrodoKEM parameters are implicit inputs to the FrodoKEM algorithms defined in the next sections.\" We should probably make this much clearer or simply pass the parameters as is done in practice.",
+          "createdAt": "2025-02-11T13:42:44Z",
+          "updatedAt": "2025-02-11T14:01:48Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "id": "PR_kwDOLyLB3M6OjyBw",
+      "title": "Variable names and fixes",
+      "url": "https://github.com/dstebila/frodokem-internet-draft/pull/2",
+      "state": "CLOSED",
+      "author": "sehlen-bsi",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "**Work in progress** trying to display variable names in a better way\r\nand also make the CI/CD pipeline work again which is currently causing errors.",
+      "createdAt": "2025-03-13T18:15:03Z",
+      "updatedAt": "2025-03-13T18:38:15Z",
+      "baseRepository": "dstebila/frodokem-internet-draft",
+      "baseRefName": "main",
+      "baseRefOid": "42dab96d557b6b17a59f9832f57bbb2ce1cbd544",
+      "headRepository": "dstebila/frodokem-internet-draft",
+      "headRefName": "se_review_2",
+      "headRefOid": "c44dd964be26651c910d2a0955093f93390f841f",
+      "closedAt": "2025-03-13T18:38:15Z",
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 3,
+      "id": "PR_kwDOLyLB3M6XEFDI",
+      "title": "Fix workflow error",
+      "url": "https://github.com/dstebila/frodokem-internet-draft/pull/3",
+      "state": "MERGED",
+      "author": "dstebila",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2025-05-21T13:33:26Z",
+      "updatedAt": "2025-05-21T13:45:15Z",
+      "baseRepository": "dstebila/frodokem-internet-draft",
+      "baseRefName": "main",
+      "baseRefOid": "f4806299f7bde636c5ca8144535a90df44238b1d",
+      "headRepository": "dstebila/frodokem-internet-draft",
+      "headRefName": "ds-fix-workflow",
+      "headRefOid": "b6116c4838164ca263ee8fe396b69974843ec050",
+      "closedAt": "2025-05-21T13:45:09Z",
+      "mergedAt": "2025-05-21T13:45:09Z",
+      "mergedBy": "dstebila",
+      "mergeCommit": {
+        "oid": "b6a77ab3e3411f4768ce998e85e51237e67c1f52"
+      },
+      "comments": [],
+      "reviews": []
+    }
+  ]
 }
