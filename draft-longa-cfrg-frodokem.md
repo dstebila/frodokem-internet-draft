@@ -3,9 +3,9 @@ title: "FrodoKEM: key encapsulation from learning with errors"
 abbrev: "FrodoKEM"
 category: info
 
-docname: draft-longa-cfrg-frodokem-00
+docname: draft-longa-cfrg-frodokem-01
 submissiontype: IRTF
-date: 2025-03-17
+date: 2025-09-13
 v: 3
 ipr: trust200902
 workgroup: CFRG
@@ -264,7 +264,7 @@ We describe the symbols and abbreviations used throughout this document.
    input a.
 
 -  SHAKE128(x, y) and SHAKE256(x, y) denote the y first bits of SHAKE128
-   and SHAKE256 (resp.) output for input x.
+   and SHAKE256 (resp.) output for bit string input x.
 
 -  Matrices are represented in capitals with no italics (e.g., A and C).
    For an n1 * n2 matrix C, its (i,j)th coefficient (i.e., the entry in the
@@ -317,11 +317,11 @@ This document follows the little-endian formatting for octet encoding of
 bit strings.
 
 A bit string b = (b[0], b[1], ..., b[|b|-1]) is converted to an octet
-string by taking bits from left to right, packing those from the least
-significant bit of each octet to the most significant bit, and moving to
-the next octet when each octet fills up. For example, the 16-bit bit
-string (b[0], b[1], ..., b[15]) is converted into two octets f and g (in
-this order) as
+string (or byte array) by taking bits from left to right, packing those
+from the least significant bit of each octet to the most significant
+bit, and moving to the next octet when each octet fills up. For example,
+the 16-bit bit string (b[0], b[1], ..., b[15]) is converted into two
+octets f and g (in this order) as
 
 ~~~
 f = b[7] * 2^7 + b[6] * 2^6 + b[5] * 2^5 + b[4] * 2^4 + b[3] * 2^3 + ...
@@ -333,8 +333,39 @@ g = b[15] * 2^7 + b[14] * 2^6 + b[13] * 2^5 + b[12] * 2^4 + ...
 The conversion from octet string to bit string is the reverse of this
 process.
 
-For FrodoKEM, it is always the case that |b| is a multiple of 8 when
-performing octet encoding of bit strings.
+If |b| is not a multiple of 8, then a |b|-bit string is zero-padded on
+the right until the length is a multiple of 8, and then converted as
+above.
+
+Excepting for the octet strings covered in Section 6.2, the conversion
+described above covers all the octet strings (byte arrays) described in
+this document, allowing those strings to be viewed as |b|-bit strings
+without further comment.
+
+## Octet Encoding of Bit Strings for the Packing Functions {#OctetEncodingPacking}
+
+The following octet encoding is used by the packing functions Pack and 
+Unpack.
+
+In the function Pack, a bit string b = (b[0], b[1], ..., b[|b|-1]) is
+converted to an octet string (or byte array) by taking bits from left to
+right, packing those from the most significant bit of each octet to the
+least significant bit, and moving to the next octet when each octet
+fills up. For example, the 16-bit bit string (b[0], b[1], ..., b[15]) is
+converted into two octets f and g (in this order) as
+
+~~~
+f = b[0] * 2^7 + b[1] * 2^6 + b[2] * 2^5 + b[3] * 2^4 + b[4] * 2^3 + ...
+    b[5] * 2^2 + b[6] * 2 + b[7]
+g = b[8] * 2^7 + b[9] * 2^6 + b[10] * 2^5 + b[11] * 2^4 + ...
+    b[12] * 2^3 + b[13] * 2^2 + b[14] * 2 + b[15]
+~~~
+
+The conversion from octet string to bit string used by the function
+Unpack is the reverse of this process.
+
+In the functions Pack and Unpack, it is always the case that |b| is a
+multiple of 8.
 
 ## Matrix Encoding of Bit Strings
 
@@ -416,7 +447,7 @@ for i = 0 to n1 - 1 do
 end for
 
 return the octet string corresponding to the bit string
-b = (b[0], b[1], ..., b[D * n1 * n2 - 1]), as per Section 6.1.
+b = (b[0], b[1], ..., b[D * n1 * n2 - 1]), as per Section 6.2.
 ~~~
 
 The function Unpack does the reverse of this process to transform an octet string o
@@ -427,7 +458,7 @@ The function Unpack(o, n1, n2) is defined as follows:
 
 ~~~pseudocode
 Convert the input octet string o to a bit string
-b = (b[0], b[1], ..., b[D * n1 * n2 - 1]), as per Section 6.1.
+b = (b[0], b[1], ..., b[D * n1 * n2 - 1]), as per Section 6.2.
 
 for i = 0 to n1 - 1 do
     for j = 0 to n2 - 1 do
