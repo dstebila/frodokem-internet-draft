@@ -3,9 +3,9 @@ title: "FrodoKEM: key encapsulation from learning with errors"
 abbrev: "FrodoKEM"
 category: info
 
-docname: draft-longa-cfrg-frodokem-01
+docname: draft-longa-cfrg-frodokem-02
 submissiontype: IRTF
-date: 2025-09-13
+date: 2026-02-22
 v: 3
 ipr: trust200902
 workgroup: CFRG
@@ -52,12 +52,15 @@ normative:
     target: https://nvlpubs.nist.gov/nistpubs/fips/nist.fips.202.pdf
 
 informative:
-  Frodo17:
+  FrodoKEM:
     title: "FrodoKEM: Learning With Errors Key Encapsulation"
     author:
     - name: E. Alkim
     - name: J. W. Bos
     - name: L. Ducas
+    - name: K. Easterbrook
+    - name: L. Glabush
+    - name: B. LaMacchia
     - name: P. Longa
     - name: I. Mironov
     - name: M. Naehrig
@@ -65,7 +68,8 @@ informative:
     - name: C. Peikert
     - name: A. Raghunathan
     - name: D. Stebila
-    date: 2017
+    - name: F. Virdia
+    date: 2017-2026
     target: https://frodokem.org
   Annex:
     title: Annex on FrodoKEM updates
@@ -167,7 +171,7 @@ This internet draft specifies FrodoKEM, an IND-CCA2 secure Key Encapsulation Mec
 
 # Introduction
 
-FrodoKEM [Frodo17] is a conservative yet practical post-quantum key encapsulation
+FrodoKEM [FrodoKEM] is a conservative yet practical post-quantum key encapsulation
 mechanism (KEM) whose security derives from cautious parameterizations of the
 well-studied learning with errors problem, which in turn has close
 connections to conjectured-hard problems on generic, "algebraically
@@ -282,7 +286,7 @@ following:
 -  A positive integer D <= 16 that defines the modulus parameter q = 2^D.
 
 -  Positive integers n, nHat specifying matrix dimensions. It holds that n,
-   nHat ≡ 0 mod 8.
+   nHat ≡ 0 mod 8, and that n < q.
 
 -  A positive integer B <= D specifying the number of bits encoded in each
    matrix entry.
@@ -311,17 +315,22 @@ given in {{SummaryParams}}.
 
 # Supporting Functions
 
-## Octet Encoding of Bit Strings {#OctetEncoding}
+This section describes the auxiliary functions that are required to
+implement FrodoKEM.
 
-This document follows the little-endian formatting for octet encoding of
-bit strings.
+In this document, a byte is defined as an unsigned 8-bit integer, i.e., an
+element of the set {0, 1, ..., 255}.
 
-A bit string b = (b[0], b[1], ..., b[|b|-1]) is converted to an octet
-string (or byte array) by taking bits from left to right, packing those
-from the least significant bit of each octet to the most significant
-bit, and moving to the next octet when each octet fills up. For example,
-the 16-bit bit string (b[0], b[1], ..., b[15]) is converted into two
-octets f and g (in this order) as
+## Byte Encoding of Bit Strings {#ByteEncoding}
+
+This document follows the little-endian formatting for byte encoding of bit
+strings.
+
+A bit string b = (b[0], b[1], ..., b[|b|-1]) is converted to a byte
+array by taking bits from left to right, packing those from the least
+significant bit of each byte to the most significant bit, and moving to the
+next byte when each byte fills up. For example, the 16-bit bit string (b[0],
+b[1], ..., b[15]) is converted into two bytes f and g (in this order) as
 
 ~~~
 f = b[7] * 2^7 + b[6] * 2^6 + b[5] * 2^5 + b[4] * 2^4 + b[3] * 2^3 + ...
@@ -330,29 +339,42 @@ g = b[15] * 2^7 + b[14] * 2^6 + b[13] * 2^5 + b[12] * 2^4 + ...
     b[11] * 2^3 + b[10] * 2^2 + b[9] * 2 + b[8]
 ~~~
 
-The conversion from octet string to bit string is the reverse of this
-process.
+The conversion from byte array to bit string is the reverse of this process.
 
-If |b| is not a multiple of 8, then a |b|-bit string is zero-padded on
-the right until the length is a multiple of 8, and then converted as
-above.
+If |b| is not a multiple of 8, then a bit string is zero-padded on the right
+until the length is a multiple of 8, and then converted as above.
 
-Excepting for the octet strings covered in Section 6.2, the conversion
-described above covers all the octet strings (byte arrays) described in
-this document, allowing those strings to be viewed as |b|-bit strings
-without further comment.
+Except for the byte arrays covered in {{ByteEncodingPacking}}, the conversion described
+above covers all the byte arrays described in this document, allowing those
+arrays to be viewed as bit strings without further comment.
 
-## Octet Encoding of Bit Strings for the Packing Functions {#OctetEncodingPacking}
+When explicitly assigned to an unsigned integer representation, a |b|-bit bit
+string b = (b[0], b[1], ..., b[|b|-1]), which corresponds to a byte array as
+specified above, corresponds to the unsigned integer
 
-The following octet encoding is used by the packing functions Pack and 
+~~~
+b[0] * 2^0 + b[1] * 2^1 + ... + b[|b|-1] * 2^(|b|-1) 
+~~~
+
+Similarly, when explicitly assigned to a signed integer representation, a
+|b|-bit bit string b = (b[0], b[1], ..., b[|b|-1]), which again corresponds
+to a byte array as specified above, corresponds to the signed integer
+
+~~~
+-b[|b|-1] * 2^(|b|-1) + (b[0] * 2^0 + b[1] * 2^1 + ... + b[|b|-2] * 2^(|b|-2)) 
+~~~
+
+## Byte Encoding of Bit Strings for the Packing Functions {#ByteEncodingPacking}
+
+The following byte encoding is used by the packing functions Pack and
 Unpack.
 
 In the function Pack, a bit string b = (b[0], b[1], ..., b[|b|-1]) is
-converted to an octet string (or byte array) by taking bits from left to
-right, packing those from the most significant bit of each octet to the
-least significant bit, and moving to the next octet when each octet
-fills up. For example, the 16-bit bit string (b[0], b[1], ..., b[15]) is
-converted into two octets f and g (in this order) as
+converted to a byte array by taking bits from left to right, packing those
+from the most significant bit of each byte to the least significant bit,
+and moving to the next byte when each byte fills up. For example, the 16-bit
+bit string (b[0], b[1], ..., b[15]) is converted into two bytes f and g (in
+this order) as
 
 ~~~
 f = b[0] * 2^7 + b[1] * 2^6 + b[2] * 2^5 + b[3] * 2^4 + b[4] * 2^3 + ...
@@ -361,8 +383,8 @@ g = b[8] * 2^7 + b[9] * 2^6 + b[10] * 2^5 + b[11] * 2^4 + ...
     b[12] * 2^3 + b[13] * 2^2 + b[14] * 2 + b[15]
 ~~~
 
-The conversion from octet string to bit string used by the function
-Unpack is the reverse of this process.
+The conversion from byte array to bit string used by the function Unpack
+is the reverse of this process.
 
 In the functions Pack and Unpack, it is always the case that |b| is a
 multiple of 8.
@@ -432,9 +454,9 @@ return (b[0], ..., b[l-1])
 We define packing and unpacking functions to transform matrices with entries
 in Z_q to bit strings and vice versa.
 
-The function Pack packs an n1 * n2 matrix C with entries C[i,j] in Z_q to an
-octet string by concatenating the D-bit matrix coefficients.
-The function Pack(C) is defined as follows.
+The function Pack packs an n1 * n2 matrix C with entries C[i,j] in Z_q to a
+byte array by concatenating the D-bit matrix coefficients.
+The function Pack(C, n1, n2) is defined as follows.
 
 ~~~pseudocode
 for i = 0 to n1 - 1 do
@@ -446,18 +468,18 @@ for i = 0 to n1 - 1 do
     end for
 end for
 
-return the octet string corresponding to the bit string
+return the byte array corresponding to the bit string
 b = (b[0], b[1], ..., b[D * n1 * n2 - 1]), as per Section 6.2.
 ~~~
 
-The function Unpack does the reverse of this process to transform an octet string o
+The function Unpack reverses the packing process to transform a byte array o
 to an n1 * n2 matrix C with entries C[i,j] in Z_q, converting the input to a bit
 string, and then extracting D-bit strings and storing each as matrix coefficients
 C[i,j] for 0 <= i < n1 and 0 <= j < n2 (row-by-row from C[0,0] to C[n1-1, n2-1]).
 The function Unpack(o, n1, n2) is defined as follows:
 
 ~~~pseudocode
-Convert the input octet string o to a bit string
+Convert the input byte array o to a bit string
 b = (b[0], b[1], ..., b[D * n1 * n2 - 1]), as per Section 6.2.
 
 for i = 0 to n1 - 1 do
@@ -548,24 +570,24 @@ In both cases, the matrix A is generated row-by-row from A[0,0] to A[n-1,n-1].
 
 ### Matrix A Generation with AES128
 
-The algorithm for the case using AES128 is shown below. Each call to AES128
-generates 8 coefficients.
+The algorithm for the case using AES128 is shown below. The input and the
+output of AES are each a 128-bit (16-byte) data block. Thus, each call to
+AES128 generates 8 coefficients.
 
 ~~~pseudocode
 for i = 0 to n - 1 do
     for j = 0 to n - 1 step 8 do
         b = i || j || 0 || 0 || 0 || 0 || 0 || 0
-        # Each concatenated element is encoded as a 16-bit string
-        # represented in little-endian byte order, such that:
-        # (i[0], i[1], ..., i[15]) ≡ i[0] * 2^0 + ... + i[15] * 2^15
-        # and |b| = 128
+        # Each concatenated element is an unsigned integer encoded as 2 bytes
+        # in little-endian byte order, i.e., the resulting 16-byte sequence
+        # b[0], b[1], ..., b[15] corresponding to b is set such that: 
+        # i =  b[1] * 2^8 + b[0], j = b[3] * 2^8 + b[2] and
+        # b[4] = b[5] = ... = b[15] = 0
 
         C[i,j] || C[i,j+1] || ... || C[i,j+7] = AES128(seedA, b)
-        # Each matrix coefficient C[i,j] is a 16-bit string
-        # interpreted as a non-negative integer in little-endian
-        # byte order:
-        # C[i,j] = c[0] * 2^0 + c[1] * 2^1 + ... + c[15] * 2^15
-        # corresponding to the bit string (c[0], c[1], ..., c[15])
+        # The AES128 output byte sequence c[0], c[1], ..., c[15] is assigned
+        # to the non-negative integer matrix coefficients by setting
+        # C[i,j] = c[1] * 2^8 + c[0], C[i,j+1] = c[3] * 2^8 + c[2], and so on
 
         for k = 0 to 7 do
             A[i,j+k] = C[i,j+k] mod q
@@ -584,16 +606,16 @@ generates n coefficients (i.e., a full matrix row).
 ~~~pseudocode
 for i = 0 to n - 1 do
     b = i || seedA
-    # Element i is encoded as a 16-bit string
-    # represented in little-endian byte order, such that:
-    # (i[0], i[1], ..., i[15]) ≡ i[0] * 2^0 + ... + i[15] * 2^15
-    # and |b| = lenA + 16
+    # Element i is an unsigned integer of the form i[0] * 2^0 + ...
+    # + i[15] * 2^15 encoded as a 16-bit string (i[0], i[1], ..., i[15])
+    # and represented in little-endian byte order, as per Section 6.1,
+    # and hence |b| = lenA + 16
 
     C[i,0] || C[i,1] || ... || C[i,n-1] = SHAKE128(b, 16 * n)
-    # Each matrix coefficient C[i,j] is a 16-bit string interpreted
-    # as a non-negative integer in little-endian byte order:
-    # C[i,j] = c[0] * 2^0 + c[1] * 2^1 + ... + c[15] * 2^15
-    # corresponding to the bit string (c[0], c[1], ..., c[15])
+    # Each matrix coefficient C[i,j] is a 16-bit string (c[0], c[1], ...,
+    # c[15]) taken from the output of SHAKE128 and interpreted as a
+    # non-negative integer c[0] * 2^0 + c[1] * 2^1 + ... + c[15] * 2^15
+    # in little-endian byte order, as per Section 6.1
 
     for j = 0 to n - 1 do
         A[i,j] = C[i,j] mod q
@@ -605,10 +627,17 @@ return A
 
 # FrodoKEM
 
-## Key Generation
+## Key Generation {#KeyGen}
 
 The key generation algorithm accepts no input, requires randomness, and
 outputs the keypair (pk, sk) = (seedA || b, s || seedA || b || S^T || pkh).
+
+In the generation of pseudorandom bit strings using SHAKE (step 6), the input
+0x5F || seedSE is a (8 + lenSE)-bit string obtained by concatenating the 8-bit
+string ⟨1,1,1,1,1,0,1,0⟩, corresponding to the hexadecimal value 0x5F, with
+seedSE. For the output, each bit string r^(i) is a 16-bit string taken from the
+output of SHAKE in little-endian byte order. Similar comments apply to step 5
+ of {{Encaps}} and step 6 of {{Decaps}}.
 
 ~~~pseudocode
 Choose uniformly random seed s of bitlength lensec
@@ -619,14 +648,14 @@ seedA = SHAKE(z, lenA)
 # Generate the matrix A:
 A = Gen(seedA)
 # Generate pseudorandom bit string:
-r = SHAKE(0x5F || seedSE, 32 * n * nHat)
+(r^(0), r^(1), ..., r^(2 * n * nHat − 1) = SHAKE(0x5F || seedSE, 32 * n * nHat)
 # Sample matrix S transposed:
-S^T = SampleMatrix((r^(0), r^(1), ..., r^(n * nHat − 1)), nHat, n)
+S^T = SampleMatrix((r^(0), r^(1), ..., r^(n * nHat − 1)), n, nHat)
 # Sample error matrix E:
 E = SampleMatrix((r^(n * nHat), r^(n * nHat + 1), ...,
                   r^(2 * n * nHat − 1)), n, nHat)
 B = A * S + E
-b = Pack(B)
+b = Pack(B, n, nHat)
 pkh = SHAKE(seedA || b, lensec)
 pk = (seedA || b)
 sk = (s || seedA || b || S^T || pkh)
@@ -635,70 +664,76 @@ return pk, sk  # Return public key and secret key
 ~~~
 
 Here, the matrix ST = S^T is encoded row-by-row from ST[0,0] to ST[nHat−1,n−1],
-where each matrix coefficient ST[i,j] is a signed integer encoded
-as a 16-bit string (s[0], s[1], ..., s[15]) in the little-endian byte order, i.e.
+where each matrix coefficient ST[i,j] is a signed integer of the form
+-c[15] * 2^15 + (c[0] * 2^0 + c[1] * 2^1 + ... + c[14] * 2^14) encoded as a
+16-bit string (c[0], c[1], ..., c[15]) in little-endian byte order, as per
+{{ByteEncoding}}.
 
-~~~
-ST[i,j] = −s[15] * 2^15 + (s[0] + s[1] * 2 + s[2] * 2^2 + ... + s[14] * 2^14).
-~~~
+## Encapsulation {#Encaps}
 
-## Encapsulation
+The encapsulation algorithm takes as input a public key pk = (seedA &#124;&#124; b),
+requires randomness, and outputs a ciphertext c = (c1 || c2 || salt) and a shared
+secret ss.
 
-The encapsulation algorithm takes as input a public key pk = (seedA &#124;&#124; b), requires randomness, and
-outputs a ciphertext c = (c1 || c2 || salt) and a shared secret ss.
+In the generation of pseudorandom bit strings using SHAKE (step 5), the input
+0x96 || seedSE is a (8 + lenSE)-bit string obtained by concatenating the 8-bit
+string ⟨0,1,1,0,1,0,0,1⟩, corresponding to the hexadecimal value 0x96, with seedSE.
+A similar comment applies to step 6 of {{Decaps}}.
 
 ~~~pseudocode
 Choose uniformly random value u of bitlength lensec
 Choose uniformly random value salt of bitlength lensalt
 pkh = SHAKE(pk, lensec)
 # Generate pseudorandom values:
-seedSE || k = SHAKE(pkh || u || salt, lenSE + lensec)
+seedSE || k = SHAKE(pkh || u || salt, lenSE + lensec), where seedSE has bitlength lenSE
+                                                       and k has bitlength lensec
 # Generate pseudorandom bit string:
-r = SHAKE(0x96 || seedSE, 16 * (2 * nHat * n + nHat^2))
+(r^(0), r^(1), ..., r^(2 * n * nHat + nHat^2 - 1) = SHAKE(0x96 || seedSE, 16 * (2 * n * nHat + nHat^2))
 # Sample matrices S' and E':
-S' = SampleMatrix((r^(0), r^(1), ..., r^(nHat * n - 1)), nHat, n)
-E' = SampleMatrix((r^(nHat * n), r^(nHat * n + 1), ...,
-                   r^(2 * nHat * n - 1)), nHat, n)
+S' = SampleMatrix((r^(0), r^(1), ..., r^(n * nHat - 1)), n, nHat)
+E' = SampleMatrix((r^(n * nHat), r^(n * nHat + 1), ...,
+                   r^(2 * n * nHat - 1)), n, nHat)
 # Generate the matrix A:
 A = Gen(seedA)
 B' = S' * A + E'
-c1 = Pack(B')
+c1 = Pack(B', n, nHat)
 # Sample error matrix E":
-E" = SampleMatrix((r^(2 * nHat * n), r^(2 * nHat * n + 1), ...,
-                   r^(2 * nHat * n + nHat^2 - 1)), nHat, nHat)
+E" = SampleMatrix((r^(2 * n * nHat), r^(2 * n * nHat + 1), ...,
+                   r^(2 * n * nHat + nHat^2 - 1)), nHat, nHat)
 B = Unpack(b, n, nHat)
 V = S' * B + E"
 C = V + Encode(u)
-c2 = Pack(C)
+c2 = Pack(C, nHat, nHat)
 ss = SHAKE(c1 || c2 || salt || k, lensec)
 
 return (c1 || c2 || salt), ss  # Return ciphertext and shared secret
 ~~~
 
-## Decapsulation
+## Decapsulation {#Decaps}
 
 The decapsulation algorithm takes as input a ciphertext c = (c1 &#124;&#124; c2 &#124;&#124; salt) and
 a secret key sk = (s || seedA || b || S^T || pkh), and outputs a shared secret ss.
 
 ~~~pseudocode
-B' = Unpack(c1, nHat, n)
+B' = Unpack(c1, n, nHat)
 C = Unpack(c2, nHat, nHat)
 M = C - B' * S
 u' = Decode(M)
 # Generate pseudorandom values:
-seedSE' || k' = SHAKE(pkh || u' || salt, lenSE + lensec)
+seedSE' || k' = SHAKE(pkh || u' || salt, lenSE + lensec), where seedSE' has bitlength lenSE
+                                                          and k' has bitlength lensec
 # Generate pseudorandom bit string:
-r = SHAKE(0x96 || seedSE', 16 * (2 * nHat * n + nHat^2))
+(r^(0), r^(1), ..., r^(2 * n * nHat + nHat^2 - 1) = SHAKE(0x96 || seedSE', 16 * (2 * n * nHat + nHat^2))
 # Sample matrices S' and E':
-S' = SampleMatrix((r^(0), r^(1), ..., r^(nHat * n - 1)), nHat, n)
-E' = SampleMatrix((r^(nHat * n), r^(nHat * n + 1), ...,
-                   r^(2 * nHat * n - 1)), nHat, n)
+S' = SampleMatrix((r^(0), r^(1), ..., r^(n * nHat - 1)), n, nHat)
+E' = SampleMatrix((r^(n * nHat), r^(n * nHat + 1), ...,
+                   r^(2 * n * nHat - 1)), n, nHat)
 # Generate the matrix A:
 A = Gen(seedA)
 B" = S' * A + E'
 # Sample error matrix E":
-E" = SampleMatrix((r^(2 * nHat * n), r^(2 * nHat * n + 1), ...,
-                   r^(2 * nHat * n + nHat^2 - 1)), nHat, nHat)
+E" = SampleMatrix((r^(2 * n * nHat), r^(2 * n * nHat + 1), ...,
+                   r^(2 * n * nHat + nHat^2 - 1)), nHat, nHat)
 B = Unpack(b, n, nHat)
 V = S' * B + E"
 C' = V + Encode(u')
@@ -717,16 +752,17 @@ for PRG: AES128 and SHAKE128.
 In addition, FrodoKEM consists of two main variants: a "standard" variant that does
 not impose any restriction on the reuse of key pairs, and an "ephemeral" variant
 that is intended for applications in which the number of ciphertexts produced
-relative to any single public key is small. Concretely, the use of standard
-FrodoKEM is recommended for applications in which the number of ciphertexts
-produced for a single public key is expected to be equal or greater than 2^8.
-Ephemeral FrodoKEM MUST be used for applications in which that same figure is
-expected to be smaller than 2^8.
+relative to any single public key is small. Concretely, standard FrodoKEM MAY be
+used in any application, regardless of the number of ciphertexts produced for a
+single public key. Ephemeral FrodoKEM MUST NOT be used in applications in which
+a single public key may produce 2^8 ciphertexts or more. It MUST be used only when
+the number of ciphertexts under a single public key is guaranteed to be smaller
+than 2^8.
 
-In contrast to ephemeral FrodoKEM, standard FrodoKEM incorporates some changes to address
-certain multi-ciphertext attacks [Annex]. Specifically, standard FrodoKEM doubles the
-length of the seedSE value and incorporates a public random salt value into
-encapsulation (see Table 2).
+In contrast to ephemeral FrodoKEM, standard FrodoKEM includes some countermeasures
+that protect against certain multi-ciphertext attacks [Annex]. Specifically,
+standard FrodoKEM doubles the length of the seedSE value and incorporates a public
+random salt value into encapsulation (see Table 2).
 
 # Parameter Sets
 
@@ -824,18 +860,17 @@ The parameter values characterizing the FrodoKEM parameter sets are listed below
 
 # Security Considerations
 
-FrodoKEM-640, FrodoKEM-976 and FrodoKEM-1344 are designed to be
-post-quantum IND-CCA2 secure KEMs at the security levels of AES-128,
-AES-192 and AES-256, respectively.
+FrodoKEM-640, FrodoKEM-976 and FrodoKEM-1344 are designed to be post-quantum
+IND-CCA2 secure KEMs at the security levels of AES-128, AES-192 and AES-256,
+respectively.
 
-Users are recommended to use the highest possible security level that
-a given application allows.  In particular, the designers of FrodoKEM
-recommend to use either FrodoKEM-976 or FrodoKEM-1344 for most
-applications, and limit the use of FrodoKEM-640 to applications that
+Users SHOULD use the highest possible security level that a given application
+allows. In particular, most applications are RECOMMENDED to use either
+FrodoKEM-976 or FrodoKEM-1344. FrodoKEM-640 MAY be used in applications that
 require short-term security.
 
 Lattice-based cryptographic schemes such as FrodoKEM are still relatively
-young.  Therefore, it is recommended to use FrodoKEM in combination with
+young. Therefore, it is RECOMMENDED to use FrodoKEM in combination with
 a classical scheme (e.g., based on elliptic curves) while our confidence
 in the security of lattice schemes increases over time.
 
