@@ -650,7 +650,7 @@ A = Gen(seedA)
 # Generate pseudorandom bit string:
 (r^(0), r^(1), ..., r^(2 * n * nHat − 1) = SHAKE(0x5F || seedSE, 32 * n * nHat)
 # Sample matrix S transposed:
-S^T = SampleMatrix((r^(0), r^(1), ..., r^(n * nHat − 1)), n, nHat)
+S^T = SampleMatrix((r^(0), r^(1), ..., r^(n * nHat − 1)), nHat, n)
 # Sample error matrix E:
 E = SampleMatrix((r^(n * nHat), r^(n * nHat + 1), ...,
                   r^(2 * n * nHat − 1)), n, nHat)
@@ -690,13 +690,13 @@ seedSE || k = SHAKE(pkh || u || salt, lenSE + lensec), where seedSE has bitlengt
 # Generate pseudorandom bit string:
 (r^(0), r^(1), ..., r^(2 * n * nHat + nHat^2 - 1) = SHAKE(0x96 || seedSE, 16 * (2 * n * nHat + nHat^2))
 # Sample matrices S' and E':
-S' = SampleMatrix((r^(0), r^(1), ..., r^(n * nHat - 1)), n, nHat)
+S' = SampleMatrix((r^(0), r^(1), ..., r^(n * nHat - 1)), nHat, n)
 E' = SampleMatrix((r^(n * nHat), r^(n * nHat + 1), ...,
-                   r^(2 * n * nHat - 1)), n, nHat)
+                   r^(2 * n * nHat - 1)), nHat, n)
 # Generate the matrix A:
 A = Gen(seedA)
 B' = S' * A + E'
-c1 = Pack(B', n, nHat)
+c1 = Pack(B', nHat, n)
 # Sample error matrix E":
 E" = SampleMatrix((r^(2 * n * nHat), r^(2 * n * nHat + 1), ...,
                    r^(2 * n * nHat + nHat^2 - 1)), nHat, nHat)
@@ -715,7 +715,7 @@ The decapsulation algorithm takes as input a ciphertext c = (c1 &#124;&#124; c2 
 a secret key sk = (s || seedA || b || S^T || pkh), and outputs a shared secret ss.
 
 ~~~pseudocode
-B' = Unpack(c1, n, nHat)
+B' = Unpack(c1, nHat, n)
 C = Unpack(c2, nHat, nHat)
 M = C - B' * S
 u' = Decode(M)
@@ -725,9 +725,9 @@ seedSE' || k' = SHAKE(pkh || u' || salt, lenSE + lensec), where seedSE' has bitl
 # Generate pseudorandom bit string:
 (r^(0), r^(1), ..., r^(2 * n * nHat + nHat^2 - 1) = SHAKE(0x96 || seedSE', 16 * (2 * n * nHat + nHat^2))
 # Sample matrices S' and E':
-S' = SampleMatrix((r^(0), r^(1), ..., r^(n * nHat - 1)), n, nHat)
+S' = SampleMatrix((r^(0), r^(1), ..., r^(n * nHat - 1)), nHat, n)
 E' = SampleMatrix((r^(n * nHat), r^(n * nHat + 1), ...,
-                   r^(2 * n * nHat - 1)), n, nHat)
+                   r^(2 * n * nHat - 1)), nHat, n)
 # Generate the matrix A:
 A = Gen(seedA)
 B" = S' * A + E'
