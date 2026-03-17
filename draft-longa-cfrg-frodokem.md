@@ -300,6 +300,10 @@ following:
 
 -  A positive integer lensalt specifying the bitlength of the value salt.
 
+-  A positive integer lenseed specifying the bitlength of the key generation
+   seed keySeed used in the seed-format secret key. For all parameter sets,
+   lenseed = 256.
+
 -  A discrete, symmetric error distribution X on Z with support given by
    S_X = {−d, −d+1, ..., −1, 0, 1, ..., d−1, d} for a small integer d.
 
@@ -605,15 +609,41 @@ return A
 
 # FrodoKEM
 
-## Key Generation
+## Key Generation {#KeyGen}
 
 The key generation algorithm accepts no input, requires randomness, and
-outputs the keypair (pk, sk) = (seedA || b, s || seedA || b || S^T || pkh).
+outputs the keypair (pk, sk) = (seedA || b, keySeed).
+
+The secret key sk is a uniformly random seed keySeed of bitlength
+lenseed = 256. All key material used during decapsulation is
+deterministically derived from keySeed via the seed expansion and key
+generation procedures described below.
+
+Implementations MAY cache the expanded key material
+(s, seedA, b, S^T, pkh) in memory to avoid re-computation during
+decapsulation. Such cached values MUST be treated as secret key material
+and protected accordingly. The cached values are not part of the secret
+key encoding; implementations MUST be able to perform decapsulation given
+only keySeed.
+
+### Seed Expansion {#SeedExpansion}
+
+Given a seed keySeed of bitlength lenseed = 256, the seed expansion
+procedure derives the key generation seeds (s, seedSE, z) as follows:
 
 ~~~pseudocode
-Choose uniformly random seed s of bitlength lensec
-Choose uniformly random seed seedSE of bitlength lenSE
-Choose uniformly random seed z of bitlength lenA
+s || seedSE || z = SHAKE(keySeed, lensec + lenSE + lenA)
+~~~
+
+The output is parsed left to right: the first lensec bits form s, the next
+lenSE bits form seedSE, and the final lenA bits form z.
+
+### Key Generation Procedure
+
+~~~pseudocode
+Choose uniformly random keySeed of bitlength lenseed = 256
+# Derive key generation seeds:
+s || seedSE || z = SHAKE(keySeed, lensec + lenSE + lenA)
 # Generate pseudorandom seed:
 seedA = SHAKE(z, lenA)
 # Generate the matrix A:
@@ -629,7 +659,7 @@ B = A * S + E
 b = Pack(B)
 pkh = SHAKE(seedA || b, lensec)
 pk = (seedA || b)
-sk = (s || seedA || b || S^T || pkh)
+sk = keySeed
 
 return pk, sk  # Return public key and secret key
 ~~~
@@ -678,9 +708,27 @@ return (c1 || c2 || salt), ss  # Return ciphertext and shared secret
 ## Decapsulation
 
 The decapsulation algorithm takes as input a ciphertext c = (c1 &#124;&#124; c2 &#124;&#124; salt) and
-a secret key sk = (s || seedA || b || S^T || pkh), and outputs a shared secret ss.
+a secret key sk = keySeed, and outputs a shared secret ss.
+
+The implementation first performs the seed expansion ({{SeedExpansion}})
+and key generation ({{KeyGen}}) procedures to recover s, seedA, b, S^T,
+and pkh from keySeed. Implementations that cache the expanded key material
+MAY use those cached values directly.
 
 ~~~pseudocode
+# Expand keySeed to recover key material:
+s || seedSE || z = SHAKE(keySeed, lensec + lenSE + lenA)
+# Re-derive seedA, A, S^T, B, b, pkh as in KeyGen
+seedA = SHAKE(z, lenA)
+A = Gen(seedA)
+r = SHAKE(0x5F || seedSE, 32 * n * nHat)
+S^T = SampleMatrix((r^(0), r^(1), ..., r^(n * nHat − 1)), nHat, n)
+E = SampleMatrix((r^(n * nHat), r^(n * nHat + 1), ...,
+                  r^(2 * n * nHat − 1)), n, nHat)
+B = A * S + E
+b = Pack(B)
+pkh = SHAKE(seedA || b, lensec)
+# Proceed with decapsulation:
 B' = Unpack(c1, nHat, n)
 C = Unpack(c2, nHat, nHat)
 M = C - B' * S
@@ -750,17 +798,18 @@ their corresponding ephemeral variants).
 
 The parameter values characterizing the FrodoKEM parameter sets are listed below.
 
-|   Name  | (e)FrodoKEM-640 | (e)FrodoKEM-976 | (e)FrodoKEM-1344 | Description                                    |
-|--------:|:---------------:|:---------------:|:----------------:|:-----------------------------------------------|
-|       D |        15       |        16       |        16        | Bitlength of q                                 |
-|       q |      32768      |      65536      |      65536       | Power-of-two integer modulus                   |
-|       n |       640       |       976       |       1344       | Integer matrix dimension                       |
-|    nHat |        8        |        8        |         8        | Integer matrix dimension                       |
-|       B |        2        |        3        |         4        | Number of bits encoded per matrix entry        |
-|       d |        12       |        10       |         6        | Integer defining the support of X              |
-|    lenA |       128       |       128       |        128       | Bitlength of seeds for generation of matrix A  |
-|  lensec |       128       |       192       |        256       | Number of bits matching the bit-security level |
-|   SHAKE |    SHAKE128     |     SHAKE256    |     SHAKE256     | SHAKE variant used for hashing                 |
+|   Name   | (e)FrodoKEM-640 | (e)FrodoKEM-976 | (e)FrodoKEM-1344 | Description                                    |
+|---------:|:---------------:|:---------------:|:----------------:|:-----------------------------------------------|
+|        D |        15       |        16       |        16        | Bitlength of q                                 |
+|        q |      32768      |      65536      |      65536       | Power-of-two integer modulus                   |
+|        n |       640       |       976       |       1344       | Integer matrix dimension                       |
+|     nHat |        8        |        8        |         8        | Integer matrix dimension                       |
+|        B |        2        |        3        |         4        | Number of bits encoded per matrix entry        |
+|        d |        12       |        10       |         6        | Integer defining the support of X              |
+|     lenA |       128       |       128       |        128       | Bitlength of seeds for generation of matrix A  |
+|   lensec |       128       |       192       |        256       | Number of bits matching the bit-security level |
+|  lenseed |       256       |       256       |        256       | Bitlength of keySeed for seed-format keys      |
+|    SHAKE |    SHAKE128     |     SHAKE256    |     SHAKE256     | SHAKE variant used for hashing                 |
 {: title="Parameters for FrodoKEM."}
 
 |   Name  |   FrodoKEM-640  |  FrodoKEM-976   |   FrodoKEM-1344  | Description                                    |
@@ -814,12 +863,12 @@ The parameter values characterizing the FrodoKEM parameter sets are listed below
 
 |     Scheme     |  secret key sk  |  public key pk  |  ciphertext ct  | shared secret ss |
 |---------------:|:---------------:|:---------------:|:---------------:|:----------------:|
-|   FrodoKEM-640 |      19,888     |       9,616     |       9,752     |        16        |
-|  eFrodoKEM-640 |      19,888     |       9,616     |       9,720     |        16        |
-|   FrodoKEM-976 |      31,296     |      15,632     |      15,792     |        24        |
-|  eFrodoKEM-976 |      31,296     |      15,632     |      15,744     |        24        |
-|  FrodoKEM-1344 |      43,088     |      21,520     |      21,696     |        32        |
-| eFrodoKEM-1344 |      43,088     |      21,520     |      21,632     |        32        |
+|   FrodoKEM-640 |       256       |       9,616     |       9,752     |        16        |
+|  eFrodoKEM-640 |       256       |       9,616     |       9,720     |        16        |
+|   FrodoKEM-976 |       256       |      15,632     |      15,792     |        24        |
+|  eFrodoKEM-976 |       256       |      15,632     |      15,744     |        24        |
+|  FrodoKEM-1344 |       256       |      21,520     |      21,696     |        32        |
+| eFrodoKEM-1344 |       256       |      21,520     |      21,632     |        32        |
 {: title="Sizes (in bits) of inputs and outputs."}
 
 # Security Considerations
@@ -838,6 +887,41 @@ Lattice-based cryptographic schemes such as FrodoKEM are still relatively
 young.  Therefore, it is recommended to use FrodoKEM in combination with
 a classical scheme (e.g., based on elliptic curves) while our confidence
 in the security of lattice schemes increases over time.
+
+## Seed-Format Keys and Binding Properties
+
+The secret key (sk = keySeed) deterministically derives all internal key
+generation values (s, seedSE, z) from a single seed via SHAKE. This
+structurally prevents an adversary from independently manipulating
+components of the secret key, which strengthens the malicious binding
+(MAL-BIND) properties of FrodoKEM.
+
+With an expanded secret key representation where s, seedA, b, S^T, and pkh
+are stored independently, an adversary who can craft secret keys could
+potentially manipulate the implicit rejection value s or the cached public
+key hash pkh independently of the other key components. This is analogous
+to the attacks on ML-KEM's expanded key format described by Schmieg. By
+defining the secret key as keySeed, all components are deterministically
+bound to a single value, closing this class of attacks: any modification
+to the seed produces entirely different derived values with overwhelming
+probability under the assumption that SHAKE is a secure extendable-output
+function.
+
+Implementations that cache expanded key material for performance MUST
+treat it as secret key material and SHOULD verify consistency with keySeed
+if the cached values are loaded from persistent storage.
+
+## Multi-Target Security
+
+The multi-target (multi-user, multi-ciphertext) security of FrodoKEM is
+addressed by the salted Fujisaki-Okamoto transform used in the standard
+(non-ephemeral) variants. The seed-format key generation does not affect
+the multi-target security bounds, which depend on the message space size
+and salt length rather than on the internal structure of key generation.
+Under the assumption that SHAKE is a secure XOF, the joint distribution
+of (s, seedSE, z) derived from a uniformly random keySeed is
+computationally indistinguishable from three independent random values of
+the appropriate lengths.
 
 # IANA Considerations
 
