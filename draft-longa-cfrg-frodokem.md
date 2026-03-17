@@ -637,7 +637,7 @@ In the generation of pseudorandom bit strings using SHAKE (step 6), the input
 string ⟨1,1,1,1,1,0,1,0⟩, corresponding to the hexadecimal value 0x5F, with
 seedSE. For the output, each bit string r^(i) is a 16-bit string taken from the
 output of SHAKE in little-endian byte order. Similar comments apply to step 5
- of {{Encaps}} and step 6 of {{Decaps}}.
+of {{Encaps}} and step 6 of {{Decaps}}.
 
 ~~~pseudocode
 Choose uniformly random seed s of bitlength lensec
@@ -648,7 +648,7 @@ seedA = SHAKE(z, lenA)
 # Generate the matrix A:
 A = Gen(seedA)
 # Generate pseudorandom bit string:
-(r^(0), r^(1), ..., r^(2 * n * nHat − 1) = SHAKE(0x5F || seedSE, 32 * n * nHat)
+(r^(0), r^(1), ..., r^(2 * n * nHat − 1)) = SHAKE(0x5F || seedSE, 32 * n * nHat)
 # Sample matrix S transposed:
 S^T = SampleMatrix((r^(0), r^(1), ..., r^(n * nHat − 1)), nHat, n)
 # Sample error matrix E:
@@ -688,7 +688,7 @@ pkh = SHAKE(pk, lensec)
 seedSE || k = SHAKE(pkh || u || salt, lenSE + lensec), where seedSE has bitlength lenSE
                                                        and k has bitlength lensec
 # Generate pseudorandom bit string:
-(r^(0), r^(1), ..., r^(2 * n * nHat + nHat^2 - 1) = SHAKE(0x96 || seedSE, 16 * (2 * n * nHat + nHat^2))
+(r^(0), r^(1), ..., r^(2 * n * nHat + nHat^2 - 1)) = SHAKE(0x96 || seedSE, 16 * (2 * n * nHat + nHat^2))
 # Sample matrices S' and E':
 S' = SampleMatrix((r^(0), r^(1), ..., r^(n * nHat - 1)), nHat, n)
 E' = SampleMatrix((r^(n * nHat), r^(n * nHat + 1), ...,
@@ -723,7 +723,7 @@ u' = Decode(M)
 seedSE' || k' = SHAKE(pkh || u' || salt, lenSE + lensec), where seedSE' has bitlength lenSE
                                                           and k' has bitlength lensec
 # Generate pseudorandom bit string:
-(r^(0), r^(1), ..., r^(2 * n * nHat + nHat^2 - 1) = SHAKE(0x96 || seedSE', 16 * (2 * n * nHat + nHat^2))
+(r^(0), r^(1), ..., r^(2 * n * nHat + nHat^2 - 1)) = SHAKE(0x96 || seedSE', 16 * (2 * n * nHat + nHat^2))
 # Sample matrices S' and E':
 S' = SampleMatrix((r^(0), r^(1), ..., r^(n * nHat - 1)), nHat, n)
 E' = SampleMatrix((r^(n * nHat), r^(n * nHat + 1), ...,
