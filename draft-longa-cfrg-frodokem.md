@@ -856,7 +856,7 @@ The parameter values characterizing the FrodoKEM parameter sets are listed below
 |  eFrodoKEM-976 |      31,296     |      15,632     |      15,744     |        24        |
 |  FrodoKEM-1344 |      43,088     |      21,520     |      21,696     |        32        |
 | eFrodoKEM-1344 |      43,088     |      21,520     |      21,632     |        32        |
-{: title="Sizes (in bits) of inputs and outputs."}
+{: title="Sizes (in bytes) of inputs and outputs."}
 
 # Security Considerations
 
