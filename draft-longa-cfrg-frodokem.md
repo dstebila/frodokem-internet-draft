@@ -5,7 +5,7 @@ category: info
 
 docname: draft-longa-cfrg-frodokem-02
 submissiontype: IRTF
-date: 2026-02-22
+date: 2026-03-17
 v: 3
 ipr: trust200902
 workgroup: CFRG
