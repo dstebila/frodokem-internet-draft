@@ -5,7 +5,7 @@ category: info
 
 docname: draft-longa-cfrg-frodokem-02
 submissiontype: IRTF
-date: 2026-03-17
+date: 2026-03-18
 v: 3
 ipr: trust200902
 workgroup: CFRG
@@ -40,14 +40,14 @@ normative:
   FIPS197:
     title: Advanced Encryption Standard (AES), FIPS 197
     author:
-    - name: National Institute of Standards and Technology (NIST)
+    - name: NIST
     date: 2001-11
     target: https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.197-upd1.pdf
 
   FIPS202:
     title: "SHA-3 Standard: Permutation-Based Hash and Extendable-Output Functions, FIPS 202"
     author:
-    - name: National Institute of Standards and Technology (NIST)
+    - name: NIST
     date: 2015-08
     target: https://nvlpubs.nist.gov/nistpubs/fips/nist.fips.202.pdf
 
@@ -361,7 +361,8 @@ Similarly, when explicitly assigned to a signed integer representation, a
 to a byte array as specified above, corresponds to the signed integer
 
 ~~~
--b[|b|-1] * 2^(|b|-1) + (b[0] * 2^0 + b[1] * 2^1 + ... + b[|b|-2] * 2^(|b|-2)) 
+-b[|b|-1] * 2^(|b|-1) + (b[0] * 2^0 + b[1] * 2^1 + ...
+                         ... + b[|b|-2] * 2^(|b|-2)) 
 ~~~
 
 ## Byte Encoding of Bit Strings for the Packing Functions {#ByteEncodingPacking}
@@ -578,16 +579,19 @@ AES128 generates 8 coefficients.
 for i = 0 to n - 1 do
     for j = 0 to n - 1 step 8 do
         b = i || j || 0 || 0 || 0 || 0 || 0 || 0
-        # Each concatenated element is an unsigned integer encoded as 2 bytes
-        # in little-endian byte order, i.e., the resulting 16-byte sequence
-        # b[0], b[1], ..., b[15] corresponding to b is set such that: 
+        # Each concatenated element is an unsigned integer encoded as
+        # 2 bytes in little-endian byte order, i.e., the resulting
+        # 16-byte sequence b[0], b[1], ..., b[15] corresponding to b
+        # is set such that: 
         # i =  b[1] * 2^8 + b[0], j = b[3] * 2^8 + b[2] and
         # b[4] = b[5] = ... = b[15] = 0
 
         C[i,j] || C[i,j+1] || ... || C[i,j+7] = AES128(seedA, b)
-        # The AES128 output byte sequence c[0], c[1], ..., c[15] is assigned
-        # to the non-negative integer matrix coefficients by setting
-        # C[i,j] = c[1] * 2^8 + c[0], C[i,j+1] = c[3] * 2^8 + c[2], and so on
+        # The AES128 output byte sequence c[0], c[1], ..., c[15] is
+        # assigned to the non-negative integer matrix coefficients by
+        # setting:
+        # C[i,j] = c[1] * 2^8 + c[0], C[i,j+1] = c[3] * 2^8 + c[2],
+        # and so on
 
         for k = 0 to 7 do
             A[i,j+k] = C[i,j+k] mod q
@@ -607,15 +611,15 @@ generates n coefficients (i.e., a full matrix row).
 for i = 0 to n - 1 do
     b = i || seedA
     # Element i is an unsigned integer of the form i[0] * 2^0 + ...
-    # + i[15] * 2^15 encoded as a 16-bit string (i[0], i[1], ..., i[15])
-    # and represented in little-endian byte order, as per Section 6.1,
-    # and hence |b| = lenA + 16
+    # + i[15] * 2^15 encoded as a 16-bit string (i[0], i[1], ...,
+    # i[15]) and represented in little-endian byte order, as per
+    # Section 6.1, and hence |b| = lenA + 16
 
     C[i,0] || C[i,1] || ... || C[i,n-1] = SHAKE128(b, 16 * n)
-    # Each matrix coefficient C[i,j] is a 16-bit string (c[0], c[1], ...,
-    # c[15]) taken from the output of SHAKE128 and interpreted as a
-    # non-negative integer c[0] * 2^0 + c[1] * 2^1 + ... + c[15] * 2^15
-    # in little-endian byte order, as per Section 6.1
+    # Each matrix coefficient C[i,j] is a 16-bit string (c[0], c[1],
+    # ..., c[15]) taken from the output of SHAKE128 and interpreted
+    # as a non-negative integer c[0] * 2^0 + c[1] * 2^1 + ...
+    # + c[15] * 2^15 in little-endian byte order, as per Section 6.1
 
     for j = 0 to n - 1 do
         A[i,j] = C[i,j] mod q
@@ -648,7 +652,8 @@ seedA = SHAKE(z, lenA)
 # Generate the matrix A:
 A = Gen(seedA)
 # Generate pseudorandom bit string:
-(r^(0), r^(1), ..., r^(2 * n * nHat − 1)) = SHAKE(0x5F || seedSE, 32 * n * nHat)
+(r^(0), r^(1), ..., r^(2 * n * nHat − 1))
+                            = SHAKE(0x5F || seedSE, 32 * n * nHat)
 # Sample matrix S transposed:
 S^T = SampleMatrix((r^(0), r^(1), ..., r^(n * nHat − 1)), nHat, n)
 # Sample error matrix E:
@@ -685,10 +690,11 @@ Choose uniformly random value u of bitlength lensec
 Choose uniformly random value salt of bitlength lensalt
 pkh = SHAKE(pk, lensec)
 # Generate pseudorandom values:
-seedSE || k = SHAKE(pkh || u || salt, lenSE + lensec), where seedSE has bitlength lenSE
-                                                       and k has bitlength lensec
+seedSE || k = SHAKE(pkh || u || salt, lenSE + lensec),
+where seedSE has bitlength lenSE and k has bitlength lensec
 # Generate pseudorandom bit string:
-(r^(0), r^(1), ..., r^(2 * n * nHat + nHat^2 - 1)) = SHAKE(0x96 || seedSE, 16 * (2 * n * nHat + nHat^2))
+(r^(0), r^(1), ..., r^(2 * n * nHat + nHat^2 - 1))
+                = SHAKE(0x96 || seedSE, 16 * (2 * n * nHat + nHat^2))
 # Sample matrices S' and E':
 S' = SampleMatrix((r^(0), r^(1), ..., r^(n * nHat - 1)), nHat, n)
 E' = SampleMatrix((r^(n * nHat), r^(n * nHat + 1), ...,
@@ -720,10 +726,11 @@ C = Unpack(c2, nHat, nHat)
 M = C - B' * S
 u' = Decode(M)
 # Generate pseudorandom values:
-seedSE' || k' = SHAKE(pkh || u' || salt, lenSE + lensec), where seedSE' has bitlength lenSE
-                                                          and k' has bitlength lensec
+seedSE' || k' = SHAKE(pkh || u' || salt, lenSE + lensec),
+where seedSE' has bitlength lenSE and k' has bitlength lensec
 # Generate pseudorandom bit string:
-(r^(0), r^(1), ..., r^(2 * n * nHat + nHat^2 - 1)) = SHAKE(0x96 || seedSE', 16 * (2 * n * nHat + nHat^2))
+(r^(0), r^(1), ..., r^(2 * n * nHat + nHat^2 - 1))
+            = SHAKE(0x96 || seedSE', 16 * (2 * n * nHat + nHat^2))
 # Sample matrices S' and E':
 S' = SampleMatrix((r^(0), r^(1), ..., r^(n * nHat - 1)), nHat, n)
 E' = SampleMatrix((r^(n * nHat), r^(n * nHat + 1), ...,
@@ -786,17 +793,17 @@ their corresponding ephemeral variants).
 
 The parameter values characterizing the FrodoKEM parameter sets are listed below.
 
-|   Name  | (e)FrodoKEM-640 | (e)FrodoKEM-976 | (e)FrodoKEM-1344 | Description                                    |
-|--------:|:---------------:|:---------------:|:----------------:|:-----------------------------------------------|
-|       D |        15       |        16       |        16        | Bitlength of q                                 |
-|       q |      32768      |      65536      |      65536       | Power-of-two integer modulus                   |
-|       n |       640       |       976       |       1344       | Integer matrix dimension                       |
-|    nHat |        8        |        8        |         8        | Integer matrix dimension                       |
-|       B |        2        |        3        |         4        | Number of bits encoded per matrix entry        |
-|       d |        12       |        10       |         6        | Integer defining the support of X              |
-|    lenA |       128       |       128       |        128       | Bitlength of seeds for generation of matrix A  |
-|  lensec |       128       |       192       |        256       | Number of bits matching the bit-security level |
-|   SHAKE |    SHAKE128     |     SHAKE256    |     SHAKE256     | SHAKE variant used for hashing                 |
+| Name | (e)FrodoKEM- 640 | (e)FrodoKEM- 976 | (e)FrodoKEM- 1344 | Description |
+|--------:|:------------:|:------------:|:------------:|:-----------------------------------------------|
+|       D |      15      |      16      |      16      | Bitlength of q                                 |
+|       q |    32768     |    65536     |    65536     | Power-of-two integer modulus                   |
+|       n |     640      |     976      |     1344     | Integer matrix dimension                       |
+|    nHat |      8       |      8       |      8       | Integer matrix dimension                       |
+|       B |      2       |      3       |      4       | Number of bits encoded per matrix entry        |
+|       d |      12      |      10      |      6       | Integer defining the support of X              |
+|    lenA |     128      |     128      |     128      | Bitlength of seeds for generation of matrix A  |
+|  lensec |     128      |     192      |     256      | Number of bits matching the bit-security level |
+|   SHAKE |   SHAKE128   |   SHAKE256   |   SHAKE256   | SHAKE variant used for hashing                 |
 {: title="Parameters for FrodoKEM."}
 
 |   Name  |   FrodoKEM-640  |  FrodoKEM-976   |   FrodoKEM-1344  | Description                                    |
