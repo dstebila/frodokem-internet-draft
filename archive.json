@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-03-17T00:24:55.896545+00:00",
+  "timestamp": "2026-03-19T00:26:06.961577+00:00",
   "repo": "dstebila/frodokem-internet-draft",
   "labels": [
     {
@@ -144,6 +144,32 @@
       "mergeCommit": {
         "oid": "b6a77ab3e3411f4768ce998e85e51237e67c1f52"
       },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 4,
+      "id": "PR_kwDOLyLB3M7Lc71q",
+      "title": "Add seed-format secret keys for FrodoKEM",
+      "url": "https://github.com/dstebila/frodokem-internet-draft/pull/4",
+      "state": "OPEN",
+      "author": "dconnolly",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "This is a proposal for seed-based keygen in FrodoKEM, similar but not exactly the same as constructions in Kyber/ML-KEM and other KEMs, that would make the decaps key much smaller, allow a fully bound expanded keypair to a 32 byte seed value, etc. I don't know the status of FrodoKEM standardization work in ISO, and therefore if a proposal like this is even in the cards in case of divergance, but I figured I'd throw it out there. \r\n\r\n@dstebila @patricklonga @jwbos @sehlen-bsi \r\n\r\n## Summary\r\n\r\n- Replaces three independent random seeds (s, seedSE, z) in KeyGen with a single 256-bit `keySeed` expanded via the parameter set's SHAKE variant (SHAKE128 for 640, SHAKE256 for 976/1344)\r\n- Defines the secret key as `sk = keySeed` (32 bytes); implementations MAY cache expanded key material in memory but MUST treat it as secret\r\n- Adds `lenseed` parameter (256 bits for all parameter sets) and updates sizes table\r\n- Adds security considerations on binding properties and multi-target security\r\n\r\n## Motivation\r\n\r\n### Binding properties\r\n\r\nRecent work on KEM binding properties ([Cremers, Dax, Medinger CCS'24](https://eprint.iacr.org/2024/523); [Schmieg \"Unbindable Kemmy Schmidt\"](https://keymaterial.net/2024/09/14/unbindable-kemmy-schmidt/); [Connolly, H\u00f6velmanns, H\u00fclsing, Kousidis, Meijers ePrint 2025/1397](https://eprint.iacr.org/2025/1397)) has shown that expanded secret key formats (where components like the implicit rejection value `s` or the cached public key hash `pkh` can be independently manipulated) are vulnerable to MAL-BIND attacks. This is the same structural issue identified in ML-KEM, where the recommended fix is to store only the seed and re-derive everything.\r\n\r\nWith seed-format keys, all key components are deterministically bound to `keySeed` via SHAKE, structurally preventing independent manipulation. This closes MAL-BIND-K-PK and MAL-BIND-K-CT attacks with no regression in HON-BIND or LEAK-BIND properties. FrodoKEM's existing C2PRI bounds (from the SFO transform, as analyzed in [Connolly et al. ePrint 2025/1397](https://eprint.iacr.org/2025/1397), Table 4) remain unchanged.\r\n\r\n### Multi-target security\r\n\r\nThe multi-target (multi-user, multi-ciphertext) security of FrodoKEM, as analyzed in [Glabush, H\u00f6velmanns, Stebila ePrint 2025/343](https://eprint.iacr.org/2025/343), depends on the message space size and salt length in the salted FO transform \u2014 not on the internal structure of key generation. Under the standard assumption that SHAKE is a secure XOF, the joint distribution of `(s, seedSE, z)` derived from a random `keySeed` is computationally indistinguishable from three independent random values. The multi-target bounds are unaffected.\r\n\r\n### Practical benefits\r\n\r\nSecret key size drops from 19,888\u201343,088 bits to 256 bits (32 bytes) \u2014 a ~77x reduction for FrodoKEM-640. Simpler key management, backup, and protection.\r\n\r\n## Spec changes\r\n\r\n1. **KeyGen** (\u00a77.1): Single random `keySeed` \u2192 `s || seedSE || z = SHAKE(keySeed, lensec + lenSE + lenA)` \u2192 remainder unchanged\r\n2. **Decapsulation** (\u00a77.3): Explicitly re-derives key material from `keySeed`; notes that cached expanded values may be used\r\n3. **Parameters** (\u00a78.1): Added `lenseed = 256` row\r\n4. **Sizes table**: Secret key column now shows 256 bits for all parameter sets\r\n5. **Security Considerations**: New subsections on binding properties and multi-target security\r\n\r\n## Trade-offs\r\n\r\nDecapsulation from seed-only requires re-running KeyGen (matrix A generation, error sampling). Implementations can mitigate by caching expanded material in memory, which the spec explicitly permits.\r\n",
+      "createdAt": "2026-03-18T07:39:48Z",
+      "updatedAt": "2026-03-18T08:38:03Z",
+      "baseRepository": "dstebila/frodokem-internet-draft",
+      "baseRefName": "main",
+      "baseRefOid": "ebfb8709332a57ec24b6217460aab3415e5eb9ad",
+      "headRepository": "dconnolly/frodokem-internet-draft",
+      "headRefName": "seed-format-keys",
+      "headRefOid": "d1ee27a1f4c91b808e260733a4309cac5b2d2483",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
       "comments": [],
       "reviews": []
     }
