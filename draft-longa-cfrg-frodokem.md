@@ -3,7 +3,7 @@ title: "FrodoKEM: key encapsulation from learning with errors"
 abbrev: "FrodoKEM"
 category: info
 
-docname: draft-longa-cfrg-frodokem-02
+docname: draft-longa-cfrg-frodokem-03
 submissiontype: IRTF
 date: 2026-03-18
 v: 3
@@ -636,7 +636,27 @@ return A
 The key generation algorithm accepts no input, requires randomness, and
 outputs the keypair (pk, sk) = (seedA || b, s || seedA || b || S^T || pkh).
 
-In the generation of pseudorandom bit strings using SHAKE (step 6), the input
+The seeds (s, seedSE, z) can be securely stored to enable later reconstruction
+of the fully expanded private key using KeyGenInternal ((KeyGenInternal)).
+These seeds must be protected as private key material.
+
+~~~pseudocode
+Choose uniformly random seed s of bitlength lensec
+Choose uniformly random seed seedSE of bitlength lenSE
+Choose uniformly random seed z of bitlength lenA
+# Generate public key and expanded private key:
+(pk, sk) = KeyGenInternal(s, seedSE, z)
+
+return pk, sk  # Return public key and secret key
+~~~
+
+### (Internal) Key Generation {#KeyGenInternal}
+
+The internal key generation algorithm accepts the three-tuple seed
+(s, seedSE, z) as input, and outputs the keypair
+(pk, sk) = (seedA || b, s || seedA || b || S^T || pkh).  
+
+In the generation of pseudorandom bit strings using SHAKE (step 3), the input
 0x5F || seedSE is a (8 + lenSE)-bit string obtained by concatenating the 8-bit
 string ⟨1,1,1,1,1,0,1,0⟩, corresponding to the hexadecimal value 0x5F, with
 seedSE. For the output, each bit string r^(i) is a 16-bit string taken from the
@@ -644,9 +664,6 @@ output of SHAKE in little-endian byte order. Similar comments apply to step 5
 of {{Encaps}} and step 6 of {{Decaps}}.
 
 ~~~pseudocode
-Choose uniformly random seed s of bitlength lensec
-Choose uniformly random seed seedSE of bitlength lenSE
-Choose uniformly random seed z of bitlength lenA
 # Generate pseudorandom seed:
 seedA = SHAKE(z, lenA)
 # Generate the matrix A:
